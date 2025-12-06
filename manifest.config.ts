@@ -12,16 +12,16 @@ export default defineManifest({
     default_icon: {
       48: 'public/logo.png',
     },
-    default_popup: 'src/popup/index.html',
+    default_popup: 'src/ui/popup/index.html',
   },
   permissions: ['sidePanel', 'contentSettings'],
   content_scripts: [
     {
-      js: ['src/content/main.tsx'],
+      js: ['src/ui/content/main.tsx'],
       matches: ['https://*/*'],
     },
   ],
   side_panel: {
-    default_path: 'src/sidepanel/index.html',
+    default_path: 'src/ui/sidepanel/index.html',
   },
 });
