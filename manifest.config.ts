@@ -14,11 +14,11 @@ export default defineManifest({
     },
     default_popup: 'src/ui/popup/index.html',
   },
-  permissions: ['sidePanel', 'contentSettings'],
+  permissions: ['sidePanel', 'contentSettings', 'activeTab'],
   content_scripts: [
     {
       js: ['src/ui/content/main.tsx'],
-      matches: ['https://*/*'],
+      matches: ['https://*.facebook.com/*'],
     },
   ],
   side_panel: {
