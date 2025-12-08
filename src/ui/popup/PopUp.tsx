@@ -18,6 +18,40 @@ export default function App() {
   const [isStoriesShown, setShowStories] = useState(true);
   const [isReelsShown, setShowReels] = useState(true);
   const [isNonFriendPostsShown, setShowNonFriendPosts] = useState(true);
+  const [isUpdatingFriendList, setIsUpdatingFriendList] = useState(false);
+
+  const updateFriendList = async () => {
+    setIsUpdatingFriendList(true);
+    try {
+      // Query for the active tab in the current window
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+
+      if (tab?.id) {
+        // Send message to the content script
+        chrome.tabs.sendMessage(
+          tab.id,
+          { action: 'UPDATE_FRIEND_LIST' },
+          (response) => {
+            console.log('Friend list update response:', response);
+            setIsUpdatingFriendList(false);
+            if (response?.friends) {
+              alert(
+                `Successfully collected ${response.friends.length} friends!`
+              );
+            }
+          }
+        );
+      } else {
+        setIsUpdatingFriendList(false);
+      }
+    } catch (error) {
+      console.error('Error updating friend list:', error);
+      setIsUpdatingFriendList(false);
+    }
+  };
 
   const toggleStories = async () => {
     // Query for the active tab in the current window
@@ -82,13 +116,18 @@ export default function App() {
 
   return (
     <div className='flex flex-col items-center justify-center h-50 w-50 gap-2 p-4'>
+      <Button onClick={updateFriendList}>
+        {isUpdatingFriendList ? 'Updating...' : 'Update Friend List'}
+      </Button>
       <Button onClick={toggleStories}>
         {isStoriesShown ? 'Hide Stories' : 'Show Stories'}
       </Button>
       <Button onClick={toggleReels}>
         {isReelsShown ? 'Hide Reels' : 'Show Reels'}
       </Button>
-      <Button onClick={toggleNonFriendPosts}>Toggle Non Friend Posts</Button>
+      <Button onClick={toggleNonFriendPosts}>
+        Non Friend Posts: {isNonFriendPostsShown ? 'Show' : 'Hide'}
+      </Button>
     </div>
   );
 }
