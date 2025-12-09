@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .cls-bg { fill: #10599c }
+      .cls-fill { fill: #ffffff; }
+
+      .cls-stroke { stroke: #ffffff; stroke-width: 10; stroke-linecap: round; }
+    </style>
+  </defs>
+
+  <circle cx="100" cy="100" r="100" class="cls-bg" />
+
+  <line x1="100" y1="100" x2="100" y2="35" class="cls-stroke" />
+  <line x1="100" y1="100" x2="156.29" y2="132.5" class="cls-stroke" />
+  <line x1="100" y1="100" x2="43.71" y2="132.5" class="cls-stroke" />
+
+  <circle cx="100" cy="100" r="32" class="cls-fill" />
+  
+  <circle cx="100" cy="35" r="20" class="cls-fill" />
+  <circle cx="156.29" cy="132.5" r="20" class="cls-fill" />
+  <circle cx="43.71" cy="132.5" r="20" class="cls-fill" />
+</svg>

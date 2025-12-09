@@ -6,22 +6,34 @@ export default defineManifest({
   name: pkg.name,
   version: pkg.version,
   icons: {
-    48: 'public/logo.png',
+    16: 'public/icon-16.png',
+    32: 'public/icon-32.png',
+    48: 'public/icon-48.png',
+    128: 'public/icon-128.png',
   },
   action: {
     default_icon: {
-      48: 'public/logo.png',
+      16: 'public/icon-16.png',
+      32: 'public/icon-32.png',
+      48: 'public/icon-48.png',
+      128: 'public/icon-128.png',
     },
-    default_popup: 'src/ui/popup/index.html',
+    default_popup: 'src/toolbar_action/popup/index.html',
   },
-  permissions: ['sidePanel', 'contentSettings', 'activeTab'],
+  permissions: ['storage', 'tabs'],
+  host_permissions: ['https://www.facebook.com/*'],
+  background: {
+    service_worker: 'src/background/service_worker.ts',
+    type: 'module',
+  },
   content_scripts: [
     {
-      js: ['src/ui/content/main.tsx'],
-      matches: ['https://*.facebook.com/*'],
+      js: ['src/content_scripts/fb_newsfeed.ts'],
+      matches: ['https://www.facebook.com/*'],
+    },
+    {
+      js: ['src/content_scripts/fb_friendlist.ts'],
+      matches: ['https://www.facebook.com/*/friends*'],
     },
   ],
-  side_panel: {
-    default_path: 'src/ui/sidepanel/index.html',
-  },
 });

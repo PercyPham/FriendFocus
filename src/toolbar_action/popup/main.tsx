@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import PopUp from './PopUp.tsx';
+import Popup from './Popup.tsx';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PopUp />
+    <Popup />
   </StrictMode>
 );
