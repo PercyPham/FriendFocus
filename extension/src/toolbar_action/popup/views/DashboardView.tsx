@@ -22,6 +22,19 @@ export const DashboardView = () => {
 
   const [showReviewPrompt, setShowReviewPrompt] = useState(false);
 
+  // Format number with commas
+  const formatNumber = (num: number): string => {
+    return num.toLocaleString();
+  };
+
+  // Dynamic text sizing based on number length
+  const getTextSizeClass = (num: number): string => {
+    const numStr = num.toString();
+    if (numStr.length <= 3) return 'text-2xl';
+    if (numStr.length <= 5) return 'text-xl';
+    return 'text-lg';
+  };
+
   const dismissReview = () => {
     setShowReviewPrompt(false);
   };
@@ -80,7 +93,13 @@ export const DashboardView = () => {
             <p className='text-xs text-gray-400 font-medium uppercase mb-1'>
               Blocked Today
             </p>
-            <p className='text-2xl font-bold text-gray-800'>{blockedToday}</p>
+            <p
+              className={`${getTextSizeClass(
+                blockedToday
+              )} font-bold text-gray-800`}
+            >
+              {blockedToday ? formatNumber(blockedToday) : '-'}
+            </p>
           </div>
           <div className='bg-white p-4 rounded-xl border border-gray-100 shadow-sm'>
             <p className='text-xs text-gray-400 font-medium uppercase mb-1'>

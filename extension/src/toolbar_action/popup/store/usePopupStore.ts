@@ -1,5 +1,6 @@
 import { sendMessage } from '@/common/background_contract/client';
 import storage from '@/common/storage';
+import { getTodayDateString } from '@/common/utils';
 import { create } from 'zustand';
 
 interface PopupState {
@@ -29,6 +30,12 @@ export const usePopupStore = create<PopupState>((set) => {
     set({ friendCount });
   });
 
+  storage.onChange(storage.key.blockedPostsLog, (blockedPostsLog) => {
+    const today = getTodayDateString();
+    const blockedToday = blockedPostsLog?.[today] || 0;
+    set({ blockedToday });
+  });
+
   return {
     init: async () => {
       set({ initializing: true });
@@ -36,8 +43,12 @@ export const usePopupStore = create<PopupState>((set) => {
       const hasFriendList = await storage.get(storage.key.hasFriendList);
       const friendCount = await storage.get(storage.key.friendCount);
       const isFriendFocus = await storage.get(storage.key.isFriendFocus);
+      const blockedPostsLog = await storage.get(storage.key.blockedPostsLog);
+      
+      const today = getTodayDateString();
+      const blockedToday = blockedPostsLog?.[today] || 0;
 
-      set({ hasFriendList, friendCount, isFriendFocus, initializing: false });
+      set({ hasFriendList, friendCount, isFriendFocus, blockedToday, initializing: false });
     },
     initializing: false,
 
@@ -53,6 +64,6 @@ export const usePopupStore = create<PopupState>((set) => {
       sendMessage('START_COLLECTING_FRIEND_LIST');
     },
 
-    blockedToday: 100,
+    blockedToday: 0,
   };
 });

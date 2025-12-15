@@ -1,7 +1,8 @@
-import storage from '@/common/storage';
+import storage, { BlockedPostsLog } from '@/common/storage';
 import { storageWriter } from './storage-writer';
 import { onMessage, setupMessageListener } from './server';
 import { BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY } from '@/common/constants';
+import { getTodayDateString } from '@/common/utils';
 
 onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
   console.log('Received request from tab:', sender);
@@ -17,12 +18,10 @@ onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
 });
 
 onMessage('SET_FRIEND_FOCUS', async (isFocus, sender) => {
-  console.log('Received SET_FRIEND_FOCUS request from tab:', sender);
-
-  // Save to storage - storage change events will propagate to content scripts
+  console.log(
+    `Received SET_FRIEND_FOCUS request from tab: ${sender.tab?.id} isFocus: ${isFocus}`
+  );
   await storageWriter.set(storage.key.isFriendFocus, isFocus);
-
-  console.log('Friend focus set to:', isFocus);
 });
 
 onMessage('SAVE_FRIEND_LIST', async (friendList, sender) => {
@@ -31,11 +30,7 @@ onMessage('SAVE_FRIEND_LIST', async (friendList, sender) => {
     await storageWriter.set(storage.key.friendList, friendList);
     await storageWriter.set(storage.key.friendCount, friendList.length);
     await storageWriter.set(storage.key.hasFriendList, true);
-    console.log(
-      'Friend list saved successfully:',
-      friendList.length,
-      'friends'
-    );
+    console.log(`Friend list saved successfully: ${friendList.length} friends`);
 
     // Close the tab
     if (sender.tab?.id) {
@@ -47,9 +42,26 @@ onMessage('SAVE_FRIEND_LIST', async (friendList, sender) => {
 });
 
 onMessage('CLOSE_TAB', async (_req, sender) => {
-  console.log('Received request from tab:', sender);
+  console.log(`Received CLOSE_TAB request from tab: ${sender.tab?.id}`);
   if (!sender.tab?.id) return;
   await chrome.tabs.remove(sender.tab.id);
+});
+
+onMessage('INCREMENT_TODAY_BLOCKED_POSTS_COUNT', async (count, sender) => {
+  console.log(
+    'Received INCREMENT_TODAY_BLOCKED_POSTS_COUNT request:',
+    count,
+    sender
+  );
+
+  if (count === 0) return;
+
+  const today = getTodayDateString();
+  const log = (await storage.get(storage.key.blockedPostsLog)) || {};
+
+  const cleanedLog: BlockedPostsLog = { [today]: (log[today] || 0) + count };
+
+  await storageWriter.set(storage.key.blockedPostsLog, cleanedLog);
 });
 
 setupMessageListener();

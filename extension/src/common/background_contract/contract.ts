@@ -20,6 +20,11 @@ export type MessageContract = {
     req: void;
     res: void;
   };
+
+  INCREMENT_TODAY_BLOCKED_POSTS_COUNT: {
+    req: number;
+    res: void;
+  };
 };
 
 // Helper type to extract keys
