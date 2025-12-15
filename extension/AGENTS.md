@@ -6,27 +6,66 @@ FriendFocus is a Chrome extension that enhances the user's Facebook experience b
 
 **Key Technologies:**
 
-*   **React:** For building the user interface of the popup.
-*   **TypeScript:** For static typing and improved code quality.
-*   **Vite:** As the build tool and development server.
-*   **@crxjs/vite-plugin:** For seamless Chrome extension development with Vite.
-*   **Zustand:** For state management in the popup.
-*   **Tailwind CSS:** For styling the popup.
+- **React:** For building the user interface of the popup.
+- **TypeScript:** For static typing and improved code quality.
+- **Vite:** As the build tool and development server.
+- **@crxjs/vite-plugin:** For seamless Chrome extension development with Vite.
+- **Zustand:** For state management in the popup.
+- **Tailwind CSS:** For styling the popup.
 
 **Architecture:**
 
-*   **Popup:** The user interface of the extension, allowing users to enable/disable the "friend focus" mode and initiate the friend list collection. It's built with React and located in `src/toolbar_action/popup`.
-*   **Background Script:** The core logic of the extension, running as a service worker. It handles tasks like opening tabs, managing storage, and communicating with other parts of the extension. The main background script is `src/background/service_worker.ts`.
-*   **Content Scripts:** These scripts are injected into Facebook pages to interact with the DOM.
-    *   `src/content_scripts/fb_newsfeed.ts`: Filters the newsfeed based on the user's friend list.
-    *   `src/content_scripts/fb_friendlist.ts`: Collects the user's friend list from their profile.
-*   **Storage:** The extension uses `chrome.storage` to persist the friend list and the "friend focus" state.
+The extension follows a **modular architecture** with three main modules and a common folder:
+
+### Module Structure
+
+1. **Background Module** (`src/background/`) - Service worker that handles core extension logic, storage operations, and acts as the communication hub
+2. **Popup Module** (`src/toolbar_action/popup/`) - React-based UI for user interactions and settings
+3. **Content Scripts Module** (`src/content_scripts/`) - Scripts injected into Facebook pages to interact with the DOM
+4. **Common Folder** (`src/common/`) - Shared code, types, constants, and contracts used across multiple modules
+
+### Key Principles
+
+- **Shared Code Location:** Any code used by 2+ modules belongs in `src/common/`
+- **Module Communication:** Modules communicate via an RPC-style contract pattern (background contract)
+  - Background acts as server, popup and content scripts act as clients
+  - All communication is type-safe through shared contracts in `src/common/`
+- **Storage:** Uses `chrome.storage.local` with type-safe utilities
+
+## Project Structure
+
+```
+src/
+├── background/              # Background Module (Service Worker)
+│   ├── service_worker.ts    # Main entry point
+│   ├── server.ts            # RPC server implementation
+│   └── storage-writer.ts    # Write to storage
+│
+├── toolbar_action/          # Popup Module (UI)
+│   └── popup/
+│       ├── main.tsx         # Entry point
+│       ├── Popup.tsx        # Main popup component
+│       ├── store/           # Zustand state management
+│       └── ...              # Popup related
+│
+├── content_scripts/         # Content Scripts Module
+│   ├── fb_newsfeed.ts       # Newsfeed filtering logic
+│   ├── fb_friendlist.ts     # Friend list collection logic
+│   └── ...                  # Content script related
+│
+└── common/                  # Shared Code (used by 2+ modules)
+    ├── background_contract/ # RPC contract for inter-module communication
+    │   ├── contract.ts      # Type-safe contract definitions
+    │   └── client.ts        # Client for calling background methods
+    ├── constants.ts         # Shared constants
+    └── storage.ts           # Storage utilities and types, only have functions for Read ONLY
+```
 
 ## Building and Running
 
 ### Prerequisites
 
-*   Node.js and pnpm
+- Node.js and pnpm
 
 ### Development
 
@@ -43,9 +82,9 @@ FriendFocus is a Chrome extension that enhances the user's Facebook experience b
     ```
 
 3.  **Load the extension in Chrome:**
-    *   Open Chrome and navigate to `chrome://extensions/`.
-    *   Enable "Developer mode".
-    *   Click "Load unpacked" and select the `dist` directory.
+    - Open Chrome and navigate to `chrome://extensions/`.
+    - Enable "Developer mode".
+    - Click "Load unpacked" and select the `dist` directory.
 
 ### Production Build
 
@@ -59,7 +98,9 @@ FriendFocus is a Chrome extension that enhances the user's Facebook experience b
 
 ## Development Conventions
 
-*   **Code Style:** The project uses Prettier and ESLint for code formatting and linting. (This is an assumption based on common practices, but not explicitly confirmed from the files).
-*   **File Structure:** The project follows a feature-based file structure, with separate directories for the background script, content scripts, and popup.
-*   **State Management:** The popup uses Zustand for state management, as seen in `src/toolbar_action/popup/store/usePopupStore.ts`.
-*   **Communication:** The different parts of the extension (background, content scripts, popup) communicate using `chrome.runtime.sendMessage` and `chrome.runtime.onMessage`. A contract for these messages is defined in `src/common/background_contract/contract.ts`.
+- **Module Boundaries:** Keep code within its respective module unless it needs to be shared across modules
+- **Common Folder:** Place code in `src/common/` when it's used by 2+ modules (types, constants, contracts, utilities)
+- **Type Safety:** Use TypeScript for all code; maintain type-safe contracts for inter-module communication
+- **State Management:** Zustand for popup state, chrome.storage for persistence
+- **Communication Pattern:** RPC-style background contract for all cross-module communication
+- **Clean Code:** Write self-documenting code that explains itself through clear naming and structure; avoid redundant, lengthy, or unnecessary comments

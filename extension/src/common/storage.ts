@@ -4,15 +4,19 @@ export const Key = {
   hasFriendList: 'has_friend_list',
   friendList: 'friend_list',
   friendCount: 'friend_count',
+  blockedPostsLog: 'blocked_posts_log',
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
+
+export type BlockedPostsLog = Record<string, number>; // { "2025-12-15": 42 }
 
 export type ValueTypeMap = {
   [Key.isFriendFocus]: boolean;
   [Key.hasFriendList]: boolean;
   [Key.friendList]: FriendInfo[];
   [Key.friendCount]: number;
+  [Key.blockedPostsLog]: BlockedPostsLog;
 };
 
 // Types
