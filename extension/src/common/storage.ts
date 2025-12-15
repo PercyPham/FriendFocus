@@ -1,5 +1,6 @@
 export const Key = {
   isFriendFocus: 'is_friend_focus',
+  hasFriendList: 'has_friend_list',
   friendList: 'friend_list',
 } as const;
 
@@ -9,6 +10,7 @@ type LocationType = 'local' | 'sync';
 
 const KeyLocationMap: Record<KeyType, LocationType> = {
   [Key.isFriendFocus]: 'sync',
+  [Key.hasFriendList]: 'sync',
   [Key.friendList]: 'local',
 };
 
@@ -19,6 +21,7 @@ type FriendInfo = {
 
 type ValueTypeMap = {
   [Key.isFriendFocus]: boolean;
+  [Key.hasFriendList]: boolean;
   [Key.friendList]: FriendInfo[];
 };
 
@@ -57,11 +60,5 @@ export default {
     callback: (value: ValueTypeMap[K] | undefined) => void
   ) => {
     handlers[key] = callback;
-    // const location = KeyLocationMap[key];
-    // chrome.storage[location].onChanged.addListener((changes) => {
-    //   if (changes[key]) {
-    //     callback(changes[key].newValue as ValueTypeMap[K] | undefined);
-    //   }
-    // });
   },
 };

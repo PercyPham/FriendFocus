@@ -2,7 +2,7 @@ import { Users, AlertCircle, Lock } from 'lucide-react';
 import { usePopupStore } from '../store/usePopupStore';
 
 export const FirstTimeSetupView = () => {
-  const { isBuildingFriendList, buildFriendList } = usePopupStore();
+  const { buildFriendList } = usePopupStore();
 
   return (
     <div className='flex flex-col h-full p-6 bg-white animate-in fade-in zoom-in-95 duration-300'>
@@ -36,12 +36,9 @@ export const FirstTimeSetupView = () => {
 
         <button
           onClick={buildFriendList}
-          disabled={isBuildingFriendList}
-          className='w-full bg-[#0866FF] hover:bg-[#0846ff] disabled:opacity-50 text-white text-sm py-3 px-4 rounded-xl shadow-md transition-all'
+          className='w-full bg-[#0866FF] hover:bg-[#0846ff] text-white text-sm py-3 px-4 rounded-xl shadow-md transition-all'
         >
-          {isBuildingFriendList
-            ? 'Building Friend List...'
-            : 'Build Friend List'}
+          Build Friend List
         </button>
       </div>
 

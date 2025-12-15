@@ -1,6 +1,6 @@
 import {
-  AlertCircle,
-  CheckCircle2,
+  Coffee,
+  Heart,
   RefreshCw,
   ThumbsDown,
   ThumbsUp,
@@ -14,19 +14,13 @@ import { Header } from '../components/Header';
 export const DashboardView = () => {
   const {
     isFriendFocus,
-    setIsFriendFocus,
+    setFriendFocus,
     buildFriendList,
     friendCount,
-    upgrade: onUpgrade,
+    blockedToday,
   } = usePopupStore();
-  const [showReviewPrompt, setShowReviewPrompt] = useState(true);
 
-  const blockedToday = 100;
-
-  const subscription = {
-    status: 'trial',
-    daysLeft: 2,
-  };
+  const [showReviewPrompt, setShowReviewPrompt] = useState(false);
 
   const dismissReview = () => {
     setShowReviewPrompt(false);
@@ -53,7 +47,7 @@ export const DashboardView = () => {
           </div>
 
           <button
-            onClick={() => setIsFriendFocus(!isFriendFocus)}
+            onClick={() => setFriendFocus(!isFriendFocus)}
             className={`relative w-28 h-14 rounded-full transition-colors duration-300 mb-4 focus:outline-none focus:ring-4 focus:ring-offset-2 ${
               isFriendFocus
                 ? 'bg-blue-500 focus:ring-blue-300'
@@ -93,7 +87,9 @@ export const DashboardView = () => {
               Friends
             </p>
             <div className='flex items-center gap-2'>
-              <p className='text-2xl font-bold text-gray-800'>{friendCount}</p>
+              <p className='text-2xl font-bold text-gray-800'>
+                {friendCount ?? '-'}
+              </p>
               <button
                 onClick={buildFriendList}
                 className='text-indigo-500 hover:bg-indigo-50 p-1 rounded-full transition-colors'
@@ -131,26 +127,21 @@ export const DashboardView = () => {
         </div>
       )}
 
-      {/* Footer / Trial Status */}
-      <div className='bg-white border-t border-gray-100 p-3'>
-        {subscription.status === 'trial' ? (
-          <div className='flex items-center justify-between bg-orange-50 text-orange-800 px-3 py-2 rounded-lg text-sm'>
-            <span className='font-medium flex items-center gap-2'>
-              <AlertCircle className='w-4 h-4' />
-              {subscription.daysLeft} days left in trial
-            </span>
-            <button
-              onClick={onUpgrade}
-              className='text-orange-600 font-bold hover:underline text-xs uppercase tracking-wide'
-            >
-              Upgrade
-            </button>
-          </div>
-        ) : (
-          <div className='text-center text-xs text-gray-400 font-medium flex items-center justify-center gap-1'>
-            <CheckCircle2 className='w-3 h-3 text-green-500' /> PRO Active
-          </div>
-        )}
+      <div className='bg-white border-t border-gray-100 py-3 px-4 flex items-center justify-center gap-3'>
+        <div className='flex items-center gap-1.5 text-[11px] text-gray-500 font-medium'>
+          <Heart className='w-3 h-3 text-red-500 fill-current' />
+          <span>Enjoying the silence?</span>
+        </div>
+
+        <a
+          href='https://buymeacoffee.com/percypham'
+          target='_blank'
+          rel='noreferrer'
+          className='flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium text-gray-600 bg-gray-50 hover:bg-[#FFDD00] hover:text-black hover:border-transparent transition-all border border-gray-100 shadow-sm group'
+        >
+          <Coffee className='w-3 h-3 text-gray-400 group-hover:text-black transition-colors' />
+          <span>Buy me a coffee</span>
+        </a>
       </div>
     </div>
   );
