@@ -1,13 +1,10 @@
 import { defineManifest } from '@crxjs/vite-plugin';
 import pkg from './package.json';
 
-const isBeta = pkg.version.includes('-beta');
-
 export default defineManifest({
   manifest_version: 3,
-  name: pkg.name + (isBeta ? ' (Beta)' : ''),
-  description:
-    pkg.description + (isBeta ? ' (THIS EXTENSION IS FOR BETA TESTING)' : ''),
+  name: pkg.name,
+  description: pkg.description,
   version: pkg.version,
   icons: {
     16: 'public/icon-16.png',
