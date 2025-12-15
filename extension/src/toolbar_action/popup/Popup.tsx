@@ -6,7 +6,7 @@ import { InitializingView } from './views/InitializingView';
 import { FirstTimeSetupView } from './views/FirstTimeSetupView';
 import { PaywallView } from './views/PaywallView';
 
-const test = true;
+const test = false;
 
 export default function Popup() {
   const { user, isInitializing, initialize, hasFriendList } = usePopupStore();

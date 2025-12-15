@@ -3,7 +3,7 @@ import { BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY } from '@/common/constants';
 import { sendMessage } from '@/common/messaging/client';
 import storage from '@/common/storage';
 
-console.log('> Loaded: fb_friendlist.ts');
+console.debug('> Loaded: fb_friendlist.ts');
 
 const collectFriendListIfNeeded = async () => {
   const url = new URL(window.location.href);

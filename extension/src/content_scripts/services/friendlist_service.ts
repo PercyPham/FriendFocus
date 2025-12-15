@@ -65,6 +65,16 @@ const createUpdatePopup = (): Promise<void> => {
       color: #1877f2;
     `;
 
+    // Keep tab reminder
+    const keepTabReminder = document.createElement('p');
+    keepTabReminder.textContent =
+      'Keep this tab open until the process is complete.';
+    keepTabReminder.style.cssText = `
+      margin: 0 0 20px 0;
+      color: #65676b;
+      font-size: 14px;
+    `;
+
     // Create description
     const description = document.createElement('p');
     description.textContent =
@@ -104,6 +114,7 @@ const createUpdatePopup = (): Promise<void> => {
 
     // Assemble popup
     popup.appendChild(title);
+    popup.appendChild(keepTabReminder);
     popup.appendChild(description);
     popup.appendChild(button);
     overlay.appendChild(popup);
@@ -145,6 +156,15 @@ const createProgressPopup = () => {
     color: #1877f2;
   `;
 
+  const keepTabReminder = document.createElement('p');
+  keepTabReminder.style.cssText = `
+    margin: 0;
+    color: #65676b;
+    font-size: 16px;
+  `;
+  keepTabReminder.textContent =
+    'Keep this tab open until the process is complete.';
+
   const status = document.createElement('p');
   status.style.cssText = `
     margin: 0;
@@ -154,6 +174,7 @@ const createProgressPopup = () => {
   status.textContent = 'Found: 0 friends';
 
   popup.appendChild(title);
+  popup.appendChild(keepTabReminder);
   popup.appendChild(status);
   overlay.appendChild(popup);
   document.body.appendChild(overlay);

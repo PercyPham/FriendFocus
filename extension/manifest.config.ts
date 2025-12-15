@@ -32,10 +32,7 @@ export default defineManifest({
   oauth2: {
     client_id:
       '990643947962-0tapn6q6upkm2dgrapi25oj0s52rd6k5.apps.googleusercontent.com',
-    scopes: [
-      'https://www.googleapis.com/auth/userinfo.email',
-      'https://www.googleapis.com/auth/userinfo.profile',
-    ],
+    scopes: ['openid', 'email', 'profile'],
   },
   background: {
     service_worker: 'src/background/service_worker.ts',

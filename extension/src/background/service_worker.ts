@@ -15,9 +15,30 @@ onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
   }
 });
 
-onMessage('SET_FRIEND_FOCUS', async (isHidden, sender) => {
+onMessage('SET_FRIEND_FOCUS', async (isFocus, sender) => {
   console.log('Received request from tab:', sender);
-  await storage.set(storage.key.isFriendFocus, isHidden);
+
+  await storage.set(storage.key.isFriendFocus, isFocus);
+
+  const activeTabs = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+
+  if (!activeTabs.length) return;
+
+  const currentActiveTab = activeTabs[0];
+  if (!currentActiveTab.id || !currentActiveTab.url) return;
+  const currentTabURL = new URL(currentActiveTab.url);
+  if (currentTabURL.host != 'www.facebook.com') return;
+  if (currentTabURL.pathname.split('/').length !== 2) return;
+
+  console.log('Sending message to tab:', currentTabURL);
+
+  await chrome.tabs.sendMessage(currentActiveTab.id!, {
+    type: 'SET_FRIEND_FOCUS',
+    isHidden: isFocus,
+  });
 });
 
 onMessage('CLOSE_TAB', async (_req, sender) => {

@@ -73,8 +73,7 @@ export const usePopupStore = create<PopupState>((set) => {
 
     isFriendFocus: false,
     setIsFriendFocus: async (isFriendFocus: boolean) => {
-      console.log('> setIsFriendFocus:', isFriendFocus);
-      await storage.set(storage.key.isFriendFocus, isFriendFocus);
+      sendMessage('SET_FRIEND_FOCUS', isFriendFocus);
       set({ isFriendFocus });
     },
 
