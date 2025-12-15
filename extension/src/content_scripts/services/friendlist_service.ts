@@ -1,7 +1,5 @@
-interface FriendInfo {
-  slug: string;
-  name: string;
-}
+import type { FriendInfo } from '@/common/storage';
+import { showUpdatePopup, showProgressPopup } from '../components/OverlayManager';
 
 // Helper function to wait for a condition
 const waitFor = (
@@ -26,168 +24,6 @@ const waitFor = (
 
 // Helper function to wait for a specific time
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Create and show popup UI
-const createUpdatePopup = (): Promise<void> => {
-  return new Promise((resolve) => {
-    // Create overlay
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      z-index: 99999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    `;
-
-    // Create popup container
-    const popup = document.createElement('div');
-    popup.style.cssText = `
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      max-width: 400px;
-    `;
-
-    // Create title
-    const title = document.createElement('h2');
-    title.textContent = 'Update Friend List';
-    title.style.cssText = `
-      margin: 0 0 15px 0;
-      font-size: 24px;
-      color: #1877f2;
-    `;
-
-    // Keep tab reminder
-    const keepTabReminder = document.createElement('p');
-    keepTabReminder.textContent =
-      'Keep this tab open until the process is complete.';
-    keepTabReminder.style.cssText = `
-      margin: 0 0 20px 0;
-      color: #65676b;
-      font-size: 14px;
-    `;
-
-    // Create description
-    const description = document.createElement('p');
-    description.textContent =
-      'Click the button below to start collecting your friends list.';
-    description.style.cssText = `
-      margin: 0 0 20px 0;
-      color: #65676b;
-      font-size: 14px;
-    `;
-
-    // Create button
-    const button = document.createElement('button');
-    button.textContent = 'Update Friend List';
-    button.style.cssText = `
-      background-color: #1877f2;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    `;
-
-    button.onmouseover = () => {
-      button.style.backgroundColor = '#166fe5';
-    };
-    button.onmouseout = () => {
-      button.style.backgroundColor = '#1877f2';
-    };
-
-    button.onclick = () => {
-      document.body.removeChild(overlay);
-      resolve();
-    };
-
-    // Assemble popup
-    popup.appendChild(title);
-    popup.appendChild(keepTabReminder);
-    popup.appendChild(description);
-    popup.appendChild(button);
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
-  });
-};
-
-// Create and show progress popup
-const createProgressPopup = () => {
-  const overlay = document.createElement('div');
-  overlay.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 99999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
-  const popup = document.createElement('div');
-  popup.style.cssText = `
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    min-width: 300px;
-  `;
-
-  const title = document.createElement('h2');
-  title.textContent = 'Collecting Friends...';
-  title.style.cssText = `
-    margin: 0 0 15px 0;
-    font-size: 20px;
-    color: #1877f2;
-  `;
-
-  const keepTabReminder = document.createElement('p');
-  keepTabReminder.style.cssText = `
-    margin: 0;
-    color: #65676b;
-    font-size: 16px;
-  `;
-  keepTabReminder.textContent =
-    'Keep this tab open until the process is complete.';
-
-  const status = document.createElement('p');
-  status.style.cssText = `
-    margin: 0;
-    color: #65676b;
-    font-size: 16px;
-  `;
-  status.textContent = 'Found: 0 friends';
-
-  popup.appendChild(title);
-  popup.appendChild(keepTabReminder);
-  popup.appendChild(status);
-  overlay.appendChild(popup);
-  document.body.appendChild(overlay);
-
-  return {
-    updateCount: (count: number) => {
-      status.textContent = `Found: ${count} friends`;
-    },
-    close: () => {
-      document.body.removeChild(overlay);
-    },
-  };
-};
 
 const getFriendElements = (): Element[] => {
   const allAElements = document.querySelectorAll(
@@ -297,10 +133,10 @@ export const getFriendList = async (): Promise<FriendInfo[]> => {
   }
 
   // Step 2: Show popup and wait for user to click
-  await createUpdatePopup();
+  await showUpdatePopup();
 
   // Step 3-5: Start collecting friends with progress indicator
-  const progressPopup = createProgressPopup();
+  const progressPopup = showProgressPopup();
 
   let hasMoreFriends = true;
   let previousCount = 0;

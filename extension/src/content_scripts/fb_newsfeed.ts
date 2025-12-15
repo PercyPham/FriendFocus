@@ -1,7 +1,6 @@
 import storage from '@/common/storage';
 import { setOnlyFriendPosts } from './services/feedposts_service';
 import { findFeedPostsDirectParent } from './services/utils';
-import { onMessage } from '@/common/messaging/server';
 
 console.debug('> Loaded: fb_newsfeed.ts');
 
@@ -82,14 +81,13 @@ function observeChildChanges(targetElement: Element) {
   return observer;
 }
 
-// content-script.js
-
+// Observer lifecycle management
 let observer: MutationObserver | undefined = undefined;
 
 function startTask() {
   if (!isFbNewsfeedPage) return;
+  if (observer) return; // Already running
 
-  // Page is already loaded
   const div = findFeedPostsDirectParent();
   if (div) {
     console.debug('> found parent div and started observing');
@@ -102,37 +100,54 @@ function stopTask() {
   if (observer) {
     observer.disconnect();
     observer = undefined;
-    console.log('Task stopped to save resources');
+    console.debug('> Observer stopped');
   }
 }
 
-onMessage('SET_FRIEND_FOCUS', async (_isFocus, _sender) => {
-  console.debug('> SET_FRIEND_FOCUS received:', _isFocus);
-  startTask();
-});
-
-// 1. Listen for visibility changes
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) {
-    // Tab is hidden - optional: stop task to be a "good citizen"
+// Listen to storage changes for isFriendFocus
+storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
+  console.debug('> isFriendFocus changed:', isFriendFocus);
+  if (isFriendFocus && !observer) {
+    startTask();
+  } else if (!isFriendFocus && observer) {
     stopTask();
-    // OR keep running (but know Chrome might throttle it to 1s or stop it)
-  } else {
-    // Tab is visible again - RESTART logic if it crashed or stopped
-    startTask();
   }
 });
 
-// 2. Initialize on load
-startTask();
+// Initialize based on current state
+const initializeTask = async () => {
+  if (!isFbNewsfeedPage) return;
 
-// Wait for the page to be fully loaded before running
-if (document.readyState === 'complete') {
-  // Page is already loaded
-  startTask();
-} else {
-  // Wait for the page to finish loading
-  window.addEventListener('load', () => {
+  const isFriendFocus = await storage.get(storage.key.isFriendFocus);
+  console.debug('> Initial isFriendFocus state:', isFriendFocus);
+
+  if (isFriendFocus) {
     startTask();
-  });
+  }
+};
+
+// Listen for visibility changes
+document.addEventListener('visibilitychange', async () => {
+  if (document.hidden) {
+    // Tab is hidden - stop observer to save resources
+    stopTask();
+  } else {
+    // Tab is visible again - restart if feature is enabled
+    const isFriendFocus = await storage.get(storage.key.isFriendFocus);
+    if (isFriendFocus) {
+      startTask();
+    }
+  }
+});
+
+// Single initialization point
+if (document.readyState === 'complete') {
+  initializeTask();
+} else {
+  window.addEventListener('load', initializeTask);
 }
+
+// Cleanup on unload
+window.addEventListener('unload', () => {
+  stopTask();
+});

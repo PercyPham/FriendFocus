@@ -1,0 +1,7 @@
+@import 'tailwindcss';
+
+/* Base styles for overlay components */
+:host {
+  all: initial;
+}
+

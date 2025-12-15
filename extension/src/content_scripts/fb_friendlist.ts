@@ -1,7 +1,6 @@
 import { getFriendList } from './services/friendlist_service';
 import { BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY } from '@/common/constants';
-import { sendMessage } from '@/common/messaging/client';
-import storage from '@/common/storage';
+import { sendMessage } from '@/common/background_contract/client';
 
 console.debug('> Loaded: fb_friendlist.ts');
 
@@ -14,9 +13,8 @@ const collectFriendListIfNeeded = async () => {
 
   const friendList = await getFriendList();
 
-  await storage.set(storage.key.friendList, friendList);
-
-  sendMessage('CLOSE_TAB');
+  // Send friend list to background for storage
+  await sendMessage('SAVE_FRIEND_LIST', friendList);
 };
 
 // Wait for the page to be fully loaded before running

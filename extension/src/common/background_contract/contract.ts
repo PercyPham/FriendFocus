@@ -1,3 +1,5 @@
+import type { FriendInfo } from '@/common/storage';
+
 export type MessageContract = {
   SET_FRIEND_FOCUS: {
     req: boolean;
@@ -6,6 +8,11 @@ export type MessageContract = {
 
   START_COLLECTING_FRIEND_LIST: {
     req: void;
+    res: void;
+  };
+
+  SAVE_FRIEND_LIST: {
+    req: FriendInfo[];
     res: void;
   };
 

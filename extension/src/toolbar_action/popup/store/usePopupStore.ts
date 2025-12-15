@@ -1,8 +1,11 @@
-import { sendMessage } from '@/common/messaging/client';
+import { sendMessage } from '@/common/background_contract/client';
 import storage from '@/common/storage';
 import { create } from 'zustand';
 
 interface PopupState {
+  init: () => Promise<void>;
+  initializing: boolean;
+
   hasFriendList: boolean;
   friendCount: number;
   buildFriendList: () => Promise<void>;
@@ -22,12 +25,22 @@ export const usePopupStore = create<PopupState>((set) => {
     set({ hasFriendList });
   });
 
-  storage.onChange(storage.key.friendList, (friendList) => {
-    const friendCount = friendList?.length ?? 0;
+  storage.onChange(storage.key.friendCount, (friendCount) => {
     set({ friendCount });
   });
 
   return {
+    init: async () => {
+      set({ initializing: true });
+
+      const hasFriendList = await storage.get(storage.key.hasFriendList);
+      const friendCount = await storage.get(storage.key.friendCount);
+      const isFriendFocus = await storage.get(storage.key.isFriendFocus);
+
+      set({ hasFriendList, friendCount, isFriendFocus, initializing: false });
+    },
+    initializing: false,
+
     hasFriendList: false,
     friendCount: 0,
 

@@ -1,4 +1,7 @@
-import { MessageContract, MessageType } from './contract';
+import {
+  MessageContract,
+  MessageType,
+} from '../common/background_contract/contract';
 
 // Define a handler type based on the contract
 type Handler<T extends MessageType> = (

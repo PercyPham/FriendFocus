@@ -1,9 +1,14 @@
 import { usePopupStore } from './store/usePopupStore';
 import { DashboardView } from './views/DashboardView';
 import { FirstTimeSetupView } from './views/FirstTimeSetupView';
+import { useEffect } from 'react';
 
 export default function Popup() {
-  const { hasFriendList } = usePopupStore();
+  const { hasFriendList, init } = usePopupStore();
+
+  useEffect(() => {
+    init();
+  }, []);
 
   return (
     <div className='flex items-center justify-center min-h-screen font-sans'>

@@ -1,5 +1,6 @@
 import storage from '@/common/storage';
-import { onMessage, setupMessageListener } from '../common/messaging/server';
+import { storageWriter } from './storage-writer';
+import { onMessage, setupMessageListener } from './server';
 import { BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY } from '@/common/constants';
 
 onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
@@ -16,29 +17,33 @@ onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
 });
 
 onMessage('SET_FRIEND_FOCUS', async (isFocus, sender) => {
-  console.log('Received request from tab:', sender);
+  console.log('Received SET_FRIEND_FOCUS request from tab:', sender);
 
-  await storage.set(storage.key.isFriendFocus, isFocus);
+  // Save to storage - storage change events will propagate to content scripts
+  await storageWriter.set(storage.key.isFriendFocus, isFocus);
 
-  const activeTabs = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
+  console.log('Friend focus set to:', isFocus);
+});
 
-  if (!activeTabs.length) return;
+onMessage('SAVE_FRIEND_LIST', async (friendList, sender) => {
+  console.log('Received friend list from tab:', sender);
+  try {
+    await storageWriter.set(storage.key.friendList, friendList);
+    await storageWriter.set(storage.key.friendCount, friendList.length);
+    await storageWriter.set(storage.key.hasFriendList, true);
+    console.log(
+      'Friend list saved successfully:',
+      friendList.length,
+      'friends'
+    );
 
-  const currentActiveTab = activeTabs[0];
-  if (!currentActiveTab.id || !currentActiveTab.url) return;
-  const currentTabURL = new URL(currentActiveTab.url);
-  if (currentTabURL.host != 'www.facebook.com') return;
-  if (currentTabURL.pathname.split('/').length !== 2) return;
-
-  console.log('Sending message to tab:', currentTabURL);
-
-  await chrome.tabs.sendMessage(currentActiveTab.id!, {
-    type: 'SET_FRIEND_FOCUS',
-    isHidden: isFocus,
-  });
+    // Close the tab
+    if (sender.tab?.id) {
+      await chrome.tabs.remove(sender.tab.id);
+    }
+  } catch (error) {
+    console.error('Error saving friend list:', error);
+  }
 });
 
 onMessage('CLOSE_TAB', async (_req, sender) => {
