@@ -1,0 +1,30 @@
+{
+  "name": "FriendFocus",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "lucide-react": "^0.557.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "tailwindcss": "^4.1.17",
+    "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.3.0",
+    "@types/chrome": "^0.1.32",
+    "@types/node": "^24.10.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^7.2.7",
+    "vite-plugin-zip-pack": "^1.2.4"
+  }
+}
