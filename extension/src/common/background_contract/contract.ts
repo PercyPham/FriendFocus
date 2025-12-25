@@ -1,4 +1,4 @@
-import type { FriendInfo } from '@/common/storage';
+import type { FriendInfo, FollowingInfo } from '@/common/types';
 
 export type MessageContract = {
   SET_FRIEND_FOCUS: {
@@ -25,7 +25,41 @@ export type MessageContract = {
     req: number;
     res: void;
   };
+
+  SET_FOLLOWINGS_ENABLED: {
+    req: boolean;
+    res: void;
+  };
+
+  START_COLLECTING_FOLLOWING_LIST: {
+    req: void;
+    res: void;
+  };
+
+  SAVE_FOLLOWING_LIST: {
+    req: FollowingInfo[];
+    res: void;
+  };
+
+  SET_GROUPS_ENABLED: {
+    req: boolean;
+    res: void;
+  };
 };
 
-// Helper type to extract keys
 export type MessageType = keyof MessageContract;
+
+export const MESSAGE_TYPES = [
+  'SET_FRIEND_FOCUS',
+  'START_COLLECTING_FRIEND_LIST',
+  'SAVE_FRIEND_LIST',
+  'CLOSE_TAB',
+  'INCREMENT_TODAY_BLOCKED_POSTS_COUNT',
+  'SET_FOLLOWINGS_ENABLED',
+  'START_COLLECTING_FOLLOWING_LIST',
+  'SAVE_FOLLOWING_LIST',
+  'SET_GROUPS_ENABLED',
+] as const satisfies MessageType[];
+
+void (0 as any as (typeof MESSAGE_TYPES)[number] satisfies keyof MessageContract);
+void (0 as any as MessageType satisfies (typeof MESSAGE_TYPES)[number]);

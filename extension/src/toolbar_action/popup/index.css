@@ -1,1 +1,10 @@
 @import 'tailwindcss';
+
+/* Force light mode when .dark class is not present, ignoring system preference */
+html:not(.dark) {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}

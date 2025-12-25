@@ -34,14 +34,16 @@ export const findFeedPosts = () => {
   return feedPosts;
 };
 
-export const isFriendPost = (post: Element, friendSlugsSet: Set<string>) => {
+const findAllHeaderAElements = (
+  post: Element
+): [boolean, HTMLAnchorElement[]] => {
   const profileNameDiv = post.querySelector(
     'div[data-ad-rendering-role="profile_name"]'
   );
-  if (!profileNameDiv) return false;
+  if (!profileNameDiv) return [false, []];
 
   const likeButton = post.querySelector('div[aria-label="Like"]');
-  if (!likeButton) return false;
+  if (!likeButton) return [false, []];
 
   let commonParent: Element | null = null;
   let headerDiv: Element | null = null;
@@ -69,10 +71,17 @@ export const isFriendPost = (post: Element, friendSlugsSet: Set<string>) => {
     actionEle = actionEle.parentElement!;
   }
 
-  if (!commonParent || !headerDiv || !actionDiv) return false;
+  if (!commonParent || !headerDiv || !actionDiv) return [false, []];
 
   const aElements = headerDiv.querySelectorAll('a');
-  const foundFriendSlugElement = Array.from(aElements).find((a) => {
+  return [true, Array.from(aElements)];
+};
+
+export const isFriendPost = (post: Element, friendSlugsSet: Set<string>) => {
+  const [isSuccess, aElements] = findAllHeaderAElements(post);
+  if (!isSuccess) return false;
+
+  const foundFriendSlugElement = aElements.find((a) => {
     const href = a.getAttribute('href');
     if (!href || !href.startsWith('https://www.facebook.com')) return false;
     const url = new URL(href);
@@ -84,4 +93,20 @@ export const isFriendPost = (post: Element, friendSlugsSet: Set<string>) => {
   });
 
   return !!foundFriendSlugElement;
+};
+
+export const isGroupPost = (post: Element) => {
+  const [isSuccess, aElements] = findAllHeaderAElements(post);
+  if (!isSuccess) return false;
+
+  const foundGroupElement = aElements.find((a) => {
+    const href = a.getAttribute('href');
+    const parts = href?.split('/');
+    if (!parts) return false;
+    if (parts.length < 2) return false;
+    if (parts[1] !== 'groups') return false;
+    return true;
+  });
+
+  return !!foundGroupElement;
 };

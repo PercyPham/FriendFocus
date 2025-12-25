@@ -1,6 +1,6 @@
 import storage from '@/common/storage';
-import { setOnlyFriendPosts } from './services/feedposts_service';
-import { findFeedPostsDirectParent } from './services/utils';
+import { updateFriendFocus } from './services/newsfeed_service';
+import { findFeedPostsDirectParent } from './services/newsfeed_utils';
 
 console.debug('> Loaded: fb_newsfeed.ts');
 
@@ -11,33 +11,11 @@ const isFbNewsfeedPage = (() => {
 
 console.debug('> isFbNewsfeedPage:', isFbNewsfeedPage);
 
-let friendSlugSet: Set<string> | null = null;
-
-const getFriendSlugSet = async () => {
-  if (friendSlugSet) return friendSlugSet;
-
-  const friendList = await storage.get(storage.key.friendList);
-  if (!friendList) {
-    friendSlugSet = new Set<string>();
-  } else {
-    friendSlugSet = new Set(friendList.map((friend) => friend.slug));
-  }
-  return friendSlugSet;
-};
-
-const updateFriendFocus = async () => {
-  const isFriendFocus = await storage.get(storage.key.isFriendFocus);
-  if (!isFriendFocus) return;
-  const friendSlugsSet = await getFriendSlugSet();
-  setOnlyFriendPosts(!!isFriendFocus, friendSlugsSet);
-  console.debug('> isFriendFocus:', isFriendFocus);
-};
-
 /**
  * Detects changes in the number of direct children of a target element.
  * @param {HTMLElement} targetElement - The element to observe.
  */
-function observeChildChanges(targetElement: Element) {
+function observeChildChanges(targetElement: Element, callback: () => void) {
   if (!targetElement) {
     console.error('Target element not found.');
     return;
@@ -58,7 +36,7 @@ function observeChildChanges(targetElement: Element) {
           );
 
           // You can put your specific action here (e.g., re-run a function)
-          updateFriendFocus();
+          callback();
 
           // Update the count for the next change
           previousChildCount = currentChildCount;
@@ -91,7 +69,7 @@ function startTask() {
   const div = findFeedPostsDirectParent();
   if (div) {
     console.debug('> found parent div and started observing');
-    observer = observeChildChanges(div);
+    observer = observeChildChanges(div, updateFriendFocus);
     updateFriendFocus();
   }
 }

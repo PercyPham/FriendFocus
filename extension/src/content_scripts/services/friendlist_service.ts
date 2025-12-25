@@ -1,5 +1,8 @@
-import type { FriendInfo } from '@/common/storage';
-import { showUpdatePopup, showProgressPopup } from '../components/OverlayManager';
+import type { FriendInfo } from '@/common/types';
+import {
+  showUpdatePopup,
+  showProgressPopup,
+} from '../components/OverlayManager';
 
 // Helper function to wait for a condition
 const waitFor = (
@@ -77,7 +80,13 @@ const extractFriendInfo = (anchorElement: Element): FriendInfo | null => {
 
 // Get current count of friend elements
 const getFriendElementCount = (): number => {
-  return getFriendElements().length;
+  const slugs = getFriendElements()
+    .map(extractFriendInfo)
+    .map((info) => info?.slug)
+    .filter(Boolean)
+    .filter((slug) => slug !== 'profile.php');
+
+  return new Set(slugs).size;
 };
 
 // Scroll to load more friends and wait for new content

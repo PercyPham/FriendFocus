@@ -1,13 +1,27 @@
+import type { FriendInfo, FollowingInfo } from './types';
+
 // Storage keys
 export const Key = {
   isFriendFocus: 'is_friend_focus',
+
   hasFriendList: 'has_friend_list',
   friendList: 'friend_list',
   friendCount: 'friend_count',
+  friendListUpdatedAt: 'friend_list_updated_at',
+
   blockedPostsLog: 'blocked_posts_log',
+
+  isFollowingsEnabled: 'is_followings_enabled',
+  hasFollowingList: 'has_following_list',
+  followingList: 'following_list',
+  followingCount: 'following_count',
+  followingListUpdatedAt: 'following_list_updated_at',
+
+  isGroupsEnabled: 'is_groups_enabled',
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
+export type ValueType = ValueTypeMap[KeyType];
 
 export type BlockedPostsLog = Record<string, number>; // { "2025-12-15": 42 }
 
@@ -16,13 +30,14 @@ export type ValueTypeMap = {
   [Key.hasFriendList]: boolean;
   [Key.friendList]: FriendInfo[];
   [Key.friendCount]: number;
+  [Key.friendListUpdatedAt]: number | null;
   [Key.blockedPostsLog]: BlockedPostsLog;
-};
-
-// Types
-export type FriendInfo = {
-  slug: string;
-  name: string;
+  [Key.isFollowingsEnabled]: boolean;
+  [Key.isGroupsEnabled]: boolean;
+  [Key.followingList]: FollowingInfo[];
+  [Key.followingCount]: number;
+  [Key.hasFollowingList]: boolean;
+  [Key.followingListUpdatedAt]: number | null;
 };
 
 void (0 as any as ValueTypeMap satisfies Record<KeyType, unknown>);

@@ -1,7 +1,10 @@
 import storage, { BlockedPostsLog } from '@/common/storage';
 import { storageWriter } from './storage-writer';
 import { onMessage, setupMessageListener } from './server';
-import { BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY } from '@/common/constants';
+import {
+  BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY,
+  BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY,
+} from '@/common/constants';
 import { getTodayDateString } from '@/common/utils';
 
 onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
@@ -30,6 +33,7 @@ onMessage('SAVE_FRIEND_LIST', async (friendList, sender) => {
     await storageWriter.set(storage.key.friendList, friendList);
     await storageWriter.set(storage.key.friendCount, friendList.length);
     await storageWriter.set(storage.key.hasFriendList, true);
+    await storageWriter.set(storage.key.friendListUpdatedAt, Date.now());
     console.log(`Friend list saved successfully: ${friendList.length} friends`);
 
     // Close the tab
@@ -62,6 +66,47 @@ onMessage('INCREMENT_TODAY_BLOCKED_POSTS_COUNT', async (count, sender) => {
   const cleanedLog: BlockedPostsLog = { [today]: (log[today] || 0) + count };
 
   await storageWriter.set(storage.key.blockedPostsLog, cleanedLog);
+});
+
+onMessage('SET_FOLLOWINGS_ENABLED', async (isEnabled, sender) => {
+  console.log(
+    `Received SET_FOLLOWINGS_ENABLED request from tab: ${sender.tab?.id} isEnabled: ${isEnabled}`
+  );
+  await storageWriter.set(storage.key.isFollowingsEnabled, isEnabled);
+});
+
+onMessage('SET_GROUPS_ENABLED', async (isEnabled, sender) => {
+  console.log(
+    `Received SET_GROUPS_ENABLED request from tab: ${sender.tab?.id} isEnabled: ${isEnabled}`
+  );
+  await storageWriter.set(storage.key.isGroupsEnabled, isEnabled);
+});
+
+onMessage('START_COLLECTING_FOLLOWING_LIST', async (_req, sender) => {
+  console.log('Received request from tab:', sender);
+  try {
+    await chrome.windows.create({
+      url: `https://www.facebook.com/me/following?${BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY}=true`,
+      type: 'popup',
+    });
+  } catch (error) {
+    console.error('Error opening following list tab:', error);
+  }
+});
+
+onMessage('SAVE_FOLLOWING_LIST', async (followingList, sender) => {
+  console.log('Received following list from tab:', sender);
+  try {
+    await storageWriter.set(storage.key.followingList, followingList);
+    await storageWriter.set(storage.key.followingCount, followingList.length);
+    await storageWriter.set(storage.key.hasFollowingList, true);
+    await storageWriter.set(storage.key.followingListUpdatedAt, Date.now());
+    console.log(
+      `Following list saved successfully: ${followingList.length} following`
+    );
+  } catch (error) {
+    console.error('Error saving following list:', error);
+  }
 });
 
 setupMessageListener();
