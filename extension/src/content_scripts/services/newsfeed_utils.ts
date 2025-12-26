@@ -1,3 +1,31 @@
+export const findStoriesElements = () => {
+  const mainDiv = document.querySelector('div[role="main"]');
+  if (!mainDiv) return undefined;
+
+  const regionDivs = mainDiv.querySelectorAll('div[role="region"]');
+  const storiesAncestor = Array.from(regionDivs).find((region) =>
+    region.querySelector('div[role="row"]')
+  );
+  if (!storiesAncestor) return undefined;
+
+  const storiesElements = storiesAncestor.querySelectorAll(
+    'div[data-type="hscroll-child"]'
+  );
+  if (!storiesElements.length) return undefined;
+
+  return storiesElements;
+};
+
+export const findStoriesParentDiv = () => {
+  const storiesElements = findStoriesElements();
+  if (!storiesElements?.length) return undefined;
+
+  const storiesParentDiv = storiesElements[0].parentElement;
+  if (!storiesParentDiv) return undefined;
+
+  return storiesParentDiv;
+};
+
 export const findFeedPostsDirectParent = () => {
   const mainDiv = document.querySelector('div[role="main"]');
   if (!mainDiv) return undefined;
@@ -6,6 +34,7 @@ export const findFeedPostsDirectParent = () => {
   const feedPostsHeader = Array.from(h3s).find((h3) =>
     h3.textContent?.includes('Feed posts')
   );
+  // const feedPostsHeader = h3s[2]; // Feed posts header is the 3rd h3 element =>>>>> DOESN'T WORK
   if (!feedPostsHeader) return undefined;
 
   const feedPostsWrapper = feedPostsHeader.parentElement;

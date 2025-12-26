@@ -1,6 +1,9 @@
 import storage from '@/common/storage';
 import { updateFriendFocus } from './services/newsfeed_service';
-import { findFeedPostsDirectParent } from './services/newsfeed_utils';
+import {
+  findFeedPostsDirectParent,
+  findStoriesParentDiv,
+} from './services/newsfeed_utils';
 
 console.debug('> Loaded: fb_newsfeed.ts');
 
@@ -15,9 +18,13 @@ console.debug('> isFbNewsfeedPage:', isFbNewsfeedPage);
  * Detects changes in the number of direct children of a target element.
  * @param {HTMLElement} targetElement - The element to observe.
  */
-function observeChildChanges(targetElement: Element, callback: () => void) {
+function observeChildChanges(
+  targetName: string,
+  targetElement: Element,
+  callback: () => void
+) {
   if (!targetElement) {
-    console.error('Target element not found.');
+    console.error(`[${targetName}] target element not found.`);
     return;
   }
 
@@ -32,7 +39,7 @@ function observeChildChanges(targetElement: Element, callback: () => void) {
 
         if (currentChildCount !== previousChildCount) {
           console.debug(
-            `✅ Child count changed! ${previousChildCount} -> ${currentChildCount}`
+            `[${targetName}] Child count changed! ${previousChildCount} -> ${currentChildCount}`
           );
 
           // You can put your specific action here (e.g., re-run a function)
@@ -53,41 +60,68 @@ function observeChildChanges(targetElement: Element, callback: () => void) {
 
   // 4. Start observing the target element
   observer.observe(targetElement, config);
-  console.debug('MutationObserver started on the target element.');
+  console.debug(
+    `[${targetName}] MutationObserver started on the target element.`
+  );
 
   // Optional: Return the observer instance so it can be stopped later
   return observer;
 }
 
 // Observer lifecycle management
-let observer: MutationObserver | undefined = undefined;
+let newsfeedObserver: MutationObserver | undefined = undefined;
+let storiesObserver: MutationObserver | undefined = undefined;
 
 function startTask() {
   if (!isFbNewsfeedPage) return;
-  if (observer) return; // Already running
 
-  const div = findFeedPostsDirectParent();
-  if (div) {
-    console.debug('> found parent div and started observing');
-    observer = observeChildChanges(div, updateFriendFocus);
-    updateFriendFocus();
+  if (!newsfeedObserver) {
+    const newsfeedParent = findFeedPostsDirectParent();
+    if (newsfeedParent) {
+      console.debug('> found newsfeed parent div and started observing');
+      newsfeedObserver = observeChildChanges(
+        'Newsfeed',
+        newsfeedParent,
+        updateFriendFocus
+      );
+      updateFriendFocus();
+    }
+  }
+
+  if (!storiesObserver) {
+    const storiesParent = findStoriesParentDiv();
+    if (storiesParent) {
+      console.debug('> found stories parent div and started observing');
+      storiesObserver = observeChildChanges(
+        'Stories',
+        storiesParent,
+        updateFriendFocus
+      );
+      updateFriendFocus();
+    }
   }
 }
 
 function stopTask() {
-  if (observer) {
-    observer.disconnect();
-    observer = undefined;
-    console.debug('> Observer stopped');
+  if (newsfeedObserver) {
+    newsfeedObserver.disconnect();
+    newsfeedObserver = undefined;
+    console.debug('> Newsfeed observer stopped');
+  }
+
+  if (storiesObserver) {
+    storiesObserver.disconnect();
+    storiesObserver = undefined;
+    console.debug('> Stories observer stopped');
   }
 }
 
 // Listen to storage changes for isFriendFocus
 storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
   console.debug('> isFriendFocus changed:', isFriendFocus);
-  if (isFriendFocus && !observer) {
+  if (isFriendFocus) {
     startTask();
-  } else if (!isFriendFocus && observer) {
+  } else {
     stopTask();
   }
 });
