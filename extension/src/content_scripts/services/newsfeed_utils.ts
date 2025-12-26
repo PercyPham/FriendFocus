@@ -32,7 +32,7 @@ export const findFeedPostsDirectParent = () => {
 
   const h3s = mainDiv.querySelectorAll('h3');
   const feedPostsHeader = Array.from(h3s).find((h3) =>
-    h3.textContent?.includes('Feed posts')
+    h3.textContent?.toLowerCase().includes('feed')
   );
   // const feedPostsHeader = h3s[2]; // Feed posts header is the 3rd h3 element =>>>>> DOESN'T WORK
   if (!feedPostsHeader) return undefined;

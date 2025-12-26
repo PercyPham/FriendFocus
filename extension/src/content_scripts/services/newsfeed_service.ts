@@ -14,7 +14,7 @@ const hideStoryIfNeeded = (story: Element): boolean => {
   if (isAlreadyHidden) return false;
 
   story.setAttribute(NOT_ALLOWED_STORY, 'true');
-  story.setAttribute('style', 'display: none !important;');
+  story.setAttribute('style', 'width: 0px !important;');
   return true;
 };
 
@@ -136,18 +136,15 @@ export const updateFriendFocus = async () => {
     return;
   }
 
-  const feedPosts = findFeedPosts();
-  if (!feedPosts?.length) {
-    return;
-  }
-
   const friendSlugsSet = await getFriendSlugSet();
   const friendNameSet = await getFriendNameSet();
 
   let newlyHiddenCount = 0;
 
   newlyHiddenCount += await hideStories(friendNameSet);
-  newlyHiddenCount += await hideNewsfeedPosts(feedPosts, friendSlugsSet);
+
+  const feedPosts = findFeedPosts();
+  newlyHiddenCount += await hideNewsfeedPosts(feedPosts || [], friendSlugsSet);
 
   // Update the blocked count via background service worker
   if (newlyHiddenCount > 0) {
