@@ -34,7 +34,6 @@ export const findFeedPostsDirectParent = () => {
   const feedPostsHeader = Array.from(h3s).find((h3) =>
     h3.textContent?.toLowerCase().includes('feed')
   );
-  // const feedPostsHeader = h3s[2]; // Feed posts header is the 3rd h3 element =>>>>> DOESN'T WORK
   if (!feedPostsHeader) return undefined;
 
   const feedPostsWrapper = feedPostsHeader.parentElement;
@@ -71,7 +70,10 @@ const findAllHeaderAElements = (
   );
   if (!profileNameDiv) return [false, []];
 
-  const likeButton = post.querySelector('div[aria-label="Like"]');
+  const likeButton = post.querySelector(
+    'div[data-ad-rendering-role="like_button"]'
+  );
+
   if (!likeButton) return [false, []];
 
   let commonParent: Element | null = null;

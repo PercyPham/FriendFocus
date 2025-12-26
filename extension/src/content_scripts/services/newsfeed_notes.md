@@ -3,3 +3,8 @@
   - Stories: has `div[role="row"]`
 - Newsfeed Ancestor: Sibling of Create Post & Stories
 - Posts' Parent: Sibling of an `<h3>`, and have multiple div as direct children
+
+- Post body:
+  - Profile header: `div[data-ad-rendering-role="profile_name"]`
+  - Text: `div[data-ad-rendering-role="story_message"]`
+  - Like button: `div[data-ad-rendering-role="like_button"]`
