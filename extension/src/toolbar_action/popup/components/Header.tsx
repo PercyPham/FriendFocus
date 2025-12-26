@@ -5,6 +5,7 @@ import {
   ChevronRight,
   MessageSquare,
   Settings,
+  HelpCircle,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -86,6 +87,8 @@ export const Header = () => {
         {isMenuOpen && (
           <div className='absolute right-0 top-full mt-2 w-64 bg-white dark:bg-slate-800 rounded-xl shadow-2xl border border-gray-100 dark:border-slate-700 animate-in fade-in slide-in-from-top-2 z-30 p-1.5'>
             <>
+              <MenuRow icon={HelpCircle} label='FAQ' isLink href={LINKS.FAQ} />
+              <div className='h-px bg-gray-100 dark:bg-slate-700 my-1' />
               <MenuRow
                 icon={MessageSquare}
                 label='Send Feedback'
