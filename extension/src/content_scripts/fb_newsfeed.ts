@@ -7,12 +7,12 @@ import {
 
 console.debug('> Loaded: fb_newsfeed.ts');
 
-const isFbNewsfeedPage = (() => {
+const isFbNewsfeedPage = () => {
   const url = new URL(window.location.href);
   return url.hostname === 'www.facebook.com' && url.pathname === '/';
-})();
+};
 
-console.debug('> isFbNewsfeedPage:', isFbNewsfeedPage);
+console.debug('> isFbNewsfeedPage:', isFbNewsfeedPage());
 
 /**
  * Detects changes in the number of direct children of a target element.
@@ -73,7 +73,7 @@ let newsfeedObserver: MutationObserver | undefined = undefined;
 let storiesObserver: MutationObserver | undefined = undefined;
 
 function startTask() {
-  if (!isFbNewsfeedPage) return;
+  if (!isFbNewsfeedPage()) return;
 
   if (!newsfeedObserver) {
     const newsfeedParent = findFeedPostsDirectParent();
@@ -128,13 +128,17 @@ storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
 
 // Initialize based on current state
 const initializeTask = async () => {
-  if (!isFbNewsfeedPage) return;
+  if (!isFbNewsfeedPage()) return;
 
-  const isFriendFocus = await storage.get(storage.key.isFriendFocus);
-  console.debug('> Initial isFriendFocus state:', isFriendFocus);
+  try {
+    const isFriendFocus = await storage.get(storage.key.isFriendFocus);
+    console.debug('> Initial isFriendFocus state:', isFriendFocus);
 
-  if (isFriendFocus) {
-    startTask();
+    if (isFriendFocus) {
+      startTask();
+    }
+  } catch (error) {
+    console.error('> Error initializing task:', error);
   }
 };
 
@@ -144,11 +148,7 @@ document.addEventListener('visibilitychange', async () => {
     // Tab is hidden - stop observer to save resources
     stopTask();
   } else {
-    // Tab is visible again - restart if feature is enabled
-    const isFriendFocus = await storage.get(storage.key.isFriendFocus);
-    if (isFriendFocus) {
-      startTask();
-    }
+    initializeTask();
   }
 });
 
@@ -163,3 +163,30 @@ if (document.readyState === 'complete') {
 window.addEventListener('unload', () => {
   stopTask();
 });
+
+(function () {
+  const notifyUrlChange = () => {
+    if (isFbNewsfeedPage()) {
+      initializeTask();
+    } else {
+      stopTask();
+    }
+  };
+
+  // Hook pushState
+  const pushState = history.pushState;
+  history.pushState = function (...args) {
+    pushState.apply(history, args);
+    notifyUrlChange();
+  };
+
+  // Hook replaceState
+  const replaceState = history.replaceState;
+  history.replaceState = function (...args) {
+    replaceState.apply(history, args);
+    notifyUrlChange();
+  };
+
+  // Back / forward buttons
+  window.addEventListener('popstate', notifyUrlChange);
+})();
