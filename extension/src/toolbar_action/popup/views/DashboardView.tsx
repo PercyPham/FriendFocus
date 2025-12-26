@@ -119,7 +119,7 @@ export const DashboardView = () => {
               </div>
               <button
                 onClick={buildFriendList}
-                className='flex items-center justify-center text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-2 rounded-full transition-all'
+                className='flex items-center justify-center text-gray-400 hover:text-blue-600 hover:cursor-pointer dark:hover:text-blue-400 p-2 rounded-full transition-all'
               >
                 <RefreshCw className={`w-4 h-4 `} />
               </button>
@@ -162,7 +162,7 @@ export const DashboardView = () => {
                 className={`flex items-center justify-center p-2 rounded-full transition-all ${
                   !isFollowingsEnabled
                     ? 'text-gray-200 dark:text-slate-800'
-                    : 'text-gray-400 hover:text-blue-600'
+                    : 'text-gray-400 hover:text-blue-600 hover:cursor-pointer'
                 }`}
               >
                 <RefreshCw className={`w-4 h-4`} />

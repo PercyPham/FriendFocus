@@ -13,11 +13,11 @@ export default function UpdateFriendListPopup({
         </h2>
 
         <p className='text-sm text-[#65676b] mb-5'>
-          Keep this tab open until the process is complete.
+          Please keep this tab open while we update your data in the background.
         </p>
 
         <p className='text-sm text-[#65676b] mb-6'>
-          Click the button below to start collecting your friends list.
+          Click the button below to start updating your friend list.
         </p>
 
         <button
