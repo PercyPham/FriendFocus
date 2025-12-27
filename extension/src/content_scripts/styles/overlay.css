@@ -5,3 +5,10 @@
   all: initial;
 }
 
+/* Note: Profile add buttons use inline styles since they're injected into Facebook's DOM */
+
+/* Ensure z-index is high enough for the confirm bar */
+.z-99999 {
+  z-index: 99999 !important;
+}
+

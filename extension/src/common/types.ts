@@ -5,5 +5,7 @@ export type FriendInfo = {
 };
 
 export type FollowingInfo = {
-  // TODO: Define later
+  slug: string;
+  name: string;
+  type: 'person' | 'page' | 'public_figure';
 };

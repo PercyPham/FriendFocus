@@ -63,7 +63,14 @@ const extractFriendInfo = (anchorElement: Element): FriendInfo | null => {
     const pathParts = url.pathname.split('/').filter(Boolean);
     if (pathParts.length === 0) return null;
 
-    const slug = pathParts[0];
+    // For profile.php URLs, include only the 'id' query parameter
+    let slug = pathParts[0];
+    if (slug === 'profile.php') {
+      const id = url.searchParams.get('id');
+      if (id) {
+        slug = `profile.php?id=${id}`;
+      }
+    }
 
     // Extract name from the span's textContent
     const span = anchorElement.querySelector('span');
@@ -83,8 +90,7 @@ const getFriendElementCount = (): number => {
   const slugs = getFriendElements()
     .map(extractFriendInfo)
     .map((info) => info?.slug)
-    .filter(Boolean)
-    .filter((slug) => slug !== 'profile.php');
+    .filter(Boolean);
 
   return new Set(slugs).size;
 };
@@ -186,8 +192,7 @@ export const getFriendList = async (): Promise<FriendInfo[]> => {
   // Step 6: Collect all friends once at the end
   const friendElements = getFriendElements();
   const allFriends: FriendInfo[] = [];
-  // need to exclude profile.php
-  const seenSlugs = new Set<string>(['profile.php']);
+  const seenSlugs = new Set<string>();
 
   friendElements.forEach((e) => {
     const friendInfo = extractFriendInfo(e);

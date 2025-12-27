@@ -37,5 +37,10 @@ export default defineManifest({
       matches: ['https://www.facebook.com/*/friends*'],
       run_at: 'document_idle',
     },
+    {
+      js: ['src/content_scripts/fb_followinglist.ts'],
+      matches: ['https://www.facebook.com/*/following*'],
+      run_at: 'document_idle',
+    },
   ],
 });

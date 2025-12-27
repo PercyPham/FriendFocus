@@ -118,12 +118,51 @@ export const isFriendPost = (post: Element, friendSlugsSet: Set<string>) => {
     const url = new URL(href);
     const pathname = url.pathname;
     if (pathname.split('/').length !== 2) return false;
-    const slug = pathname.split('/')[1];
+
+    // Extract slug - for profile.php URLs, include only the 'id' query parameter
+    let slug = pathname.split('/')[1];
+    if (slug === 'profile.php') {
+      const id = url.searchParams.get('id');
+      if (id) {
+        slug = `profile.php?id=${id}`;
+      }
+    }
+
     const isFriendSlug = friendSlugsSet.has(slug);
     return isFriendSlug;
   });
 
   return !!foundFriendSlugElement;
+};
+
+export const isFollowingPost = (
+  post: Element,
+  followingSlugsSet: Set<string>
+) => {
+  const [isSuccess, aElements] = findAllHeaderAElements(post);
+  if (!isSuccess) return false;
+
+  const foundFollowingSlugElement = aElements.find((a) => {
+    const href = a.getAttribute('href');
+    if (!href || !href.startsWith('https://www.facebook.com')) return false;
+    const url = new URL(href);
+    const pathname = url.pathname;
+    if (pathname.split('/').length !== 2) return false;
+
+    // Extract slug - for profile.php URLs, include only the 'id' query parameter
+    let slug = pathname.split('/')[1];
+    if (slug === 'profile.php') {
+      const id = url.searchParams.get('id');
+      if (id) {
+        slug = `profile.php?id=${id}`;
+      }
+    }
+
+    const isFollowingSlug = followingSlugsSet.has(slug);
+    return isFollowingSlug;
+  });
+
+  return !!foundFollowingSlugElement;
 };
 
 export const isGroupPost = (post: Element) => {

@@ -3,6 +3,7 @@ import {
   findFeedPosts,
   findStoriesElements,
   isFriendPost,
+  isFollowingPost,
   isGroupPost,
 } from './newsfeed_utils';
 import { sendMessage } from '@/common/background_contract/client';
@@ -29,7 +30,11 @@ const unhideHiddenStories = () => {
   });
 };
 
-const hideStories = (allowedNameSet: Set<string>): number => {
+const hideStories = (
+  allowedNameSet: Set<string>,
+  followingNameSet: Set<string>,
+  isFollowingsEnabled: boolean
+): number => {
   const storiesElements = findStoriesElements();
   if (!storiesElements?.length) return 0;
 
@@ -37,7 +42,13 @@ const hideStories = (allowedNameSet: Set<string>): number => {
     if (story.querySelector('a[href="/stories/create/"]')) return true;
     const spans = story.querySelectorAll('span');
     const spanTexts = Array.from(spans).map((span) => span.textContent?.trim());
-    return spanTexts.some((text) => !!text && allowedNameSet.has(text));
+    return spanTexts.some((text) => {
+      if (!text) return false;
+      return (
+        allowedNameSet.has(text) ||
+        (isFollowingsEnabled && followingNameSet.has(text))
+      );
+    });
   };
 
   const notAllowedStories = Array.from(storiesElements).filter(
@@ -81,41 +92,55 @@ const unhideHiddenPosts = () => {
   });
 };
 
-let friendSlugSet: Set<string> | null = null;
-let friendNameSet: Set<string> | null = null;
-
-const getFriendSlugSet = async () => {
-  if (friendSlugSet) return friendSlugSet;
-
-  const friendList = await storage.get(storage.key.friendList);
-  if (!friendList) {
-    friendSlugSet = new Set<string>();
-  } else {
-    friendSlugSet = new Set(friendList.map((friend) => friend.slug));
-  }
-  return friendSlugSet;
+// Profile data type for consolidated loading
+type ProfileData = {
+  slugSet: Set<string>;
+  nameSet: Set<string>;
 };
 
-const getFriendNameSet = async () => {
-  if (friendNameSet) return friendNameSet;
+// Cache for profile data
+const profileDataCache: { [key: string]: ProfileData } = {};
 
-  const friendList = await storage.get(storage.key.friendList);
-  if (!friendList) {
-    friendNameSet = new Set<string>();
-  } else {
-    friendNameSet = new Set(friendList.map((friend) => friend.name));
+// Generic profile data loader
+const getProfileData = async (
+  storageKey: typeof storage.key.friendList | typeof storage.key.followingList
+): Promise<ProfileData> => {
+  if (profileDataCache[storageKey]) {
+    return profileDataCache[storageKey];
   }
-  return friendNameSet;
+
+  const list = await storage.get(storageKey);
+  const data: ProfileData = {
+    slugSet: new Set(list?.map((p) => p.slug) || []),
+    nameSet: new Set(list?.map((p) => p.name) || []),
+  };
+
+  profileDataCache[storageKey] = data;
+  return data;
 };
+
+storage.onChange(storage.key.friendListUpdatedAt, () => {
+  delete profileDataCache[storage.key.friendList];
+});
+
+storage.onChange(storage.key.followingListUpdatedAt, () => {
+  delete profileDataCache[storage.key.followingList];
+});
 
 const hideNewsfeedPosts = async (
   feedPosts: Element[],
-  friendSlugsSet: Set<string>
+  friendSlugSet: Set<string>,
+  followingSlugSet: Set<string>
 ): Promise<number> => {
   const isGroupsEnabled = await storage.get(storage.key.isGroupsEnabled);
+  const isFollowingsEnabled = await storage.get(
+    storage.key.isFollowingsEnabled
+  );
+
   const isAllowedPost = (post: Element) =>
     (isGroupsEnabled && isGroupPost(post)) ||
-    isFriendPost(post, friendSlugsSet);
+    isFriendPost(post, friendSlugSet) ||
+    (isFollowingsEnabled && isFollowingPost(post, followingSlugSet));
 
   const notAllowedPosts = feedPosts.filter((post) => !isAllowedPost(post));
 
@@ -136,15 +161,30 @@ export const updateFriendFocus = async () => {
     return;
   }
 
-  const friendSlugsSet = await getFriendSlugSet();
-  const friendNameSet = await getFriendNameSet();
+  const isFollowingsEnabled = !!(await storage.get(
+    storage.key.isFollowingsEnabled
+  ));
+
+  // Load profile data once per type (single storage call)
+  const friendProfileData = await getProfileData(storage.key.friendList);
+  const followingProfileData = isFollowingsEnabled
+    ? await getProfileData(storage.key.followingList)
+    : { slugSet: new Set<string>(), nameSet: new Set<string>() };
 
   let newlyHiddenCount = 0;
 
-  newlyHiddenCount += await hideStories(friendNameSet);
+  newlyHiddenCount += hideStories(
+    friendProfileData.nameSet,
+    followingProfileData.nameSet,
+    isFollowingsEnabled
+  );
 
   const feedPosts = findFeedPosts();
-  newlyHiddenCount += await hideNewsfeedPosts(feedPosts || [], friendSlugsSet);
+  newlyHiddenCount += await hideNewsfeedPosts(
+    feedPosts || [],
+    friendProfileData.slugSet,
+    followingProfileData.slugSet
+  );
 
   // Update the blocked count via background service worker
   if (newlyHiddenCount > 0) {

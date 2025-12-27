@@ -1,6 +1,7 @@
 import {
   CheckCircle2,
   Coffee,
+  Edit,
   Heart,
   LayoutGrid,
   RefreshCw,
@@ -21,10 +22,10 @@ export const DashboardView = () => {
     friendCount,
     friendListUpdatedAt,
     buildFriendList,
-    // isFollowingsEnabled,
-    // toggleFollowings,
-    // followingCount,
-    // buildFollowingsList,
+    isFollowingsEnabled,
+    toggleFollowings,
+    followingCount,
+    buildFollowingsList,
     isGroupsEnabled,
     toggleGroups,
   } = usePopupStore();
@@ -126,7 +127,7 @@ export const DashboardView = () => {
             </div>
 
             {/* Followings row */}
-            {/* <div className='p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
+            <div className='p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
               <div className='flex items-center gap-3'>
                 <div className='flex items-center justify-center w-5'>
                   <input
@@ -165,9 +166,9 @@ export const DashboardView = () => {
                     : 'text-gray-400 hover:text-blue-600 hover:cursor-pointer'
                 }`}
               >
-                <RefreshCw className={`w-4 h-4`} />
+                <Edit className={`w-4 h-4`} />
               </button>
-            </div> */}
+            </div>
 
             {/* Groups row */}
             <div className='p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
