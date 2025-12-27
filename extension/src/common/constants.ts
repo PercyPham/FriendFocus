@@ -15,3 +15,10 @@ export const LINKS = {
     'https://chromewebstore.google.com/detail/friendfocus/bglgckkcceoffcjkkgckkeeddckepmjn/reviews',
   BUY_ME_A_COFFEE: 'https://buymeacoffee.com/percypham',
 };
+
+export const LAST_FIXES = {
+  FRIEND_LIST: {
+    timestamp: 1766852352229, // 2025-12-27 10:19:12
+    message: 'Update needed - fix for missing profiles',
+  },
+};

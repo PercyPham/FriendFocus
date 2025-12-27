@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   CheckCircle2,
   Coffee,
   Edit,
@@ -12,7 +13,7 @@ import {
 } from 'lucide-react';
 import { usePopupStore } from '../store/usePopupStore';
 import { Header } from '../components/Header';
-import { LINKS } from '@/common/constants';
+import { LAST_FIXES, LINKS } from '@/common/constants';
 
 export const DashboardView = () => {
   const {
@@ -36,6 +37,13 @@ export const DashboardView = () => {
       (Date.now() - timestamp) / (1000 * 60 * 60 * 24)
     );
     return daysAgo === 0 ? 'Updated recently' : `Updated ${daysAgo}d ago`;
+  };
+
+  const needsFriendListUpdate = () => {
+    return (
+      !friendListUpdatedAt ||
+      friendListUpdatedAt < LAST_FIXES.FRIEND_LIST.timestamp
+    );
   };
 
   const formatCount = (count: number | null) => (count === null ? '-' : count);
@@ -109,12 +117,21 @@ export const DashboardView = () => {
                     </span>
                   </div>
                   <div className='flex items-center gap-1 mt-1'>
-                    <CheckCircle2 className='w-3 h-3 text-blue-500' />
-                    <span
-                      className={`text-[10px] leading-none ${'text-gray-400 dark:text-slate-500'}`}
-                    >
-                      {getUpdateText(friendListUpdatedAt)}
-                    </span>
+                    {needsFriendListUpdate() ? (
+                      <>
+                        <AlertTriangle className='w-3 h-3 text-amber-500' />
+                        <span className='text-[10px] leading-none text-amber-600 dark:text-amber-500'>
+                          {LAST_FIXES.FRIEND_LIST.message}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className='w-3 h-3 text-blue-500' />
+                        <span className='text-[10px] leading-none text-gray-400 dark:text-slate-500'>
+                          {getUpdateText(friendListUpdatedAt)}
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
