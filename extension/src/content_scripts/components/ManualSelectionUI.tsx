@@ -24,10 +24,13 @@ export default function ManualSelectionUI({
 
     // Listen for custom events from profile buttons
     const handleSelection = () => updateCount();
-    window.addEventListener('ff-selection-changed', handleSelection);
+    window.addEventListener('friendfocus-selection-changed', handleSelection);
 
     return () => {
-      window.removeEventListener('ff-selection-changed', handleSelection);
+      window.removeEventListener(
+        'friendfocus-selection-changed',
+        handleSelection
+      );
     };
   }, [getSelectedCount]);
 
@@ -36,7 +39,7 @@ export default function ManualSelectionUI({
     clearAllSelections();
 
     // Dispatch event to update the count
-    window.dispatchEvent(new CustomEvent('ff-selection-changed'));
+    window.dispatchEvent(new CustomEvent('friendfocus-selection-changed'));
   };
 
   const handleConfirm = () => {

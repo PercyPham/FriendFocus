@@ -57,10 +57,10 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
     // Create button with inline styles (since it's injected into FB page, not Shadow DOM)
     const button = document.createElement('button');
     button.className = PROFILE_ADD_BUTTON_CLASS; // Keep class for selector
-    button.setAttribute('data-slug', followingInfo.slug);
-    button.setAttribute('data-name', followingInfo.name);
-    button.setAttribute('data-type', followingInfo.type);
-    button.setAttribute('data-selected', String(isAlreadySelected));
+    button.setAttribute('friendfocus-data-slug', followingInfo.slug);
+    button.setAttribute('friendfocus-data-name', followingInfo.name);
+    button.setAttribute('friendfocus-data-type', followingInfo.type);
+    button.setAttribute('friendfocus-data-selected', String(isAlreadySelected));
 
     // Base button styles
     button.style.cssText = `
@@ -113,9 +113,10 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const isSelected = button.getAttribute('data-selected') === 'true';
+      const isSelected =
+        button.getAttribute('friendfocus-data-selected') === 'true';
       const newSelected = !isSelected;
-      button.setAttribute('data-selected', String(newSelected));
+      button.setAttribute('friendfocus-data-selected', String(newSelected));
 
       // Update global state
       if (newSelected) {
@@ -150,14 +151,14 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
       }
 
       // Dispatch custom event to update the count in ManualSelectionUI
-      window.dispatchEvent(new CustomEvent('ff-selection-changed'));
+      window.dispatchEvent(new CustomEvent('friendfocus-selection-changed'));
     };
 
     // Hover effect
     button.onmouseenter = () => {
       button.style.transform = 'scale(1.05)';
       button.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-      if (button.getAttribute('data-selected') === 'false') {
+      if (button.getAttribute('friendfocus-data-selected') === 'false') {
         button.style.background = '#f0f2f5';
       }
     };
@@ -165,7 +166,7 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
     button.onmouseleave = () => {
       button.style.transform = 'scale(1)';
       button.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
-      if (button.getAttribute('data-selected') === 'false') {
+      if (button.getAttribute('friendfocus-data-selected') === 'false') {
         button.style.background = 'white';
       }
     };
@@ -254,7 +255,8 @@ const collectFollowingListIfNeeded = async () => {
         document
           .querySelectorAll(`.${PROFILE_ADD_BUTTON_CLASS}`)
           .forEach((button) => {
-            const isSelected = button.getAttribute('data-selected') === 'true';
+            const isSelected =
+              button.getAttribute('friendfocus-data-selected') === 'true';
             if (isSelected) {
               // Simulate click to update appearance
               (button as HTMLButtonElement).click();

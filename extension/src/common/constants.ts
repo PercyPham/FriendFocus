@@ -3,7 +3,7 @@ export const BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY =
 export const BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY =
   'building_friendfocus_followinglist';
 
-export const PROFILE_ADD_BUTTON_CLASS = 'ff-profile-add-btn';
+export const PROFILE_ADD_BUTTON_CLASS = 'friendfocus-profile-add-btn';
 
 export const APP_VERSION = __APP_VERSION__;
 
