@@ -4,7 +4,6 @@ import {
   Coffee,
   Edit,
   Heart,
-  LayoutGrid,
   RefreshCw,
   Shield,
   Star,
@@ -25,6 +24,7 @@ export const DashboardView = () => {
     buildFriendList,
     isFollowingsEnabled,
     toggleFollowings,
+    hasFollowingList,
     followingCount,
     buildFollowingsList,
     isGroupsEnabled,
@@ -47,6 +47,14 @@ export const DashboardView = () => {
   };
 
   const formatCount = (count: number | null) => (count === null ? '-' : count);
+
+  const handleToggleFollowings = () => {
+    if (hasFollowingList) {
+      toggleFollowings();
+    } else {
+      buildFollowingsList();
+    }
+  };
 
   return (
     <div className='flex flex-col h-full bg-gray-50 dark:bg-slate-950 relative animate-in fade-in duration-300 transition-colors'>
@@ -150,7 +158,7 @@ export const DashboardView = () => {
                   <input
                     type='checkbox'
                     checked={isFollowingsEnabled}
-                    onChange={toggleFollowings}
+                    onChange={handleToggleFollowings}
                     disabled={!isFriendFocus}
                     className='w-4 h-4 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
                   />
@@ -214,15 +222,7 @@ export const DashboardView = () => {
                   </span>
                 </div>
               </div>
-              <div className='flex items-center justify-center p-2'>
-                <LayoutGrid
-                  className={`w-4 h-4 ${
-                    isGroupsEnabled
-                      ? 'text-gray-400 dark:text-slate-500'
-                      : 'text-gray-200 dark:text-slate-800'
-                  }`}
-                />
-              </div>
+              <div className='flex items-center justify-center p-2'></div>
             </div>
           </div>
         </div>

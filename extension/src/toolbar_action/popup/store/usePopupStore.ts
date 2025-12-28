@@ -18,6 +18,7 @@ interface PopupState {
 
   isFollowingsEnabled: boolean;
   toggleFollowings: () => Promise<void>;
+  hasFollowingList: boolean;
   followingCount: number;
   buildFollowingsList: () => Promise<void>;
   followingListUpdatedAt: number | null;
@@ -56,6 +57,7 @@ export const usePopupStore = create<PopupState>((set, get) => {
         sync('friendCount', storage.key.friendCount),
         sync('friendListUpdatedAt', storage.key.friendListUpdatedAt),
         sync('isFollowingsEnabled', storage.key.isFollowingsEnabled),
+        sync('hasFollowingList', storage.key.hasFollowingList),
         sync('followingCount', storage.key.followingCount),
         sync('followingListUpdatedAt', storage.key.followingListUpdatedAt),
         sync('isGroupsEnabled', storage.key.isGroupsEnabled),
@@ -82,6 +84,7 @@ export const usePopupStore = create<PopupState>((set, get) => {
     buildFriendList: () => sendMessage('START_COLLECTING_FRIEND_LIST'),
 
     followingCount: 0,
+    hasFollowingList: false,
     isFollowingsEnabled: false,
     toggleFollowings: () =>
       sendMessage('SET_FOLLOWINGS_ENABLED', !get().isFollowingsEnabled),
