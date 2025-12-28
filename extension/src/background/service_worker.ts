@@ -29,7 +29,6 @@ onMessage('SAVE_FRIEND_LIST', async (friendList, sender) => {
   try {
     await storageWriter.set(storage.key.friendList, friendList);
     await storageWriter.set(storage.key.friendCount, friendList.length);
-    await storageWriter.set(storage.key.hasFriendList, !!friendList.length);
     await storageWriter.set(storage.key.friendListUpdatedAt, Date.now());
     console.log(`Friend list saved successfully: ${friendList.length} friends`);
 
@@ -104,10 +103,6 @@ onMessage('SAVE_FOLLOWING_LIST', async (followingList, sender) => {
   try {
     await storageWriter.set(storage.key.followingList, followingList);
     await storageWriter.set(storage.key.followingCount, followingList.length);
-    await storageWriter.set(
-      storage.key.hasFollowingList,
-      !!followingList.length
-    );
     await storageWriter.set(storage.key.followingListUpdatedAt, Date.now());
     console.log(
       `Following list saved successfully: ${followingList.length} following`

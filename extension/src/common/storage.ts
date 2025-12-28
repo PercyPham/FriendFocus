@@ -4,7 +4,6 @@ import type { FriendInfo, FollowingInfo } from './types';
 export const Key = {
   isFriendFocus: 'is_friend_focus',
 
-  hasFriendList: 'has_friend_list',
   friendList: 'friend_list',
   friendCount: 'friend_count',
   friendListUpdatedAt: 'friend_list_updated_at',
@@ -12,7 +11,6 @@ export const Key = {
   blockedPostsLog: 'blocked_posts_log',
 
   isFollowingsEnabled: 'is_followings_enabled',
-  hasFollowingList: 'has_following_list',
   followingList: 'following_list',
   followingCount: 'following_count',
   followingListUpdatedAt: 'following_list_updated_at',
@@ -27,7 +25,6 @@ export type BlockedPostsLog = Record<string, number>; // { "2025-12-15": 42 }
 
 export type ValueTypeMap = {
   [Key.isFriendFocus]: boolean;
-  [Key.hasFriendList]: boolean;
   [Key.friendList]: FriendInfo[];
   [Key.friendCount]: number;
   [Key.friendListUpdatedAt]: number | null;
@@ -36,7 +33,6 @@ export type ValueTypeMap = {
   [Key.isGroupsEnabled]: boolean;
   [Key.followingList]: FollowingInfo[];
   [Key.followingCount]: number;
-  [Key.hasFollowingList]: boolean;
   [Key.followingListUpdatedAt]: number | null;
 };
 

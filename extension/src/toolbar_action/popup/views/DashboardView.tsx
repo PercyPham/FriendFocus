@@ -24,7 +24,6 @@ export const DashboardView = () => {
     buildFriendList,
     isFollowingsEnabled,
     toggleFollowings,
-    hasFollowingList,
     followingCount,
     buildFollowingsList,
     isGroupsEnabled,
@@ -49,7 +48,7 @@ export const DashboardView = () => {
   const formatCount = (count: number | null) => (count === null ? '-' : count);
 
   const handleToggleFollowings = () => {
-    if (hasFollowingList) {
+    if (followingCount) {
       toggleFollowings();
     } else {
       buildFollowingsList({ enableWhenDone: true });
