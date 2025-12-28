@@ -18,17 +18,17 @@ export default function ModeSelectionPopup({
 
         <div className='flex flex-col gap-3'>
           <button
-            onClick={() => onSelectMode('auto')}
+            onClick={() => onSelectMode('manual')}
             className='bg-[#1877f2] hover:bg-[#166fe5] text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200'
           >
-            Collect All
+            Manual Select
           </button>
 
           <button
-            onClick={() => onSelectMode('manual')}
+            onClick={() => onSelectMode('auto')}
             className='bg-white hover:bg-gray-50 text-[#1877f2] font-bold py-3 px-6 rounded-lg border-2 border-[#1877f2] transition-colors duration-200'
           >
-            Manual Select
+            Collect All
           </button>
         </div>
 

@@ -115,7 +115,8 @@ export const showModeSelectionPopup = (): Promise<'auto' | 'manual'> => {
 // Manual Selection UI
 export const showManualSelectionUI = (
   getSelectedProfiles: () => FollowingInfo[],
-  getSelectedCount: () => number
+  getSelectedCount: () => number,
+  clearAllSelections: () => void
 ): Promise<FollowingInfo[]> => {
   return new Promise((resolve) => {
     const context = ensureShadowRoot();
@@ -130,6 +131,7 @@ export const showManualSelectionUI = (
       <ManualSelectionUI
         onConfirm={handleConfirm}
         getSelectedCount={getSelectedCount}
+        clearAllSelections={clearAllSelections}
       />
     );
   });

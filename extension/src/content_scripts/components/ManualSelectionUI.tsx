@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import { PROFILE_ADD_BUTTON_CLASS } from '@/common/constants';
 
 interface ManualSelectionUIProps {
   onConfirm: () => void;
   getSelectedCount: () => number;
+  clearAllSelections: () => void;
 }
 
 export default function ManualSelectionUI({
   onConfirm,
   getSelectedCount,
+  clearAllSelections,
 }: ManualSelectionUIProps) {
   const [selectedCount, setSelectedCount] = useState(0);
 
@@ -31,14 +32,11 @@ export default function ManualSelectionUI({
   }, [getSelectedCount]);
 
   const handleClearAll = () => {
-    // Deselect all buttons
-    const selectedButtons = document.querySelectorAll(
-      `.${PROFILE_ADD_BUTTON_CLASS}[data-selected="true"]`
-    );
-    selectedButtons.forEach((button) => {
-      // Simulate a click to deselect
-      (button as HTMLButtonElement).click();
-    });
+    // Clear the global Map directly
+    clearAllSelections();
+
+    // Dispatch event to update the count
+    window.dispatchEvent(new CustomEvent('ff-selection-changed'));
   };
 
   const handleConfirm = () => {

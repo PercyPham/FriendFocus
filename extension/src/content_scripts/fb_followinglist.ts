@@ -244,10 +244,23 @@ const collectFollowingListIfNeeded = async () => {
     const observer = initializeManualMode(existingSlugs);
 
     // Show manual selection UI and wait for user to confirm
-    // Pass functions that retrieve selected profiles and count from the global state
+    // Pass functions that retrieve selected profiles, count, and clear from the global state
     followingList = await showManualSelectionUI(
       () => Array.from(selectedProfiles.values()),
-      () => selectedProfiles.size
+      () => selectedProfiles.size,
+      () => {
+        selectedProfiles.clear();
+        // Update all visible buttons to reflect the cleared state
+        document
+          .querySelectorAll(`.${PROFILE_ADD_BUTTON_CLASS}`)
+          .forEach((button) => {
+            const isSelected = button.getAttribute('data-selected') === 'true';
+            if (isSelected) {
+              // Simulate click to update appearance
+              (button as HTMLButtonElement).click();
+            }
+          });
+      }
     );
 
     // Clean up observer
