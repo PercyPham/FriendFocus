@@ -18,7 +18,7 @@ export const LINKS = {
 
 export const LAST_FIXES = {
   FRIEND_LIST: {
-    timestamp: 1766852352229, // 2025-12-27 10:19:12
+    timestamp: 1766941200000, // 2025-12-29 00:00:00 GMT+0700 (Indochina Time)
     message: 'Update needed - fix for missing profiles',
   },
 };
