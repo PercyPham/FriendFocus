@@ -4,16 +4,12 @@ interface ManualSelectionUIProps {
   onConfirm: () => void;
   getSelectedCount: () => number;
   clearAllSelections: () => void;
-  itemType?: string; // e.g., "Following", "Group"
-  itemTypePlural?: string; // e.g., "Followings", "Groups"
 }
 
 export default function ManualSelectionUI({
   onConfirm,
   getSelectedCount,
   clearAllSelections,
-  itemType = 'Following',
-  itemTypePlural = 'Followings',
 }: ManualSelectionUIProps) {
   const [selectedCount, setSelectedCount] = useState(0);
 
@@ -26,7 +22,7 @@ export default function ManualSelectionUI({
     // Initial count
     updateCount();
 
-    // Listen for custom events from profile buttons
+    // Listen for custom events from group buttons
     const handleSelection = () => updateCount();
     window.addEventListener('friendfocus-selection-changed', handleSelection);
 
@@ -60,11 +56,9 @@ export default function ManualSelectionUI({
           <div>
             <p className='text-sm font-bold text-gray-900'>
               {selectedCount === 0
-                ? `No ${itemTypePlural.toLowerCase()} selected`
+                ? 'No groups selected'
                 : `${selectedCount} ${
-                    selectedCount === 1
-                      ? itemType.toLowerCase()
-                      : itemTypePlural.toLowerCase()
+                    selectedCount === 1 ? 'group' : 'groups'
                   } selected`}
             </p>
             <p className='text-xs text-[#65676b]'>
@@ -92,10 +86,11 @@ export default function ManualSelectionUI({
             }`}
           >
             Save {selectedCount > 0 ? `${selectedCount} ` : ''}
-            {selectedCount === 1 ? itemType : itemTypePlural}
+            {selectedCount === 1 ? 'Group' : 'Groups'}
           </button>
         </div>
       </div>
     </div>
   );
 }
+

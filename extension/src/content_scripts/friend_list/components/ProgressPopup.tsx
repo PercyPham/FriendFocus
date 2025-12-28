@@ -37,3 +37,4 @@ export default function ProgressPopup({ count }: ProgressPopupProps) {
     </div>
   );
 }
+

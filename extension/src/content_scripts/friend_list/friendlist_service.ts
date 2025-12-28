@@ -2,7 +2,7 @@ import type { FriendInfo } from '@/common/types';
 import {
   showUpdatePopup,
   showProgressPopup,
-} from '../components/OverlayManager';
+} from './components/OverlayManager';
 
 // Helper function to wait for a condition
 const waitFor = (

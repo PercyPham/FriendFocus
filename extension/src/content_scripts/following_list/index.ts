@@ -1,7 +1,7 @@
 import {
   getFollowingListAutoCrawl,
   extractFollowingInfo,
-} from './services/followinglist_service';
+} from './followinglist_service';
 import { QUERY_KEYS, PROFILE_ADD_BUTTON_CLASS } from '@/common/constants';
 import { sendMessage } from '@/common/background_contract/client';
 import {
@@ -11,7 +11,7 @@ import {
 import type { FollowingInfo } from '@/common/types';
 import storage from '@/common/storage';
 
-console.debug('> Loaded: fb_followinglist.ts');
+console.debug('> Loaded: following_list/index.ts');
 
 // Global state to track all selected profiles (persists across DOM changes)
 const selectedProfiles = new Map<string, FollowingInfo>();
@@ -299,3 +299,4 @@ if (document.readyState === 'complete') {
     collectFollowingListIfNeeded();
   });
 }
+

@@ -1,11 +1,11 @@
 import storage from '@/common/storage';
-import { updateFriendFocus } from './services/newsfeed_service';
+import { updateFriendFocus } from './newsfeed_service';
 import {
   findFeedPostsDirectParent,
   findStoriesParentDiv,
-} from './services/newsfeed_utils';
+} from './newsfeed_utils';
 
-console.debug('> Loaded: fb_newsfeed.ts');
+console.debug('> Loaded: newsfeed/index.ts');
 
 const isFbNewsfeedPage = () => {
   const url = new URL(window.location.href);
@@ -190,3 +190,4 @@ window.addEventListener('unload', () => {
   // Back / forward buttons
   window.addEventListener('popstate', notifyUrlChange);
 })();
+

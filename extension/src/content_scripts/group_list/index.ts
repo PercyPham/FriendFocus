@@ -1,7 +1,7 @@
 import {
   getGroupListAutoCrawl,
   extractGroupInfo,
-} from './services/grouplist_service';
+} from './grouplist_service';
 import { QUERY_KEYS, PROFILE_ADD_BUTTON_CLASS } from '@/common/constants';
 import { sendMessage } from '@/common/background_contract/client';
 import {
@@ -11,7 +11,7 @@ import {
 import type { GroupInfo } from '@/common/types';
 import storage from '@/common/storage';
 
-console.debug('> Loaded: fb_grouplist.ts');
+console.debug('> Loaded: group_list/index.ts');
 
 // Global state to track all selected groups (persists across DOM changes)
 const selectedGroups = new Map<string, GroupInfo>();

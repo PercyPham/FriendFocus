@@ -29,21 +29,21 @@ export default defineManifest({
   },
   content_scripts: [
     {
-      js: ['src/content_scripts/fb_newsfeed.ts'],
+      js: ['src/content_scripts/newsfeed/index.ts'],
       matches: ['https://www.facebook.com/*'],
     },
     {
-      js: ['src/content_scripts/fb_friendlist.ts'],
+      js: ['src/content_scripts/friend_list/index.ts'],
       matches: ['https://www.facebook.com/*/friends*'],
       run_at: 'document_idle',
     },
     {
-      js: ['src/content_scripts/fb_followinglist.ts'],
+      js: ['src/content_scripts/following_list/index.ts'],
       matches: ['https://www.facebook.com/*/following*'],
       run_at: 'document_idle',
     },
     {
-      js: ['src/content_scripts/fb_grouplist.ts'],
+      js: ['src/content_scripts/group_list/index.ts'],
       matches: ['https://www.facebook.com/groups/joins*'],
       run_at: 'document_idle',
     },

@@ -1,5 +1,5 @@
 import type { GroupInfo } from '@/common/types';
-import { showGroupProgressPopup } from '../components/OverlayManager';
+import { showGroupProgressPopup } from './components/OverlayManager';
 
 // Helper function to wait for a condition
 const waitFor = (

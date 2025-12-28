@@ -1,8 +1,8 @@
-import { getFriendList } from './services/friendlist_service';
+import { getFriendList } from './friendlist_service';
 import { QUERY_KEYS } from '@/common/constants';
 import { sendMessage } from '@/common/background_contract/client';
 
-console.debug('> Loaded: fb_friendlist.ts');
+console.debug('> Loaded: friend_list/index.ts');
 
 const collectFriendListIfNeeded = async () => {
   const url = new URL(window.location.href);
@@ -27,3 +27,4 @@ if (document.readyState === 'complete') {
     collectFriendListIfNeeded();
   });
 }
+

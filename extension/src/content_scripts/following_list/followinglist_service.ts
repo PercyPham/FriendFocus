@@ -1,5 +1,5 @@
 import type { FollowingInfo } from '@/common/types';
-import { showFollowingProgressPopup } from '../components/OverlayManager';
+import { showFollowingProgressPopup } from './components/OverlayManager';
 
 // Helper function to wait for a condition
 const waitFor = (
