@@ -24,7 +24,7 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
   // Initialize selectedProfiles with existing saved profiles
   existingSlugs.forEach((slug) => {
     // We'll add the full info when we encounter the profile
-    selectedProfiles.set(slug, { slug, name: '', type: 'person' });
+    selectedProfiles.set(slug, { slug, name: '' });
   });
 
   // Function to add button to a profile element
@@ -56,7 +56,6 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
     button.className = PROFILE_ADD_BUTTON_CLASS; // Keep class for selector
     button.setAttribute('friendfocus-data-slug', followingInfo.slug);
     button.setAttribute('friendfocus-data-name', followingInfo.name);
-    button.setAttribute('friendfocus-data-type', followingInfo.type);
     button.setAttribute('friendfocus-data-selected', String(isAlreadySelected));
 
     // Base button styles
@@ -299,4 +298,3 @@ if (document.readyState === 'complete') {
     collectFollowingListIfNeeded();
   });
 }
-

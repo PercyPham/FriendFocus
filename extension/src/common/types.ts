@@ -7,7 +7,6 @@ export type FriendInfo = {
 export type FollowingInfo = {
   slug: string;
   name: string;
-  type: 'person' | 'page' | 'public_figure';
 };
 
 export type GroupInfo = {

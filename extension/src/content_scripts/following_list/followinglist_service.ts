@@ -80,27 +80,7 @@ export const extractFollowingInfo = (
 
     if (!name || !slug) return null;
 
-    // Determine the type by looking at indicators on the page
-    // This is a heuristic approach - may need refinement based on actual FB structure
-    let type: FollowingInfo['type'] = 'person';
-
-    // Look for "Page" or "Public Figure" indicators
-    // Common patterns: check parent or sibling elements for type labels
-    const parentElement = anchorElement.parentElement;
-    const grandParentElement = parentElement?.parentElement;
-
-    // Check for text content that indicates type
-    const contextText = grandParentElement?.textContent || '';
-    if (contextText.includes('Page') || contextText.includes('page')) {
-      type = 'page';
-    } else if (
-      contextText.includes('Public Figure') ||
-      contextText.includes('public figure')
-    ) {
-      type = 'public_figure';
-    }
-
-    return { slug, name, type };
+    return { slug, name };
   } catch (error) {
     console.error('Error extracting following info:', error);
     return null;
