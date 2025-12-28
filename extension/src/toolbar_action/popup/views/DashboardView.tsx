@@ -52,7 +52,7 @@ export const DashboardView = () => {
     if (hasFollowingList) {
       toggleFollowings();
     } else {
-      buildFollowingsList();
+      buildFollowingsList({ enableWhenDone: true });
     }
   };
 
@@ -184,7 +184,7 @@ export const DashboardView = () => {
                 </div>
               </div>
               <button
-                onClick={buildFollowingsList}
+                onClick={() => buildFollowingsList()}
                 className={`flex items-center justify-center p-2 rounded-full transition-all ${
                   !isFollowingsEnabled
                     ? 'text-gray-200 dark:text-slate-800'

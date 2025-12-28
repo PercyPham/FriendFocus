@@ -1,5 +1,5 @@
 import { getFriendList } from './services/friendlist_service';
-import { BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY } from '@/common/constants';
+import { QUERY_KEYS } from '@/common/constants';
 import { sendMessage } from '@/common/background_contract/client';
 
 console.debug('> Loaded: fb_friendlist.ts');
@@ -7,7 +7,7 @@ console.debug('> Loaded: fb_friendlist.ts');
 const collectFriendListIfNeeded = async () => {
   const url = new URL(window.location.href);
   const isBuildingFriendList = url.searchParams.get(
-    BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY
+    QUERY_KEYS.FRIENDLIST_BUILDING
   );
   if (!isBuildingFriendList) return;
 

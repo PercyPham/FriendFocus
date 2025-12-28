@@ -1,17 +1,14 @@
 import storage, { BlockedPostsLog } from '@/common/storage';
 import { storageWriter } from './storage-writer';
 import { onMessage, setupMessageListener } from './server';
-import {
-  BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY,
-  BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY,
-} from '@/common/constants';
+import { QUERY_KEYS } from '@/common/constants';
 import { getTodayDateString } from '@/common/utils';
 
 onMessage('START_COLLECTING_FRIEND_LIST', async (_req, sender) => {
   console.log('Received request from tab:', sender);
   try {
     await chrome.windows.create({
-      url: `https://www.facebook.com/me/friends?${BUILDING_FRIENDFOCUS_FRIENDLIST_QUERY_KEY}=true`,
+      url: `https://www.facebook.com/me/friends?${QUERY_KEYS.FRIENDLIST_BUILDING}=true`,
       type: 'popup',
     });
     console.log('Friend list collection initiated in new tab');
@@ -82,11 +79,19 @@ onMessage('SET_GROUPS_ENABLED', async (isEnabled, sender) => {
   await storageWriter.set(storage.key.isGroupsEnabled, isEnabled);
 });
 
-onMessage('START_COLLECTING_FOLLOWING_LIST', async (_req, sender) => {
-  console.log('Received request from tab:', sender);
+onMessage('START_COLLECTING_FOLLOWING_LIST', async (req, sender) => {
+  const enableWhenDone = !!req?.enableWhenDone;
+  console.log('Received request from tab:', sender, { enableWhenDone });
   try {
     await chrome.windows.create({
-      url: `https://www.facebook.com/me/following?${BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY}=true`,
+      url:
+        `https://www.facebook.com/me/following` +
+        `?${QUERY_KEYS.FOLLOWINGLIST_BUILDING}=true` +
+        `${
+          enableWhenDone
+            ? `&${QUERY_KEYS.FOLLOWINGLIST_ENABLE_WHEN_DONE}=true`
+            : ''
+        }`,
       type: 'popup',
     });
   } catch (error) {

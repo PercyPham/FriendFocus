@@ -32,7 +32,7 @@ export type MessageContract = {
   };
 
   START_COLLECTING_FOLLOWING_LIST: {
-    req: void;
+    req: { enableWhenDone?: boolean } | undefined;
     res: void;
   };
 

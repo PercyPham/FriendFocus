@@ -2,10 +2,7 @@ import {
   getFollowingListAutoCrawl,
   extractFollowingInfo,
 } from './services/followinglist_service';
-import {
-  BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY,
-  PROFILE_ADD_BUTTON_CLASS,
-} from '@/common/constants';
+import { QUERY_KEYS, PROFILE_ADD_BUTTON_CLASS } from '@/common/constants';
 import { sendMessage } from '@/common/background_contract/client';
 import {
   showModeSelectionPopup,
@@ -224,9 +221,13 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
 const collectFollowingListIfNeeded = async () => {
   const url = new URL(window.location.href);
   const isBuildingFollowingList = url.searchParams.get(
-    BUILDING_FRIENDFOCUS_FOLLOWINGLIST_QUERY_KEY
+    QUERY_KEYS.FOLLOWINGLIST_BUILDING
   );
   if (!isBuildingFollowingList) return;
+
+  const enableWhenDone = url.searchParams.get(
+    QUERY_KEYS.FOLLOWINGLIST_ENABLE_WHEN_DONE
+  );
 
   // Step 1: Show mode selection popup
   const selectedMode = await showModeSelectionPopup();
@@ -276,6 +277,10 @@ const collectFollowingListIfNeeded = async () => {
 
   // Step 3: Send following list to background for storage
   await sendMessage('SAVE_FOLLOWING_LIST', followingList);
+
+  if (enableWhenDone) {
+    await sendMessage('SET_FOLLOWINGS_ENABLED', true);
+  }
 
   // Step 4: Clear selected profiles state
   selectedProfiles.clear();

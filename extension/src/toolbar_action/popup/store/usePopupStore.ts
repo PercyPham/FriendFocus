@@ -20,7 +20,9 @@ interface PopupState {
   toggleFollowings: () => Promise<void>;
   hasFollowingList: boolean;
   followingCount: number;
-  buildFollowingsList: () => Promise<void>;
+  buildFollowingsList: (options?: {
+    enableWhenDone?: boolean;
+  }) => Promise<void>;
   followingListUpdatedAt: number | null;
 
   isGroupsEnabled: boolean;
@@ -88,7 +90,8 @@ export const usePopupStore = create<PopupState>((set, get) => {
     isFollowingsEnabled: false,
     toggleFollowings: () =>
       sendMessage('SET_FOLLOWINGS_ENABLED', !get().isFollowingsEnabled),
-    buildFollowingsList: () => sendMessage('START_COLLECTING_FOLLOWING_LIST'),
+    buildFollowingsList: (options: { enableWhenDone?: boolean } = {}) =>
+      sendMessage('START_COLLECTING_FOLLOWING_LIST', options),
     followingListUpdatedAt: null,
 
     isGroupsEnabled: false,
