@@ -9,3 +9,8 @@ export type FollowingInfo = {
   name: string;
   type: 'person' | 'page' | 'public_figure';
 };
+
+export type GroupInfo = {
+  slug: string;
+  name: string;
+};

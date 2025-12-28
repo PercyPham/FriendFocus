@@ -1,4 +1,4 @@
-import type { FriendInfo, FollowingInfo } from '@/common/types';
+import type { FriendInfo, FollowingInfo, GroupInfo } from '@/common/types';
 
 export type MessageContract = {
   SET_FRIEND_FOCUS: {
@@ -45,6 +45,16 @@ export type MessageContract = {
     req: boolean;
     res: void;
   };
+
+  START_COLLECTING_GROUP_LIST: {
+    req: { enableWhenDone?: boolean } | undefined;
+    res: void;
+  };
+
+  SAVE_GROUP_LIST: {
+    req: GroupInfo[];
+    res: void;
+  };
 };
 
 export type MessageType = keyof MessageContract;
@@ -59,6 +69,8 @@ export const MESSAGE_TYPES = [
   'START_COLLECTING_FOLLOWING_LIST',
   'SAVE_FOLLOWING_LIST',
   'SET_GROUPS_ENABLED',
+  'START_COLLECTING_GROUP_LIST',
+  'SAVE_GROUP_LIST',
 ] as const satisfies MessageType[];
 
 void (0 as any as (typeof MESSAGE_TYPES)[number] satisfies keyof MessageContract);

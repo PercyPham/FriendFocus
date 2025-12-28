@@ -25,6 +25,9 @@ interface PopupState {
 
   isGroupsEnabled: boolean;
   toggleGroups: () => Promise<void>;
+  groupCount: number;
+  groupListUpdatedAt: number | null;
+  buildGroupList: (options?: { enableWhenDone?: boolean }) => Promise<void>;
 
   blockedToday: number;
 }
@@ -59,6 +62,8 @@ export const usePopupStore = create<PopupState>((set, get) => {
         sync('followingCount', storage.key.followingCount),
         sync('followingListUpdatedAt', storage.key.followingListUpdatedAt),
         sync('isGroupsEnabled', storage.key.isGroupsEnabled),
+        sync('groupCount', storage.key.groupCount),
+        sync('groupListUpdatedAt', storage.key.groupListUpdatedAt),
         sync('blockedToday', storage.key.blockedPostsLog, (val) => {
           const today = getTodayDateString();
           return val?.[today] || 0;
@@ -91,6 +96,10 @@ export const usePopupStore = create<PopupState>((set, get) => {
     isGroupsEnabled: false,
     toggleGroups: () =>
       sendMessage('SET_GROUPS_ENABLED', !get().isGroupsEnabled),
+    groupCount: 0,
+    groupListUpdatedAt: null,
+    buildGroupList: (options: { enableWhenDone?: boolean } = {}) =>
+      sendMessage('START_COLLECTING_GROUP_LIST', options),
 
     blockedToday: 0,
   };

@@ -2,6 +2,8 @@ export const QUERY_KEYS = {
   FRIENDLIST_BUILDING: 'building_friendfocus_friendlist',
   FOLLOWINGLIST_BUILDING: 'building_friendfocus_followinglist',
   FOLLOWINGLIST_ENABLE_WHEN_DONE: 'enableWhenDone',
+  GROUPLIST_BUILDING: 'building_friendfocus_grouplist',
+  GROUPLIST_ENABLE_WHEN_DONE: 'enableWhenDone',
 };
 
 export const PROFILE_ADD_BUTTON_CLASS = 'friendfocus-profile-add-btn';

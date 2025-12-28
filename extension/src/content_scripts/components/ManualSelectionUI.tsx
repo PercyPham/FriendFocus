@@ -4,12 +4,16 @@ interface ManualSelectionUIProps {
   onConfirm: () => void;
   getSelectedCount: () => number;
   clearAllSelections: () => void;
+  itemType?: string; // e.g., "Following", "Group"
+  itemTypePlural?: string; // e.g., "Followings", "Groups"
 }
 
 export default function ManualSelectionUI({
   onConfirm,
   getSelectedCount,
   clearAllSelections,
+  itemType = 'Following',
+  itemTypePlural = 'Followings',
 }: ManualSelectionUIProps) {
   const [selectedCount, setSelectedCount] = useState(0);
 
@@ -56,13 +60,15 @@ export default function ManualSelectionUI({
           <div>
             <p className='text-sm font-bold text-gray-900'>
               {selectedCount === 0
-                ? 'No profiles selected'
-                : `${selectedCount} profile${
-                    selectedCount !== 1 ? 's' : ''
+                ? `No ${itemTypePlural.toLowerCase()} selected`
+                : `${selectedCount} ${
+                    selectedCount === 1
+                      ? itemType.toLowerCase()
+                      : itemTypePlural.toLowerCase()
                   } selected`}
             </p>
             <p className='text-xs text-[#65676b]'>
-              Click the + button next to profiles to add them
+              Click the + button next to items to add them
             </p>
           </div>
         </div>
@@ -85,8 +91,8 @@ export default function ManualSelectionUI({
                 : 'bg-[#1877f2] hover:bg-[#166fe5] text-white shadow-md hover:shadow-lg'
             }`}
           >
-            Save {selectedCount > 0 ? `${selectedCount} ` : ''}Following
-            {selectedCount !== 1 ? 's' : ''}
+            Save {selectedCount > 0 ? `${selectedCount} ` : ''}
+            {selectedCount === 1 ? itemType : itemTypePlural}
           </button>
         </div>
       </div>

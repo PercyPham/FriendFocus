@@ -165,17 +165,30 @@ export const isFollowingPost = (
   return !!foundFollowingSlugElement;
 };
 
-export const isGroupPost = (post: Element) => {
+export const isGroupPost = (post: Element, groupSlugsSet: Set<string>) => {
   const [isSuccess, aElements] = findAllHeaderAElements(post);
   if (!isSuccess) return false;
 
   const foundGroupElement = aElements.find((a) => {
     const href = a.getAttribute('href');
-    const parts = href?.split('/');
-    if (!parts) return false;
+    if (!href) return false;
+
+    // Check if this is a group link
+    const parts = href.split('/');
     if (parts.length < 2) return false;
-    if (parts[1] !== 'groups') return false;
-    return true;
+
+    // Handle both full URLs (https://www.facebook.com/groups/123) and relative URLs (/groups/123)
+    let groupsIndex = parts.findIndex((part) => part === 'groups');
+    if (groupsIndex === -1) return false;
+
+    // Extract group ID from URL (e.g., /groups/123456789/)
+    const groupId = parts[groupsIndex + 1];
+    if (!groupId) return false;
+
+    // Create slug in the same format as stored (groups/123456789)
+    const slug = `groups/${groupId}`;
+
+    return groupSlugsSet.has(slug);
   });
 
   return !!foundGroupElement;

@@ -103,7 +103,10 @@ const profileDataCache: { [key: string]: ProfileData } = {};
 
 // Generic profile data loader
 const getProfileData = async (
-  storageKey: typeof storage.key.friendList | typeof storage.key.followingList
+  storageKey:
+    | typeof storage.key.friendList
+    | typeof storage.key.followingList
+    | typeof storage.key.groupList
 ): Promise<ProfileData> => {
   if (profileDataCache[storageKey]) {
     return profileDataCache[storageKey];
@@ -127,10 +130,15 @@ storage.onChange(storage.key.followingListUpdatedAt, () => {
   delete profileDataCache[storage.key.followingList];
 });
 
+storage.onChange(storage.key.groupListUpdatedAt, () => {
+  delete profileDataCache[storage.key.groupList];
+});
+
 const hideNewsfeedPosts = async (
   feedPosts: Element[],
   friendSlugSet: Set<string>,
-  followingSlugSet: Set<string>
+  followingSlugSet: Set<string>,
+  groupSlugSet: Set<string>
 ): Promise<number> => {
   const isGroupsEnabled = await storage.get(storage.key.isGroupsEnabled);
   const isFollowingsEnabled = await storage.get(
@@ -138,9 +146,9 @@ const hideNewsfeedPosts = async (
   );
 
   const isAllowedPost = (post: Element) =>
-    (isGroupsEnabled && isGroupPost(post)) ||
     isFriendPost(post, friendSlugSet) ||
-    (isFollowingsEnabled && isFollowingPost(post, followingSlugSet));
+    (isFollowingsEnabled && isFollowingPost(post, followingSlugSet)) ||
+    (isGroupsEnabled && isGroupPost(post, groupSlugSet));
 
   const notAllowedPosts = feedPosts.filter((post) => !isAllowedPost(post));
 
@@ -164,11 +172,15 @@ export const updateFriendFocus = async () => {
   const isFollowingsEnabled = !!(await storage.get(
     storage.key.isFollowingsEnabled
   ));
+  const isGroupsEnabled = !!(await storage.get(storage.key.isGroupsEnabled));
 
   // Load profile data once per type (single storage call)
   const friendProfileData = await getProfileData(storage.key.friendList);
   const followingProfileData = isFollowingsEnabled
     ? await getProfileData(storage.key.followingList)
+    : { slugSet: new Set<string>(), nameSet: new Set<string>() };
+  const groupProfileData = isGroupsEnabled
+    ? await getProfileData(storage.key.groupList)
     : { slugSet: new Set<string>(), nameSet: new Set<string>() };
 
   let newlyHiddenCount = 0;
@@ -183,7 +195,8 @@ export const updateFriendFocus = async () => {
   newlyHiddenCount += await hideNewsfeedPosts(
     feedPosts || [],
     friendProfileData.slugSet,
-    followingProfileData.slugSet
+    followingProfileData.slugSet,
+    groupProfileData.slugSet
   );
 
   // Update the blocked count via background service worker

@@ -42,5 +42,10 @@ export default defineManifest({
       matches: ['https://www.facebook.com/*/following*'],
       run_at: 'document_idle',
     },
+    {
+      js: ['src/content_scripts/fb_grouplist.ts'],
+      matches: ['https://www.facebook.com/groups/joins*'],
+      run_at: 'document_idle',
+    },
   ],
 });

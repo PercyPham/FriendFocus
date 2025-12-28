@@ -28,6 +28,8 @@ export const DashboardView = () => {
     buildFollowingsList,
     isGroupsEnabled,
     toggleGroups,
+    groupCount,
+    buildGroupList,
   } = usePopupStore();
 
   const getUpdateText = (timestamp: number | null) => {
@@ -52,6 +54,14 @@ export const DashboardView = () => {
       toggleFollowings();
     } else {
       buildFollowingsList({ enableWhenDone: true });
+    }
+  };
+
+  const handleToggleGroups = () => {
+    if (groupCount) {
+      toggleGroups();
+    } else {
+      buildGroupList({ enableWhenDone: true });
     }
   };
 
@@ -200,28 +210,42 @@ export const DashboardView = () => {
                 <div className='flex items-center justify-center w-5'>
                   <input
                     type='checkbox'
-                    checked={isGroupsEnabled}
-                    onChange={toggleGroups}
+                    checked={isGroupsEnabled && groupCount > 0}
+                    onChange={handleToggleGroups}
                     disabled={!isFriendFocus}
                     className='w-4 h-4 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
                   />
                 </div>
                 <div>
-                  <span
-                    className={`text-sm font-bold block leading-none ${
-                      isGroupsEnabled
-                        ? 'text-gray-800 dark:text-slate-200'
-                        : 'text-gray-400 dark:text-slate-600'
-                    }`}
-                  >
-                    Group Posts
-                  </span>
+                  <div className='flex items-center gap-2'>
+                    <span
+                      className={`text-sm font-bold leading-none ${
+                        isGroupsEnabled && groupCount > 0
+                          ? 'text-gray-800 dark:text-slate-200'
+                          : 'text-gray-400 dark:text-slate-600'
+                      }`}
+                    >
+                      Groups
+                    </span>
+                    <span className='text-[10px] text-gray-500 dark:text-slate-400 font-bold bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded leading-none'>
+                      {formatCount(groupCount)}
+                    </span>
+                  </div>
                   <span className='text-[10px] text-gray-400 dark:text-slate-500 block mt-1 leading-none'>
-                    Allow posts from joined groups
+                    Posts from your groups
                   </span>
                 </div>
               </div>
-              <div className='flex items-center justify-center p-2'></div>
+              <button
+                onClick={() => buildGroupList()}
+                className={`flex items-center justify-center p-2 rounded-full transition-all ${
+                  !isGroupsEnabled || groupCount === 0
+                    ? 'text-gray-200 dark:text-slate-800'
+                    : 'text-gray-400 hover:text-blue-600 hover:cursor-pointer'
+                }`}
+              >
+                <Edit className={`w-4 h-4`} />
+              </button>
             </div>
           </div>
         </div>

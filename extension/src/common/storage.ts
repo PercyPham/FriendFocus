@@ -1,4 +1,4 @@
-import type { FriendInfo, FollowingInfo } from './types';
+import type { FriendInfo, FollowingInfo, GroupInfo } from './types';
 
 // Storage keys
 export const Key = {
@@ -16,6 +16,9 @@ export const Key = {
   followingListUpdatedAt: 'following_list_updated_at',
 
   isGroupsEnabled: 'is_groups_enabled',
+  groupList: 'group_list',
+  groupCount: 'group_count',
+  groupListUpdatedAt: 'group_list_updated_at',
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
@@ -34,6 +37,9 @@ export type ValueTypeMap = {
   [Key.followingList]: FollowingInfo[];
   [Key.followingCount]: number;
   [Key.followingListUpdatedAt]: number | null;
+  [Key.groupList]: GroupInfo[];
+  [Key.groupCount]: number;
+  [Key.groupListUpdatedAt]: number | null;
 };
 
 void (0 as any as ValueTypeMap satisfies Record<KeyType, unknown>);

@@ -112,4 +112,34 @@ onMessage('SAVE_FOLLOWING_LIST', async (followingList, sender) => {
   }
 });
 
+onMessage('START_COLLECTING_GROUP_LIST', async (req, sender) => {
+  const enableWhenDone = !!req?.enableWhenDone;
+  console.log('Received request from tab:', sender, { enableWhenDone });
+  try {
+    await chrome.windows.create({
+      url:
+        `https://www.facebook.com/groups/joins` +
+        `?${QUERY_KEYS.GROUPLIST_BUILDING}=true` +
+        `${
+          enableWhenDone ? `&${QUERY_KEYS.GROUPLIST_ENABLE_WHEN_DONE}=true` : ''
+        }`,
+      type: 'popup',
+    });
+  } catch (error) {
+    console.error('Error opening group list tab:', error);
+  }
+});
+
+onMessage('SAVE_GROUP_LIST', async (groupList, sender) => {
+  console.log('Received group list from tab:', sender);
+  try {
+    await storageWriter.set(storage.key.groupList, groupList);
+    await storageWriter.set(storage.key.groupCount, groupList.length);
+    await storageWriter.set(storage.key.groupListUpdatedAt, Date.now());
+    console.log(`Group list saved successfully: ${groupList.length} groups`);
+  } catch (error) {
+    console.error('Error saving group list:', error);
+  }
+});
+
 setupMessageListener();
