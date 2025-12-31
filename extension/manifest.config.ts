@@ -48,4 +48,10 @@ export default defineManifest({
       run_at: 'document_idle',
     },
   ],
+  web_accessible_resources: [
+    {
+      resources: ['src/content_scripts/newsfeed/page_hook.js'],
+      matches: ['https://www.facebook.com/*'],
+    },
+  ],
 });

@@ -4,6 +4,7 @@ import {
   findFeedPostsDirectParent,
   findStoriesParentDiv,
 } from './newsfeed_utils';
+import { FB_URL_CHANGED_EVENT } from '@/common/constants';
 
 console.debug('> Loaded: newsfeed/index.ts');
 
@@ -61,7 +62,7 @@ function observeChildChanges(
   // 4. Start observing the target element
   observer.observe(targetElement, config);
   console.debug(
-    `[${targetName}] MutationObserver started on the target element.`
+    `[FriendFocus] [${targetName}] MutationObserver started on the target element.`
   );
 
   // Optional: Return the observer instance so it can be stopped later
@@ -72,34 +73,43 @@ function observeChildChanges(
 let newsfeedObserver: MutationObserver | undefined = undefined;
 let storiesObserver: MutationObserver | undefined = undefined;
 
-function startTask() {
+async function startTask() {
   if (!isFbNewsfeedPage()) return;
 
-  if (!newsfeedObserver) {
-    const newsfeedParent = findFeedPostsDirectParent();
-    if (newsfeedParent) {
-      console.debug('> found newsfeed parent div and started observing');
-      newsfeedObserver = observeChildChanges(
-        'Newsfeed',
-        newsfeedParent,
-        updateFriendFocus
-      );
-      updateFriendFocus();
-    }
-  }
+  [newsfeedObserver, storiesObserver] = await Promise.all([
+    newsfeedObserver || findAndObserve('Newsfeed', findFeedPostsDirectParent),
+    storiesObserver || findAndObserve('Stories', findStoriesParentDiv),
+  ]);
+}
 
-  if (!storiesObserver) {
-    const storiesParent = findStoriesParentDiv();
-    if (storiesParent) {
-      console.debug('> found stories parent div and started observing');
-      storiesObserver = observeChildChanges(
-        'Stories',
-        storiesParent,
-        updateFriendFocus
-      );
-      updateFriendFocus();
+async function findAndObserve(
+  targetName: string,
+  elementFinder: () => Element | undefined
+) {
+  const element = await waitTillExists(targetName, elementFinder);
+  if (!element) return undefined;
+  const observer = observeChildChanges(targetName, element, updateFriendFocus);
+  updateFriendFocus();
+  return observer;
+}
+
+async function waitTillExists(
+  targetName: string,
+  elementFinder: () => Element | undefined,
+  timeout = 5000,
+  interval = 100
+) {
+  const startTime = Date.now();
+  let element = elementFinder();
+  while (!element) {
+    if (Date.now() - startTime > timeout) {
+      console.debug(`[FriendFocus] Timeout waiting for ${targetName} element`);
+      return undefined;
     }
+    await new Promise((resolve) => setTimeout(resolve, interval));
+    element = elementFinder();
   }
+  return element;
 }
 
 function stopTask() {
@@ -135,7 +145,7 @@ const initializeTask = async () => {
     console.debug('> Initial isFriendFocus state:', isFriendFocus);
 
     if (isFriendFocus) {
-      startTask();
+      await startTask();
     }
   } catch (error) {
     console.error('> Error initializing task:', error);
@@ -159,11 +169,8 @@ if (document.readyState === 'complete') {
   window.addEventListener('load', initializeTask);
 }
 
-// Cleanup on unload
-window.addEventListener('unload', () => {
-  stopTask();
-});
-
+// Listen for URL changes
+// This is used to listen for URL changes by user action on browser and notify the content script
 (function () {
   const notifyUrlChange = () => {
     if (isFbNewsfeedPage()) {
@@ -191,3 +198,23 @@ window.addEventListener('unload', () => {
   window.addEventListener('popstate', notifyUrlChange);
 })();
 
+// Load page hook script
+// This is used to listen for URL changes by Facebook script and notify the content script
+const script = document.createElement('script');
+script.src = chrome.runtime.getURL('src/content_scripts/newsfeed/page_hook.js');
+script.type = 'text/javascript';
+script.onload = () => script.remove();
+
+(document.head || document.documentElement).appendChild(script);
+
+// Listen for URL changes
+window.addEventListener('message', (event) => {
+  if (event.source !== window) return;
+  if (event.data?.type === FB_URL_CHANGED_EVENT) {
+    if (isFbNewsfeedPage()) {
+      initializeTask();
+    } else {
+      stopTask();
+    }
+  }
+});
