@@ -111,11 +111,7 @@ export const DashboardView = () => {
         </div>
 
         <div
-          className={`bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all duration-300 ${
-            isFriendFocus
-              ? 'opacity-100 translate-y-0'
-              : 'opacity-60 grayscale-[0.5] pointer-events-none'
-          }`}
+          className={`bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all duration-300 opacity-100 translate-y-0`}
         >
           <div className='divide-y divide-gray-100 dark:divide-slate-800'>
             {/* Friends row */}
@@ -168,7 +164,6 @@ export const DashboardView = () => {
                     type='checkbox'
                     checked={isFollowingsEnabled}
                     onChange={handleToggleFollowings}
-                    disabled={!isFriendFocus}
                     className='w-4 h-4 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
                   />
                 </div>
@@ -194,11 +189,7 @@ export const DashboardView = () => {
               </div>
               <button
                 onClick={() => buildFollowingsList()}
-                className={`flex items-center justify-center p-2 rounded-full transition-all ${
-                  !isFollowingsEnabled
-                    ? 'text-gray-200 dark:text-slate-800'
-                    : 'text-gray-400 hover:text-blue-600 hover:cursor-pointer'
-                }`}
+                className={`flex items-center justify-center p-2 rounded-full transition-all text-gray-400 hover:text-blue-600 hover:cursor-pointer`}
               >
                 <Edit className={`w-4 h-4`} />
               </button>
@@ -212,7 +203,6 @@ export const DashboardView = () => {
                     type='checkbox'
                     checked={isGroupsEnabled && groupCount > 0}
                     onChange={handleToggleGroups}
-                    disabled={!isFriendFocus}
                     className='w-4 h-4 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
                   />
                 </div>
@@ -238,11 +228,7 @@ export const DashboardView = () => {
               </div>
               <button
                 onClick={() => buildGroupList()}
-                className={`flex items-center justify-center p-2 rounded-full transition-all ${
-                  !isGroupsEnabled || groupCount === 0
-                    ? 'text-gray-200 dark:text-slate-800'
-                    : 'text-gray-400 hover:text-blue-600 hover:cursor-pointer'
-                }`}
+                className={`flex items-center justify-center p-2 rounded-full transition-all text-gray-400 hover:text-blue-600 hover:cursor-pointer`}
               >
                 <Edit className={`w-4 h-4`} />
               </button>
