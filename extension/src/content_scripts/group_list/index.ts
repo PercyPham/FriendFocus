@@ -1,7 +1,4 @@
-import {
-  getGroupListAutoCrawl,
-  extractGroupInfo,
-} from './grouplist_service';
+import { getGroupListAutoCrawl, extractGroupInfo } from './grouplist_service';
 import { QUERY_KEYS, PROFILE_ADD_BUTTON_CLASS } from '@/common/constants';
 import { sendMessage } from '@/common/background_contract/client';
 import {
@@ -17,14 +14,15 @@ console.debug('> Loaded: group_list/index.ts');
 const selectedGroups = new Map<string, GroupInfo>();
 
 // Manual mode: Add buttons to group elements
-const initializeManualMode = (existingSlugs: Set<string>): MutationObserver => {
+const initializeManualMode = (
+  existingGroups: GroupInfo[]
+): MutationObserver => {
   // Track added buttons to avoid duplicates
   const addedButtons = new WeakSet<Element>();
 
-  // Initialize selectedGroups with existing saved groups
-  existingSlugs.forEach((slug) => {
-    // We'll add the full info when we encounter the group
-    selectedGroups.set(slug, { slug, name: '' });
+  // Initialize selectedGroups with existing saved groups (with full info including names)
+  existingGroups.forEach((group) => {
+    selectedGroups.set(group.slug, group);
   });
 
   // Function to add button to a group element
@@ -42,15 +40,41 @@ const initializeManualMode = (existingSlugs: Set<string>): MutationObserver => {
     const isAlreadySelected = selectedGroups.has(groupInfo.slug);
 
     // If selected but we don't have full info yet, update it
+    // IMPORTANT: Only update if we have a valid name, to prevent losing names due to DOM virtualization
     if (isAlreadySelected) {
-      selectedGroups.set(groupInfo.slug, groupInfo);
+      const existing = selectedGroups.get(groupInfo.slug);
+      // Only update if we extracted a valid name, otherwise preserve existing name
+      if (groupInfo.name && groupInfo.name.trim() !== '') {
+        selectedGroups.set(groupInfo.slug, groupInfo);
+      } else if (existing && existing.name && existing.name.trim() !== '') {
+        // Preserve existing name if new extraction failed
+        selectedGroups.set(groupInfo.slug, {
+          ...groupInfo,
+          name: existing.name,
+        });
+      } else {
+        // Both are empty, just update with what we have
+        selectedGroups.set(groupInfo.slug, groupInfo);
+      }
+    }
+
+    // Get the final name to use (from selectedGroups if available, otherwise from extraction)
+    const finalGroupInfo = selectedGroups.get(groupInfo.slug) || groupInfo;
+    const nameToUse = finalGroupInfo.name || groupInfo.name || '';
+
+    if (selectedGroups.has(groupInfo.slug)) {
+      console.log({
+        final: finalGroupInfo.name,
+        group: groupInfo.name,
+        slug: groupInfo.slug,
+      });
     }
 
     // Create button with inline styles (since it's injected into FB page, not Shadow DOM)
     const button = document.createElement('button');
     button.className = PROFILE_ADD_BUTTON_CLASS; // Keep class for selector
     button.setAttribute('friendfocus-data-slug', groupInfo.slug);
-    button.setAttribute('friendfocus-data-name', groupInfo.name);
+    button.setAttribute('friendfocus-data-name', nameToUse);
     button.setAttribute('friendfocus-data-selected', String(isAlreadySelected));
 
     // Base button styles
@@ -106,7 +130,8 @@ const initializeManualMode = (existingSlugs: Set<string>): MutationObserver => {
 
       const slug = button.getAttribute('friendfocus-data-slug');
       const name = button.getAttribute('friendfocus-data-name');
-      const isSelected = button.getAttribute('friendfocus-data-selected') === 'true';
+      const isSelected =
+        button.getAttribute('friendfocus-data-selected') === 'true';
 
       if (!slug || !name) return;
 
@@ -128,8 +153,18 @@ const initializeManualMode = (existingSlugs: Set<string>): MutationObserver => {
           </svg>
         `;
       } else {
-        // Select
-        selectedGroups.set(slug, { slug, name });
+        // Select - preserve existing name if current name is empty (due to DOM virtualization)
+        const existing = selectedGroups.get(slug);
+        let nameToUse = name;
+
+        // If name is empty, try to preserve existing name
+        if (!nameToUse || nameToUse.trim() === '') {
+          if (existing && existing.name && existing.name.trim() !== '') {
+            nameToUse = existing.name;
+          }
+        }
+
+        selectedGroups.set(slug, { slug, name: nameToUse });
         button.setAttribute('friendfocus-data-selected', 'true');
         button.style.background = '#1877f2';
         button.style.color = 'white';
@@ -170,17 +205,14 @@ const initializeManualMode = (existingSlugs: Set<string>): MutationObserver => {
   };
 
   // Initial scan: add buttons to all existing groups
-  const initialGroups = document.querySelectorAll('div[role="listitem"] a[href*="/groups/"]');
-  initialGroups.forEach((anchor) => {
-    const href = anchor.getAttribute('href');
-    if (!href || !/\/groups\/[^/?#]+/.test(href)) return;
-    
-    // Only process anchors that have text content (the group name)
-    const textContent = anchor.textContent?.trim();
-    if (textContent && textContent.length > 0) {
-      addButtonToGroup(anchor);
-    }
-  });
+  Array.from(
+    document.querySelectorAll('div[role="listitem"] a[href*="/groups/"]')
+  )
+    .filter(
+      (anchor: Element) =>
+        anchor.children.length === 0 && anchor.textContent?.trim() !== ''
+    )
+    .forEach((anchor: Element) => addButtonToGroup(anchor));
 
   // Observe DOM changes to add buttons to newly loaded groups
   const observer = new MutationObserver((mutations) => {
@@ -191,23 +223,18 @@ const initializeManualMode = (existingSlugs: Set<string>): MutationObserver => {
         const element = node as Element;
 
         // Check if the added node itself is a list item or contains list items
-        const listItems =
-          element.matches('div[role="listitem"]')
-            ? [element]
-            : Array.from(element.querySelectorAll('div[role="listitem"]'));
+        const listItems = element.matches('div[role="listitem"]')
+          ? [element]
+          : Array.from(element.querySelectorAll('div[role="listitem"]'));
 
         listItems.forEach((listItem) => {
-          const anchors = listItem.querySelectorAll('a[href*="/groups/"]');
-          anchors.forEach((anchor) => {
-            const href = anchor.getAttribute('href');
-            if (!href || !/\/groups\/[^/?#]+/.test(href)) return;
-            
-            // Only process anchors that have text content (the group name)
-            const textContent = anchor.textContent?.trim();
-            if (textContent && textContent.length > 0) {
-              addButtonToGroup(anchor);
-            }
-          });
+          Array.from(listItem.querySelectorAll('a[href*="/groups/"]'))
+            .filter(
+              (anchor: Element) =>
+                anchor.children.length === 0 &&
+                anchor.textContent?.trim() !== ''
+            )
+            .forEach((anchor: Element) => addButtonToGroup(anchor));
         });
       });
     });
@@ -242,11 +269,9 @@ const collectGroupListIfNeeded = async () => {
     groupList = await getGroupListAutoCrawl();
   } else {
     // Manual mode - load existing group list first
-    const existingGroups =
-      (await storage.get(storage.key.groupList)) || [];
-    const existingSlugs = new Set(existingGroups.map((g) => g.slug));
+    const existingGroups = (await storage.get(storage.key.groupList)) || [];
 
-    const observer = initializeManualMode(existingSlugs);
+    const observer = initializeManualMode(existingGroups);
 
     // Show manual selection UI and wait for user to confirm
     // Pass functions that retrieve selected groups, count, and clear from the global state
@@ -290,4 +315,3 @@ const collectGroupListIfNeeded = async () => {
 };
 
 collectGroupListIfNeeded();
-

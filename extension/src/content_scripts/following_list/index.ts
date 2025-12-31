@@ -17,14 +17,13 @@ console.debug('> Loaded: following_list/index.ts');
 const selectedProfiles = new Map<string, FollowingInfo>();
 
 // Manual mode: Add buttons to profile elements
-const initializeManualMode = (existingSlugs: Set<string>) => {
+const initializeManualMode = (existingFollowings: FollowingInfo[]) => {
   // Track added buttons to avoid duplicates
   const addedButtons = new WeakSet<Element>();
 
-  // Initialize selectedProfiles with existing saved profiles
-  existingSlugs.forEach((slug) => {
-    // We'll add the full info when we encounter the profile
-    selectedProfiles.set(slug, { slug, name: '' });
+  // Initialize selectedProfiles with existing saved profiles (with full info including names)
+  existingFollowings.forEach((following) => {
+    selectedProfiles.set(following.slug, following);
   });
 
   // Function to add button to a profile element
@@ -47,15 +46,34 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
     const isAlreadySelected = selectedProfiles.has(followingInfo.slug);
 
     // If selected but we don't have full info yet, update it
+    // IMPORTANT: Only update if we have a valid name, to prevent losing names due to DOM virtualization
     if (isAlreadySelected) {
-      selectedProfiles.set(followingInfo.slug, followingInfo);
+      const existing = selectedProfiles.get(followingInfo.slug);
+      // Only update if we extracted a valid name, otherwise preserve existing name
+      if (followingInfo.name && followingInfo.name.trim() !== '') {
+        selectedProfiles.set(followingInfo.slug, followingInfo);
+      } else if (existing && existing.name && existing.name.trim() !== '') {
+        // Preserve existing name if new extraction failed
+        selectedProfiles.set(followingInfo.slug, {
+          ...followingInfo,
+          name: existing.name,
+        });
+      } else {
+        // Both are empty, just update with what we have
+        selectedProfiles.set(followingInfo.slug, followingInfo);
+      }
     }
+
+    // Get the final name to use (from selectedProfiles if available, otherwise from extraction)
+    const finalProfileInfo =
+      selectedProfiles.get(followingInfo.slug) || followingInfo;
+    const nameToUse = finalProfileInfo.name || followingInfo.name || '';
 
     // Create button with inline styles (since it's injected into FB page, not Shadow DOM)
     const button = document.createElement('button');
     button.className = PROFILE_ADD_BUTTON_CLASS; // Keep class for selector
     button.setAttribute('friendfocus-data-slug', followingInfo.slug);
-    button.setAttribute('friendfocus-data-name', followingInfo.name);
+    button.setAttribute('friendfocus-data-name', nameToUse);
     button.setAttribute('friendfocus-data-selected', String(isAlreadySelected));
 
     // Base button styles
@@ -116,7 +134,24 @@ const initializeManualMode = (existingSlugs: Set<string>) => {
 
       // Update global state
       if (newSelected) {
-        selectedProfiles.set(followingInfo.slug, followingInfo);
+        // Preserve existing name if current extraction failed (due to DOM virtualization)
+        const existing = selectedProfiles.get(followingInfo.slug);
+        let nameToUse = followingInfo.name;
+
+        // If name is empty, try to get it from button attribute or existing entry
+        if (!nameToUse || nameToUse.trim() === '') {
+          const nameFromButton = button.getAttribute('friendfocus-data-name');
+          if (nameFromButton && nameFromButton.trim() !== '') {
+            nameToUse = nameFromButton;
+          } else if (existing && existing.name && existing.name.trim() !== '') {
+            nameToUse = existing.name;
+          }
+        }
+
+        selectedProfiles.set(followingInfo.slug, {
+          ...followingInfo,
+          name: nameToUse,
+        });
       } else {
         selectedProfiles.delete(followingInfo.slug);
       }
@@ -240,9 +275,8 @@ const collectFollowingListIfNeeded = async () => {
     // Manual mode - load existing following list first
     const existingFollowings =
       (await storage.get(storage.key.followingList)) || [];
-    const existingSlugs = new Set(existingFollowings.map((f) => f.slug));
 
-    const observer = initializeManualMode(existingSlugs);
+    const observer = initializeManualMode(existingFollowings);
 
     // Show manual selection UI and wait for user to confirm
     // Pass functions that retrieve selected profiles, count, and clear from the global state

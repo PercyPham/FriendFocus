@@ -38,6 +38,8 @@ const getGroupElements = (): Element[] => {
       const href = anchor.getAttribute('href');
       if (!href || !/\/groups\/[^/?#]+/.test(href)) return;
 
+      if (anchor.children.length > 0) return;
+
       // Check if this anchor has actual text content (the group name)
       const textContent = anchor.textContent?.trim();
       if (textContent && textContent.length > 0) {
@@ -178,6 +180,8 @@ export const getGroupListAutoCrawl = async (): Promise<GroupInfo[]> => {
   const groupElements = getGroupElements();
   const allGroups: GroupInfo[] = [];
   const seenSlugs = new Set<string>();
+
+  console.log('groupElements', groupElements);
 
   groupElements.forEach((e) => {
     const groupInfo = extractGroupInfo(e);
