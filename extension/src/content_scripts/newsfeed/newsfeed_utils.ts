@@ -165,13 +165,19 @@ export const isFollowingPost = (
   return !!foundFollowingSlugElement;
 };
 
-export const isGroupPost = (post: Element, groupSlugsSet: Set<string>) => {
+export const isGroupPost = (
+  post: Element,
+  groupSlugSet: Set<string>,
+  groupNameSet: Set<string>
+) => {
   const [isSuccess, aElements] = findAllHeaderAElements(post);
   if (!isSuccess) return false;
 
   const foundGroupElement = aElements.find((a) => {
     const href = a.getAttribute('href');
     if (!href) return false;
+
+    const name = a.textContent?.trim() || '';
 
     // Check if this is a group link
     const parts = href.split('/');
@@ -188,7 +194,7 @@ export const isGroupPost = (post: Element, groupSlugsSet: Set<string>) => {
     // Create slug in the same format as stored (groups/123456789)
     const slug = `groups/${groupId}`;
 
-    return groupSlugsSet.has(slug);
+    return groupSlugSet.has(slug) || groupNameSet.has(name);
   });
 
   return !!foundGroupElement;

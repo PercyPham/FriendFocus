@@ -138,7 +138,8 @@ const hideNewsfeedPosts = async (
   feedPosts: Element[],
   friendSlugSet: Set<string>,
   followingSlugSet: Set<string>,
-  groupSlugSet: Set<string>
+  groupSlugSet: Set<string>,
+  groupNameSet: Set<string>
 ): Promise<number> => {
   const isGroupsEnabled = await storage.get(storage.key.isGroupsEnabled);
   const isFollowingsEnabled = await storage.get(
@@ -148,7 +149,7 @@ const hideNewsfeedPosts = async (
   const isAllowedPost = (post: Element) =>
     isFriendPost(post, friendSlugSet) ||
     (isFollowingsEnabled && isFollowingPost(post, followingSlugSet)) ||
-    (isGroupsEnabled && isGroupPost(post, groupSlugSet));
+    (isGroupsEnabled && isGroupPost(post, groupSlugSet, groupNameSet));
 
   const notAllowedPosts = feedPosts.filter((post) => !isAllowedPost(post));
 
@@ -196,7 +197,8 @@ export const updateFriendFocus = async () => {
     feedPosts || [],
     friendProfileData.slugSet,
     followingProfileData.slugSet,
-    groupProfileData.slugSet
+    groupProfileData.slugSet,
+    groupProfileData.nameSet
   );
 
   // Update the blocked count via background service worker
