@@ -49,8 +49,22 @@ src/
 │       └── ...              # Popup related
 │
 ├── content_scripts/         # Content Scripts Module
-│   ├── fb_newsfeed.ts       # Newsfeed filtering logic
-│   ├── fb_friendlist.ts     # Friend list collection logic
+│   ├── newsfeed/            # Newsfeed filtering logic
+│   │   ├── index.ts
+│   │   ├── newsfeed_service.ts
+│   │   └── ...
+│   ├── friend_list/         # Friend list collection logic
+│   │   ├── index.ts
+│   │   ├── friendlist_service.ts
+│   │   └── ...
+│   ├── following_list/      # Following list collection logic
+│   │   ├── index.ts
+│   │   ├── followinglist_service.ts
+│   │   └── ...
+│   ├── group_list/          # Group list collection logic
+│   │   ├── index.ts
+│   │   ├── grouplist_service.ts
+│   │   └── ...
 │   └── ...                  # Content script related
 │
 └── common/                  # Shared Code (used by 2+ modules)
