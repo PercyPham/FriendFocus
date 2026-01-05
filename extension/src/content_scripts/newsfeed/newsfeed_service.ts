@@ -175,14 +175,20 @@ export const updateFriendFocus = async () => {
   ));
   const isGroupsEnabled = !!(await storage.get(storage.key.isGroupsEnabled));
 
+  const resolveEmpties = () =>
+    Promise.resolve({ slugSet: new Set<string>(), nameSet: new Set<string>() });
+
   // Load profile data once per type (single storage call)
-  const friendProfileData = await getProfileData(storage.key.friendList);
-  const followingProfileData = isFollowingsEnabled
-    ? await getProfileData(storage.key.followingList)
-    : { slugSet: new Set<string>(), nameSet: new Set<string>() };
-  const groupProfileData = isGroupsEnabled
-    ? await getProfileData(storage.key.groupList)
-    : { slugSet: new Set<string>(), nameSet: new Set<string>() };
+  const [friendProfileData, followingProfileData, groupProfileData] =
+    await Promise.all([
+      getProfileData(storage.key.friendList),
+      isFollowingsEnabled
+        ? getProfileData(storage.key.followingList)
+        : resolveEmpties(),
+      isGroupsEnabled
+        ? getProfileData(storage.key.groupList)
+        : resolveEmpties(),
+    ]);
 
   let newlyHiddenCount = 0;
 
