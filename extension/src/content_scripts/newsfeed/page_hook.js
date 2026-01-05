@@ -1,21 +1,22 @@
 (() => {
-  let lastUrl = location.href;
-
-  function notifyFriendFocusUrlChanged() {
-    const url = location.href;
-    if (url !== lastUrl) {
-      lastUrl = url;
-      window.postMessage({ type: 'friendfocus-fb-url-changed', url }, '*');
-    }
+  function genNotifier(trigger) {
+    return () => {
+      window.postMessage(
+        { type: 'friendfocus-fb-changed', trigger: trigger || 'unknown' },
+        '*'
+      );
+    };
   }
 
-  function wrapHistoryMethod(original) {
+  // ----------- History change listener
+
+  function wrapHistoryMethod(original, notifier) {
     function wrapped(...args) {
       // 1️⃣ Call Facebook FIRST
       const result = original.apply(this, args);
 
       // 2️⃣ Notify AFTER the call (async, zero impact)
-      queueMicrotask(notifyFriendFocusUrlChanged);
+      queueMicrotask(notifier);
 
       return result;
     }
@@ -32,8 +33,24 @@
     return wrapped;
   }
 
-  history.pushState = wrapHistoryMethod(history.pushState);
-  history.replaceState = wrapHistoryMethod(history.replaceState);
+  history.pushState = wrapHistoryMethod(
+    history.pushState,
+    genNotifier('pushState')
+  );
+  history.replaceState = wrapHistoryMethod(
+    history.replaceState,
+    genNotifier('replaceState')
+  );
 
-  window.addEventListener('popstate', notifyFriendFocusUrlChanged);
+  window.addEventListener('popstate', genNotifier('popstate'));
+
+  // ----------- Visibility change listener
+
+  document.addEventListener('visibilitychange', genNotifier('visibility'));
+
+  if (document.readyState === 'complete') {
+    genNotifier('readyState_complete')();
+  } else {
+    window.addEventListener('load', genNotifier('load'));
+  }
 })();

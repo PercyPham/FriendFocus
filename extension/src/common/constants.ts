@@ -6,7 +6,7 @@ export const QUERY_KEYS = {
   GROUPLIST_ENABLE_WHEN_DONE: 'enableWhenDone',
 };
 
-export const FB_URL_CHANGED_EVENT = 'friendfocus-fb-url-changed';
+export const FB_CHANGED_EVENT = 'friendfocus-fb-changed';
 
 export const PROFILE_ADD_BUTTON_CLASS = 'friendfocus-profile-add-btn';
 

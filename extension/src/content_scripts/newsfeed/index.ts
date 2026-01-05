@@ -4,7 +4,7 @@ import {
   findFeedPostsDirectParent,
   findStoriesParentDiv,
 } from './newsfeed_utils';
-import { FB_URL_CHANGED_EVENT } from '@/common/constants';
+import { FB_CHANGED_EVENT } from '@/common/constants';
 
 console.debug('> Loaded: newsfeed/index.ts');
 
@@ -210,7 +210,10 @@ script.onload = () => script.remove();
 // Listen for URL changes
 window.addEventListener('message', (event) => {
   if (event.source !== window) return;
-  if (event.data?.type === FB_URL_CHANGED_EVENT) {
+  if (event.data?.type === FB_CHANGED_EVENT) {
+    console.debug(
+      `[FriendFocus] FB_CHANGED_EVENT received: trigger=${event.data.trigger}`
+    );
     if (isFbNewsfeedPage()) {
       initializeTask();
     } else {
