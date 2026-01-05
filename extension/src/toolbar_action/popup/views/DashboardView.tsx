@@ -104,7 +104,7 @@ export const DashboardView = () => {
           >
             <Shield className='w-3.5 h-3.5 fill-current' />
             <span className='text-[11px] font-bold leading-none'>
-              {blockedToday}{' '}
+              {blockedToday.toLocaleString()}{' '}
               <span className='font-medium opacity-80'>blocked today</span>
             </span>
           </div>
