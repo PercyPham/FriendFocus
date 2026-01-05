@@ -2,7 +2,7 @@
   "name": "FriendFocus",
   "description": "See only your friends on Facebook. No more distractions.",
   "type": "module",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "private": true,
   "scripts": {
     "dev": "vite",

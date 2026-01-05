@@ -134,18 +134,15 @@ storage.onChange(storage.key.groupListUpdatedAt, () => {
   delete profileDataCache[storage.key.groupList];
 });
 
-const hideNewsfeedPosts = async (
+const hideNewsfeedPosts = (
   feedPosts: Element[],
   friendSlugSet: Set<string>,
+  isFollowingsEnabled: boolean,
   followingSlugSet: Set<string>,
+  isGroupsEnabled: boolean,
   groupSlugSet: Set<string>,
   groupNameSet: Set<string>
-): Promise<number> => {
-  const isGroupsEnabled = await storage.get(storage.key.isGroupsEnabled);
-  const isFollowingsEnabled = await storage.get(
-    storage.key.isFollowingsEnabled
-  );
-
+): number => {
   const isAllowedPost = (post: Element) =>
     isFriendPost(post, friendSlugSet) ||
     (isFollowingsEnabled && isFollowingPost(post, followingSlugSet)) ||
@@ -199,10 +196,12 @@ export const updateFriendFocus = async () => {
   );
 
   const feedPosts = findFeedPosts();
-  newlyHiddenCount += await hideNewsfeedPosts(
+  newlyHiddenCount += hideNewsfeedPosts(
     feedPosts || [],
     friendProfileData.slugSet,
+    isFollowingsEnabled,
     followingProfileData.slugSet,
+    isGroupsEnabled,
     groupProfileData.slugSet,
     groupProfileData.nameSet
   );

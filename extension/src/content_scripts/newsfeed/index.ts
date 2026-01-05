@@ -1,9 +1,6 @@
 import storage from '@/common/storage';
 import { updateFriendFocus } from './newsfeed_service';
-import {
-  findFeedPostsDirectParent,
-  findStoriesParentDiv,
-} from './newsfeed_utils';
+import { findFeedsParent, findStoriesParentDiv } from './newsfeed_utils';
 import { FB_CHANGED_EVENT } from '@/common/constants';
 
 console.debug('> Loaded: newsfeed/index.ts');
@@ -77,7 +74,7 @@ async function startTask() {
   if (!isFbNewsfeedPage()) return;
 
   [newsfeedObserver, storiesObserver] = await Promise.all([
-    newsfeedObserver || findAndObserve('Newsfeed', findFeedPostsDirectParent),
+    newsfeedObserver || findAndObserve('Newsfeed', findFeedsParent),
     storiesObserver || findAndObserve('Stories', findStoriesParentDiv),
   ]);
 }

@@ -26,7 +26,23 @@ export const findStoriesParentDiv = () => {
   return storiesParentDiv;
 };
 
-export const findFeedPostsDirectParent = () => {
+let foundFeedsParent: Element | undefined = undefined;
+
+export const findFeedsParent = () => {
+  if (foundFeedsParent && document.body.contains(foundFeedsParent)) {
+    return foundFeedsParent;
+  }
+
+  let feedsParent = findFeedsParent1stWay();
+  if (!feedsParent) {
+    feedsParent = findFeedsParent2ndWay();
+  }
+
+  foundFeedsParent = feedsParent;
+  return feedsParent;
+};
+
+function findFeedsParent1stWay() {
   const mainDiv = document.querySelector('div[role="main"]');
   if (!mainDiv) return undefined;
 
@@ -41,7 +57,7 @@ export const findFeedPostsDirectParent = () => {
 
   const feedPostsChildren = feedPostsWrapper.children;
 
-  const feedPostsDiv = Array.from(feedPostsChildren).find((div) => {
+  const feedsParent = Array.from(feedPostsChildren).find((div) => {
     if (div.children.length < 2) return false;
 
     const hasAllDivsInside = Array.from(div.children).every(
@@ -49,16 +65,53 @@ export const findFeedPostsDirectParent = () => {
     );
     return hasAllDivsInside;
   });
-  if (!feedPostsDiv) return undefined;
 
-  return feedPostsDiv;
-};
+  return feedsParent;
+}
+
+function findFeedsParent2ndWay() {
+  const body = document.body;
+
+  const likeButtons = body.querySelectorAll(
+    'div[data-ad-rendering-role="like_button"]'
+  );
+  if (likeButtons.length < 2) return undefined;
+
+  const [like1, like2] = likeButtons;
+
+  return findNearestCommonParent(body, like1, like2);
+}
+
+function findNearestCommonParent(
+  furthestAncestor: Element,
+  el1: Element,
+  el2: Element
+) {
+  const el1Ancestors = new Set<Element>();
+  let current: Element | null = el1;
+
+  while (current && current !== furthestAncestor) {
+    el1Ancestors.add(current);
+    current = current.parentElement;
+  }
+
+  if (current === furthestAncestor) el1Ancestors.add(furthestAncestor);
+
+  current = el2;
+  while (current) {
+    if (el1Ancestors.has(current)) return current;
+    if (current === furthestAncestor) break;
+    current = current.parentElement;
+  }
+
+  return undefined;
+}
 
 export const findFeedPosts = () => {
-  const feedPostsDirectParent = findFeedPostsDirectParent();
-  if (!feedPostsDirectParent) return undefined;
+  const feedsParent = findFeedsParent();
+  if (!feedsParent) return undefined;
 
-  const feedPosts = Array.from(feedPostsDirectParent.children);
+  const feedPosts = Array.from(feedsParent.children);
   return feedPosts;
 };
 
