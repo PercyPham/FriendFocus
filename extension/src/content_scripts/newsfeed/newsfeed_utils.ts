@@ -16,14 +16,9 @@ export const findStoriesElements = () => {
   return storiesElements;
 };
 
-export const findStoriesParentDiv = () => {
+export const findStoriesParent = () => {
   const storiesElements = findStoriesElements();
-  if (!storiesElements?.length) return undefined;
-
-  const storiesParentDiv = storiesElements[0].parentElement;
-  if (!storiesParentDiv) return undefined;
-
-  return storiesParentDiv;
+  return storiesElements?.[0]?.parentElement ?? undefined;
 };
 
 let foundFeedsParent: Element | undefined = undefined;
