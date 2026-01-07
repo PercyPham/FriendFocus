@@ -34,6 +34,7 @@ export const Header = () => {
     <a
       onClick={onClick}
       href={href}
+      target={isLink ? '_blank' : undefined}
       className='w-full flex items-center justify-between p-2.5 hover:bg-gray-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors text-left group'
     >
       <div className='flex items-center gap-3 text-gray-700 dark:text-slate-200'>
