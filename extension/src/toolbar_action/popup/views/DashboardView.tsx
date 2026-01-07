@@ -237,33 +237,31 @@ export const DashboardView = () => {
         </div>
       </div>
 
-      {/* Dynamic Interaction Footer */}
-      <div className='relative bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 py-3 px-4 transition-colors group h-14 overflow-hidden'>
-        <div className='flex items-center justify-center h-full transition-all duration-300 group-hover:opacity-0 group-hover:scale-95 group-hover:pointer-events-none'>
-          <div className='flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-slate-400 font-medium leading-none'>
-            <Heart className='w-3 h-3 text-red-500 fill-current' />
-            <span>Enjoying the silence?</span>
-          </div>
+      {/* Persistent Support Footer */}
+      <div className='bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 py-4 px-6 transition-colors'>
+        <div className='flex items-center justify-center gap-1.5 text-[11px] text-gray-500 dark:text-slate-400 font-medium leading-none mb-3'>
+          <Heart className='w-3 h-3 text-red-500 fill-current' />
+          <span>Enjoying the silence?</span>
         </div>
 
-        <div className='absolute inset-0 flex items-center justify-center gap-3 opacity-0 scale-95 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto px-4'>
+        <div className='flex items-center justify-center gap-3'>
+          {/* Review Button */}
           <a
             href={LINKS.GIVE_A_REVIEW}
             target='_blank'
-            rel='noreferrer'
-            className='flex-1 max-w-[140px] flex items-center justify-center gap-2 py-2 rounded-full text-[11px] font-bold text-gray-600 dark:text-slate-300 bg-gray-100 dark:bg-white/5 hover:bg-[#0866FF] dark:hover:bg-blue-700 hover:text-white dark:hover:text-white hover:scale-105 hover:shadow-md transition-all leading-none border border-transparent dark:border-white/10 group/btn'
+            className='flex-1 max-w-[130px] flex items-center justify-center gap-2 py-2.5 rounded-full text-[11px] font-bold text-gray-600 dark:text-slate-400 bg-gray-50 dark:bg-white/5 hover:bg-[#0866FF] dark:hover:bg-blue-800 hover:text-white dark:hover:text-white hover:scale-105 hover:shadow-md transition-all leading-none border border-transparent dark:border-white/5 group/btn'
           >
             <Star className='w-3.5 h-3.5 text-gray-400 dark:text-slate-500 group-hover/btn:text-white group-hover/btn:fill-current transition-colors' />
             <span>Give a Review</span>
           </a>
 
+          {/* Donate Button */}
           <a
             href={LINKS.BUY_ME_A_COFFEE}
             target='_blank'
-            rel='noreferrer'
-            className='flex-1 max-w-[140px] flex items-center justify-center gap-2 py-2 rounded-full text-[11px] font-bold text-gray-600 dark:text-slate-300 bg-gray-100 dark:bg-white/5 hover:bg-[#FFDD00] dark:hover:bg-yellow-700 hover:text-black dark:hover:text-white hover:scale-105 hover:shadow-md transition-all leading-none border border-transparent dark:border-white/10 group/btn'
+            className='flex-1 max-w-[130px] flex items-center justify-center gap-2 py-2.5 rounded-full text-[11px] font-bold text-gray-600 dark:text-slate-400 bg-gray-50 dark:bg-white/5 hover:bg-[#FFDD00] dark:hover:bg-yellow-800 hover:text-black dark:hover:text-white hover:scale-105 hover:shadow-md transition-all leading-none border border-transparent dark:border-white/5 group/btn'
           >
-            <Coffee className='w-3.5 h-3.5 text-gray-400 dark:text-slate-500 group-hover/btn:text-black dark:group-hover/btn:text-white transition-colors' />
+            <Coffee className='w-3.5 h-3.5 text-gray-400 dark:text-slate-500 group-hover/btn:text-black transition-colors' />
             <span>Buy me a coffee</span>
           </a>
         </div>
