@@ -247,3 +247,8 @@ export const isGroupPost = (
 
   return !!foundGroupElement;
 };
+
+export const isMemoryPost = (post: Element) => {
+  const a = post.querySelector('a[href^="/onthisday"]');
+  return !!a;
+};

@@ -5,6 +5,7 @@ import {
   isFriendPost,
   isFollowingPost,
   isGroupPost,
+  isMemoryPost,
 } from './newsfeed_utils';
 import { sendMessage } from '@/common/background_contract/client';
 
@@ -144,6 +145,7 @@ const hideNewsfeedPosts = (
   groupNameSet: Set<string>
 ): number => {
   const isAllowedPost = (post: Element) =>
+    isMemoryPost(post) ||
     isFriendPost(post, friendSlugSet) ||
     (isFollowingsEnabled && isFollowingPost(post, followingSlugSet)) ||
     (isGroupsEnabled && isGroupPost(post, groupSlugSet, groupNameSet));
