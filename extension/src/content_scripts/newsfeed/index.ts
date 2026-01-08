@@ -109,7 +109,7 @@ async function waitTillExists(
   return element;
 }
 
-function stopTask() {
+function stopTasks() {
   if (newsfeedObserver) {
     newsfeedObserver.disconnect();
     newsfeedObserver = undefined;
@@ -129,7 +129,7 @@ storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
   if (isFriendFocus) {
     startTask();
   } else {
-    stopTask();
+    stopTasks();
   }
 });
 
@@ -153,7 +153,7 @@ const initializeTask = async () => {
 document.addEventListener('visibilitychange', async () => {
   if (document.hidden) {
     // Tab is hidden - stop observer to save resources
-    stopTask();
+    stopTasks();
   } else {
     initializeTask();
   }
@@ -173,7 +173,7 @@ if (document.readyState === 'complete') {
     if (isFbNewsfeedPage()) {
       initializeTask();
     } else {
-      stopTask();
+      stopTasks();
     }
   };
 
@@ -208,13 +208,34 @@ script.onload = () => script.remove();
 window.addEventListener('message', (event) => {
   if (event.source !== window) return;
   if (event.data?.type === FB_CHANGED_EVENT) {
+    const isNewsfeedPage = isFbNewsfeedPage();
     console.debug(
-      `[FriendFocus] FB_CHANGED_EVENT received: trigger=${event.data.trigger}`
+      `[FriendFocus] FB_CHANGED_EVENT received: trigger=${event.data.trigger}, isNewsfeedPage=${isNewsfeedPage}`
     );
-    if (isFbNewsfeedPage()) {
+    if (document.hidden) {
+      console.debug('[FriendFocus] document hidden, stopping tasks');
+      stopTasks();
+      return;
+    }
+
+    if (isNewsfeedPage) {
       initializeTask();
     } else {
-      stopTask();
+      stopTasks();
     }
   }
 });
+
+// periodic check every 3 seconds
+setInterval(async () => {
+  const isNewsfeedPage = isFbNewsfeedPage();
+  const isFriendFocus = await storage.get(storage.key.isFriendFocus);
+  console.debug(
+    `[FriendFocus] periodic check: isNewsfeedPage=${isNewsfeedPage}, isFriendFocus=${isFriendFocus}`
+  );
+  if (isNewsfeedPage && isFriendFocus) {
+    initializeTask();
+  } else {
+    stopTasks();
+  }
+}, 3000);
