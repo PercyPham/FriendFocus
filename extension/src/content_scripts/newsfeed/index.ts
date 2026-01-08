@@ -123,58 +123,44 @@ function stopTasks() {
   }
 }
 
-// Listen to storage changes for isFriendFocus
-storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
-  console.debug('> isFriendFocus changed:', isFriendFocus);
-  if (isFriendFocus) {
-    startTask();
-  } else {
-    stopTasks();
-  }
-});
-
-// Initialize based on current state
-const initializeTask = async () => {
-  if (!isFbNewsfeedPage()) return;
-
+async function orchestrateTasks() {
   try {
+    const isNewsfeedPage = isFbNewsfeedPage();
     const isFriendFocus = await storage.get(storage.key.isFriendFocus);
-    console.debug('> Initial isFriendFocus state:', isFriendFocus);
-
-    if (isFriendFocus) {
+    console.debug(
+      `[FriendFocus] orchestrate: newsfeedPage=${isNewsfeedPage}, friendFocus=${isFriendFocus}, visible=${!document.hidden}`
+    );
+    if (document.hidden) {
+      stopTasks();
+    } else if (isNewsfeedPage && isFriendFocus) {
       await startTask();
+    } else {
+      stopTasks();
     }
   } catch (error) {
-    console.error('> Error initializing task:', error);
+    console.error('[FriendFocus] Error orchestrating tasks:', error);
   }
-};
+}
 
-// Listen for visibility changes
-document.addEventListener('visibilitychange', async () => {
-  if (document.hidden) {
-    // Tab is hidden - stop observer to save resources
-    stopTasks();
-  } else {
-    initializeTask();
-  }
+storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
+  console.debug('[FriendFocus] isFriendFocus changed:', isFriendFocus);
+  orchestrateTasks();
 });
 
-// Single initialization point
+document.addEventListener('visibilitychange', orchestrateTasks);
+
 if (document.readyState === 'complete') {
-  initializeTask();
+  orchestrateTasks();
 } else {
-  window.addEventListener('load', initializeTask);
+  window.addEventListener('load', orchestrateTasks);
 }
 
 // Listen for URL changes
 // This is used to listen for URL changes by user action on browser and notify the content script
 (function () {
   const notifyUrlChange = () => {
-    if (isFbNewsfeedPage()) {
-      initializeTask();
-    } else {
-      stopTasks();
-    }
+    console.debug('[FriendFocus] URL changed');
+    orchestrateTasks();
   };
 
   // Hook pushState
@@ -204,38 +190,19 @@ script.onload = () => script.remove();
 
 (document.head || document.documentElement).appendChild(script);
 
-// Listen for URL changes
+// Listen for FB changed event
 window.addEventListener('message', (event) => {
   if (event.source !== window) return;
   if (event.data?.type === FB_CHANGED_EVENT) {
-    const isNewsfeedPage = isFbNewsfeedPage();
     console.debug(
-      `[FriendFocus] FB_CHANGED_EVENT received: trigger=${event.data.trigger}, isNewsfeedPage=${isNewsfeedPage}`
+      `[FriendFocus] FB_CHANGED_EVENT received: trigger=${event.data.trigger}`
     );
-    if (document.hidden) {
-      console.debug('[FriendFocus] document hidden, stopping tasks');
-      stopTasks();
-      return;
-    }
-
-    if (isNewsfeedPage) {
-      initializeTask();
-    } else {
-      stopTasks();
-    }
+    orchestrateTasks();
   }
 });
 
 // periodic check every 3 seconds
 setInterval(async () => {
-  const isNewsfeedPage = isFbNewsfeedPage();
-  const isFriendFocus = await storage.get(storage.key.isFriendFocus);
-  console.debug(
-    `[FriendFocus] periodic check: isNewsfeedPage=${isNewsfeedPage}, isFriendFocus=${isFriendFocus}`
-  );
-  if (isNewsfeedPage && isFriendFocus) {
-    initializeTask();
-  } else {
-    stopTasks();
-  }
+  console.debug(`[FriendFocus] periodic check`);
+  orchestrateTasks();
 }, 3000);
