@@ -212,5 +212,5 @@ export const updateFriendFocus = async () => {
   if (newlyHiddenCount > 0) {
     sendMessage('INCREMENT_TODAY_BLOCKED_POSTS_COUNT', newlyHiddenCount);
   }
-  console.debug('> isFriendFocus:', isFriendFocus);
+  console.debug('> newlyHiddenCount:', newlyHiddenCount);
 };
