@@ -72,7 +72,7 @@ async function startTask() {
 
   const startNewsfeedObserver = async () => {
     if (!newsfeedObserver) {
-      console.log('> starting newsfeedObserver');
+      console.debug('> starting newsfeedObserver');
       [newsfeedParent, newsfeedObserver] = await findAndObserve(
         'Newsfeed',
         findFeedsParent
@@ -85,7 +85,7 @@ async function startTask() {
 
     if (isNewsfeedObserverValid) return;
 
-    console.log('> newsfeedObserver is invalid, reseting newsfeedObserver');
+    console.debug('> newsfeedObserver is invalid, reseting newsfeedObserver');
 
     newsfeedObserver?.disconnect();
     newsfeedParent = undefined;
@@ -99,7 +99,7 @@ async function startTask() {
 
   const startStoriesObserver = async () => {
     if (!storiesObserver) {
-      console.log('> starting storiesObserver');
+      console.debug('> starting storiesObserver');
       [storiesParent, storiesObserver] = await findAndObserve(
         'Stories',
         findStoriesParent
@@ -112,7 +112,7 @@ async function startTask() {
 
     if (isStoriesObserverValid) return;
 
-    console.log('> storiesObserver is invalid, reseting storiesObserver');
+    console.debug('> storiesObserver is invalid, reseting storiesObserver');
 
     storiesObserver?.disconnect();
     storiesParent = undefined;

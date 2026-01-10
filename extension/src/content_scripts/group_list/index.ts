@@ -63,7 +63,7 @@ const initializeManualMode = (
     const nameToUse = finalGroupInfo.name || groupInfo.name || '';
 
     if (selectedGroups.has(groupInfo.slug)) {
-      console.log({
+      console.debug({
         final: finalGroupInfo.name,
         group: groupInfo.name,
         slug: groupInfo.slug,

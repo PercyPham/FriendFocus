@@ -181,7 +181,7 @@ export const getGroupListAutoCrawl = async (): Promise<GroupInfo[]> => {
   const allGroups: GroupInfo[] = [];
   const seenSlugs = new Set<string>();
 
-  console.log('groupElements', groupElements);
+  console.debug('groupElements', groupElements);
 
   groupElements.forEach((e) => {
     const groupInfo = extractGroupInfo(e);
