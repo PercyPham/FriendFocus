@@ -21,11 +21,6 @@ function observeChildChanges(
   targetElement: Element,
   callback: () => void
 ) {
-  if (!targetElement) {
-    console.error(`[${targetName}] target element not found.`);
-    return;
-  }
-
   let previousChildCount = targetElement.children.length;
 
   // 2. Create an instance of the observer with the callback
@@ -67,27 +62,80 @@ function observeChildChanges(
 }
 
 // Observer lifecycle management
+let newsfeedParent: Element | undefined = undefined;
 let newsfeedObserver: MutationObserver | undefined = undefined;
+let storiesParent: Element | undefined = undefined;
 let storiesObserver: MutationObserver | undefined = undefined;
 
 async function startTask() {
   if (!isFbNewsfeedPage()) return;
 
-  [newsfeedObserver, storiesObserver] = await Promise.all([
-    newsfeedObserver || findAndObserve('Newsfeed', findFeedsParent),
-    storiesObserver || findAndObserve('Stories', findStoriesParent),
-  ]);
+  const startNewsfeedObserver = async () => {
+    if (!newsfeedObserver) {
+      console.log('> starting newsfeedObserver');
+      [newsfeedParent, newsfeedObserver] = await findAndObserve(
+        'Newsfeed',
+        findFeedsParent
+      );
+      return;
+    }
+
+    const isNewsfeedObserverValid =
+      newsfeedParent && document.body.contains(newsfeedParent);
+
+    if (isNewsfeedObserverValid) return;
+
+    console.log('> newsfeedObserver is invalid, reseting newsfeedObserver');
+
+    newsfeedObserver?.disconnect();
+    newsfeedParent = undefined;
+    newsfeedObserver = undefined;
+
+    [newsfeedParent, newsfeedObserver] = await findAndObserve(
+      'Newsfeed',
+      findFeedsParent
+    );
+  };
+
+  const startStoriesObserver = async () => {
+    if (!storiesObserver) {
+      console.log('> starting storiesObserver');
+      [storiesParent, storiesObserver] = await findAndObserve(
+        'Stories',
+        findStoriesParent
+      );
+      return;
+    }
+
+    const isStoriesObserverValid =
+      storiesParent && document.body.contains(storiesParent);
+
+    if (isStoriesObserverValid) return;
+
+    console.log('> storiesObserver is invalid, reseting storiesObserver');
+
+    storiesObserver?.disconnect();
+    storiesParent = undefined;
+    storiesObserver = undefined;
+
+    [storiesParent, storiesObserver] = await findAndObserve(
+      'Stories',
+      findStoriesParent
+    );
+  };
+
+  await Promise.all([startNewsfeedObserver(), startStoriesObserver()]);
 }
 
 async function findAndObserve(
   targetName: string,
   elementFinder: () => Element | undefined
-) {
+): Promise<[Element, MutationObserver] | [undefined, undefined]> {
   const element = await waitTillExists(targetName, elementFinder);
-  if (!element) return undefined;
+  if (!element) return [undefined, undefined];
   const observer = observeChildChanges(targetName, element, updateFriendFocus);
   updateFriendFocus();
-  return observer;
+  return [element, observer];
 }
 
 async function waitTillExists(
@@ -128,7 +176,7 @@ async function orchestrateTasks() {
     const isNewsfeedPage = isFbNewsfeedPage();
     const isFriendFocus = await storage.get(storage.key.isFriendFocus);
     console.debug(
-      `[FriendFocus] orchestrate: newsfeedPage=${isNewsfeedPage}, friendFocus=${isFriendFocus}, visible=${!document.hidden}`
+      `[FriendFocus] orchestrate: newsfeedPage=${isNewsfeedPage}, friendFocus=${isFriendFocus}, visible=${!document.hidden}, newsfeedObserver=${!!newsfeedObserver}, storiesObserver=${!!storiesObserver}`
     );
     if (document.hidden) {
       stopTasks();
