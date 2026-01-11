@@ -3,6 +3,7 @@ import {
   showUpdatePopup,
   showProgressPopup,
 } from './components/OverlayManager';
+import { logger } from '@/common/logger';
 
 // Helper function to wait for a condition
 const waitFor = (
@@ -80,7 +81,7 @@ const extractFriendInfo = (anchorElement: Element): FriendInfo | null => {
 
     return { slug, name };
   } catch (error) {
-    console.error('Error extracting friend info:', error);
+    logger.error('Error extracting friend info:', error);
     return null;
   }
 };

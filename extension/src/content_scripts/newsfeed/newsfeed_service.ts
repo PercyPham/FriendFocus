@@ -8,6 +8,7 @@ import {
   isMemoryPost,
 } from './newsfeed_utils';
 import { sendMessage } from '@/common/background_contract/client';
+import { logger } from '@/common/logger';
 
 const NOT_ALLOWED_STORY = 'friendfocus-not-allowed-story';
 
@@ -212,5 +213,5 @@ export const updateFriendFocus = async () => {
   if (newlyHiddenCount > 0) {
     sendMessage('INCREMENT_TODAY_BLOCKED_POSTS_COUNT', newlyHiddenCount);
   }
-  console.debug('> newlyHiddenCount:', newlyHiddenCount);
+  logger.debug('newlyHiddenCount:', newlyHiddenCount);
 };

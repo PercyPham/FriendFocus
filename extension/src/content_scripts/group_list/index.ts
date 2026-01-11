@@ -7,8 +7,9 @@ import {
 } from './components/OverlayManager';
 import type { GroupInfo } from '@/common/types';
 import storage from '@/common/storage';
+import { logger } from '@/common/logger';
 
-console.debug('> Loaded: group_list/index.ts');
+logger.info('Loaded: group_list/index.ts');
 
 // Global state to track all selected groups (persists across DOM changes)
 const selectedGroups = new Map<string, GroupInfo>();
@@ -63,7 +64,7 @@ const initializeManualMode = (
     const nameToUse = finalGroupInfo.name || groupInfo.name || '';
 
     if (selectedGroups.has(groupInfo.slug)) {
-      console.debug({
+      logger.debug({
         final: finalGroupInfo.name,
         group: groupInfo.name,
         slug: groupInfo.slug,

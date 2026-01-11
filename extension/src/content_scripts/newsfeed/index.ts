@@ -2,15 +2,16 @@ import storage from '@/common/storage';
 import { updateFriendFocus } from './newsfeed_service';
 import { findFeedsParent, findStoriesParent } from './newsfeed_utils';
 import { FB_CHANGED_EVENT } from '@/common/constants';
+import { logger } from '@/common/logger';
 
-console.debug('> Loaded: newsfeed/index.ts');
+logger.info('Loaded: newsfeed/index.ts');
 
 const isFbNewsfeedPage = () => {
   const url = new URL(window.location.href);
   return url.hostname === 'www.facebook.com' && url.pathname === '/';
 };
 
-console.debug('> isFbNewsfeedPage:', isFbNewsfeedPage());
+logger.debug('> isFbNewsfeedPage:', isFbNewsfeedPage());
 
 /**
  * Detects changes in the number of direct children of a target element.
@@ -31,7 +32,7 @@ function observeChildChanges(
         const currentChildCount = targetElement.children.length;
 
         if (currentChildCount !== previousChildCount) {
-          console.debug(
+          logger.debug(
             `[${targetName}] Child count changed! ${previousChildCount} -> ${currentChildCount}`
           );
 
@@ -53,8 +54,8 @@ function observeChildChanges(
 
   // 4. Start observing the target element
   observer.observe(targetElement, config);
-  console.debug(
-    `[FriendFocus] [${targetName}] MutationObserver started on the target element.`
+  logger.debug(
+    `[${targetName}] MutationObserver started on the target element.`
   );
 
   // Optional: Return the observer instance so it can be stopped later
@@ -72,7 +73,7 @@ async function startTask() {
 
   const startNewsfeedObserver = async () => {
     if (!newsfeedObserver) {
-      console.debug('> starting newsfeedObserver');
+      logger.debug('> starting newsfeedObserver');
       [newsfeedParent, newsfeedObserver] = await findAndObserve(
         'Newsfeed',
         findFeedsParent
@@ -85,7 +86,7 @@ async function startTask() {
 
     if (isNewsfeedObserverValid) return;
 
-    console.debug('> newsfeedObserver is invalid, reseting newsfeedObserver');
+    logger.debug('> newsfeedObserver is invalid, reseting newsfeedObserver');
 
     newsfeedObserver?.disconnect();
     newsfeedParent = undefined;
@@ -99,7 +100,7 @@ async function startTask() {
 
   const startStoriesObserver = async () => {
     if (!storiesObserver) {
-      console.debug('> starting storiesObserver');
+      logger.debug('> starting storiesObserver');
       [storiesParent, storiesObserver] = await findAndObserve(
         'Stories',
         findStoriesParent
@@ -112,7 +113,7 @@ async function startTask() {
 
     if (isStoriesObserverValid) return;
 
-    console.debug('> storiesObserver is invalid, reseting storiesObserver');
+    logger.debug('> storiesObserver is invalid, reseting storiesObserver');
 
     storiesObserver?.disconnect();
     storiesParent = undefined;
@@ -148,7 +149,7 @@ async function waitTillExists(
   let element = elementFinder();
   while (!element) {
     if (Date.now() - startTime > timeout) {
-      console.debug(`[FriendFocus] Timeout waiting for ${targetName} element`);
+      logger.debug(`Timeout waiting for ${targetName} element`);
       return undefined;
     }
     await new Promise((resolve) => setTimeout(resolve, interval));
@@ -161,13 +162,13 @@ function stopTasks() {
   if (newsfeedObserver) {
     newsfeedObserver.disconnect();
     newsfeedObserver = undefined;
-    console.debug('> Newsfeed observer stopped');
+    logger.debug('> Newsfeed observer stopped');
   }
 
   if (storiesObserver) {
     storiesObserver.disconnect();
     storiesObserver = undefined;
-    console.debug('> Stories observer stopped');
+    logger.debug('> Stories observer stopped');
   }
 }
 
@@ -175,8 +176,8 @@ async function orchestrateTasks() {
   try {
     const isNewsfeedPage = isFbNewsfeedPage();
     const isFriendFocus = await storage.get(storage.key.isFriendFocus);
-    console.debug(
-      `[FriendFocus] orchestrate: newsfeedPage=${isNewsfeedPage}, friendFocus=${isFriendFocus}, visible=${!document.hidden}, newsfeedObserver=${!!newsfeedObserver}, storiesObserver=${!!storiesObserver}`
+    logger.debug(
+      `orchestrate: newsfeedPage=${isNewsfeedPage}, friendFocus=${isFriendFocus}, visible=${!document.hidden}, newsfeedObserver=${!!newsfeedObserver}, storiesObserver=${!!storiesObserver}`
     );
     if (document.hidden) {
       stopTasks();
@@ -186,12 +187,12 @@ async function orchestrateTasks() {
       stopTasks();
     }
   } catch (error) {
-    console.error('[FriendFocus] Error orchestrating tasks:', error);
+    logger.error('Error orchestrating tasks:', error);
   }
 }
 
 storage.onChange(storage.key.isFriendFocus, (isFriendFocus) => {
-  console.debug('[FriendFocus] isFriendFocus changed:', isFriendFocus);
+  logger.debug('isFriendFocus changed:', isFriendFocus);
   orchestrateTasks();
 });
 
@@ -207,7 +208,7 @@ if (document.readyState === 'complete') {
 // This is used to listen for URL changes by user action on browser and notify the content script
 (function () {
   const notifyUrlChange = () => {
-    console.debug('[FriendFocus] URL changed');
+    logger.debug('URL changed');
     orchestrateTasks();
   };
 
@@ -242,15 +243,13 @@ script.onload = () => script.remove();
 window.addEventListener('message', (event) => {
   if (event.source !== window) return;
   if (event.data?.type === FB_CHANGED_EVENT) {
-    console.debug(
-      `[FriendFocus] FB_CHANGED_EVENT received: trigger=${event.data.trigger}`
-    );
+    logger.debug(`FB_CHANGED_EVENT received: trigger=${event.data.trigger}`);
     orchestrateTasks();
   }
 });
 
 // periodic check every 3 seconds
 setInterval(async () => {
-  console.debug(`[FriendFocus] periodic check`);
+  logger.debug(`periodic check`);
   orchestrateTasks();
 }, 3000);

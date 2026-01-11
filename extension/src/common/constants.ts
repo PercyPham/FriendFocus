@@ -12,6 +12,8 @@ export const PROFILE_ADD_BUTTON_CLASS = 'friendfocus-profile-add-btn';
 
 export const APP_VERSION = __APP_VERSION__;
 
+export const LOG_LEVEL = import.meta.env.PROD ? 'error' : 'debug';
+
 export const LINKS = {
   FAQ: 'https://sites.google.com/view/friendfocus-faq/home',
   REPORT_A_BUG: 'https://forms.gle/FvtSo6jhLtKAWt1s9',

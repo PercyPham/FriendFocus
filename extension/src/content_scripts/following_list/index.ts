@@ -10,8 +10,9 @@ import {
 } from './components/OverlayManager';
 import type { FollowingInfo } from '@/common/types';
 import storage from '@/common/storage';
+import { logger } from '@/common/logger';
 
-console.debug('> Loaded: following_list/index.ts');
+logger.info('Loaded: following_list/index.ts');
 
 // Global state to track all selected profiles (persists across DOM changes)
 const selectedProfiles = new Map<string, FollowingInfo>();

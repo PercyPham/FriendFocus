@@ -1,5 +1,6 @@
 import type { FollowingInfo } from '@/common/types';
 import { showFollowingProgressPopup } from './components/OverlayManager';
+import { logger } from '@/common/logger';
 
 // Helper function to wait for a condition
 const waitFor = (
@@ -82,7 +83,7 @@ export const extractFollowingInfo = (
 
     return { slug, name };
   } catch (error) {
-    console.error('Error extracting following info:', error);
+    logger.error('Error extracting following info:', error);
     return null;
   }
 };

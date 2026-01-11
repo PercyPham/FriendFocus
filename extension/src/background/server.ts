@@ -3,6 +3,7 @@ import {
   MessageContract,
   MessageType,
 } from '../common/background_contract/contract';
+import { logger } from '@/common/logger';
 
 type Handler<T extends MessageType> = (
   payload: MessageContract[T]['req'],
@@ -29,7 +30,7 @@ export function setupMessageListener() {
       Promise.resolve(handler(payload, sender))
         .then(sendResponse)
         .catch((err) => {
-          console.error(`Error in handler for ${type}:`, err);
+          logger.error(`Error in handler for ${type}:`, err);
           sendResponse({ error: err.message });
         });
 

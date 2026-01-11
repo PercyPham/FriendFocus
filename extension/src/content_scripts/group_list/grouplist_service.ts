@@ -1,5 +1,6 @@
 import type { GroupInfo } from '@/common/types';
 import { showGroupProgressPopup } from './components/OverlayManager';
+import { logger } from '@/common/logger';
 
 // Helper function to wait for a condition
 const waitFor = (
@@ -73,7 +74,7 @@ export const extractGroupInfo = (anchorElement: Element): GroupInfo | null => {
 
     return { slug, name };
   } catch (error) {
-    console.error('Error extracting group info:', error);
+    logger.error('Error extracting group info:', error);
     return null;
   }
 };
@@ -181,7 +182,7 @@ export const getGroupListAutoCrawl = async (): Promise<GroupInfo[]> => {
   const allGroups: GroupInfo[] = [];
   const seenSlugs = new Set<string>();
 
-  console.debug('groupElements', groupElements);
+  logger.debug('groupElements:', groupElements);
 
   groupElements.forEach((e) => {
     const groupInfo = extractGroupInfo(e);
