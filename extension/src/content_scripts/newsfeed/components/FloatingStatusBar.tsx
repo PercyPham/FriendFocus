@@ -106,45 +106,11 @@ export default function FloatingStatusBar() {
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             }}
           >
-            <svg
-              width='24'
-              height='24'
-              viewBox='0 0 200 200'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <circle cx='100' cy='100' r='100' fill='#0866FF' />
-              <line
-                x1='100'
-                y1='100'
-                x2='100'
-                y2='35'
-                stroke='#ffffff'
-                strokeWidth='10'
-                strokeLinecap='round'
-              />
-              <line
-                x1='100'
-                y1='100'
-                x2='156.29'
-                y2='132.5'
-                stroke='#ffffff'
-                strokeWidth='10'
-                strokeLinecap='round'
-              />
-              <line
-                x1='100'
-                y1='100'
-                x2='43.71'
-                y2='132.5'
-                stroke='#ffffff'
-                strokeWidth='10'
-                strokeLinecap='round'
-              />
-              <circle cx='100' cy='100' r='32' fill='#ffffff' />
-              <circle cx='100' cy='35' r='20' fill='#ffffff' />
-              <circle cx='156.29' cy='132.5' r='20' fill='#ffffff' />
-              <circle cx='43.71' cy='132.5' r='20' fill='#ffffff' />
-            </svg>
+            <img
+              src={chrome.runtime.getURL('icon.svg')}
+              style={{ width: '24px', height: '24px' }}
+              alt='FriendFocus Logo'
+            />
             <div
               style={{
                 display: 'flex',
