@@ -31,117 +31,35 @@ export default function FloatingStatusBar() {
   };
 
   return (
-    <>
-      <style>{`
-        @keyframes lightBeam {
-          0% {
-            left: -100%;
-          }
-          50% {
-            left: 100%;
-          }
-          100% {
-            left: -100%;
-          }
-        }
-
-        .light-beam-container {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .light-beam {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.8),
-            transparent
-          );
-          animation: lightBeam 2s ease-in-out infinite;
-        }
-      `}</style>
-
-      <div
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onClick={handleClick}
-        style={{
-          position: 'fixed',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 99999,
-          transition: 'all 0.3s ease',
-          cursor: 'pointer',
-        }}
-      >
-        {!isHovered ? (
-          // Collapsed state: thin blue bar with light beam
-          <div
-            className='light-beam-container'
-            style={{
-              width: '30px',
-              height: '2px',
-              backgroundColor: '#0866FF',
-              borderRadius: '1px',
-            }}
-          >
-            <div className='light-beam' />
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+      className='fixed bottom-5 left-0 right-0 mx-auto w-fit z-2147483647 cursor-pointer pointer-events-auto'
+    >
+      {!isHovered ? (
+        // Collapsed state: thin blue bar with light beam back and forth
+        <div className='relative overflow-hidden w-[30px] h-[2px] bg-[#0866FF] rounded-[1px] shadow-sm'>
+          <div className='absolute top-0 bottom-0 w-1/2 animate-shimmer-beam' />
+        </div>
+      ) : (
+        // Expanded state: logo + blocked count
+        <div className='flex items-center gap-3 px-4 py-2 bg-white dark:bg-[#242526] rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-transparent dark:border-[#393a3b] animate-in fade-in zoom-in duration-200'>
+          <img
+            src={chrome.runtime.getURL('icon.svg')}
+            className='w-6 h-6'
+            alt='FriendFocus Logo'
+          />
+          <div className='flex flex-col items-start'>
+            <span className='text-[10px] text-[#65676b] dark:text-[#b0b3b8] font-medium font-sans leading-tight'>
+              Blocked Today
+            </span>
+            <span className='text-base text-[#0866FF] dark:text-[#4599ff] font-bold font-sans leading-tight'>
+              {blockedToday.toLocaleString()}
+            </span>
           </div>
-        ) : (
-          // Expanded state: logo + blocked count
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '8px 16px',
-              backgroundColor: 'white',
-              borderRadius: '20px',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-            }}
-          >
-            <img
-              src={chrome.runtime.getURL('icon.svg')}
-              style={{ width: '24px', height: '24px' }}
-              alt='FriendFocus Logo'
-            />
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-              }}
-            >
-              <span
-                style={{
-                  fontSize: '10px',
-                  color: '#65676b',
-                  fontWeight: 500,
-                  fontFamily: 'system-ui, -apple-system, sans-serif',
-                }}
-              >
-                Blocked Today
-              </span>
-              <span
-                style={{
-                  fontSize: '16px',
-                  color: '#0866FF',
-                  fontWeight: 700,
-                  fontFamily: 'system-ui, -apple-system, sans-serif',
-                }}
-              >
-                {blockedToday.toLocaleString()}
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 }
