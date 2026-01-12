@@ -25,11 +25,6 @@
 }
 
 .animate-shimmer-beam {
-  animation: shimmer-beam 2s ease-in-out infinite;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.8),
-    transparent
-  );
+  animation: shimmer-beam 5s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, white, transparent);
 }

@@ -1,34 +1,60 @@
-import { useEffect, useState } from 'react';
-import storage from '@/common/storage';
+import { useEffect, useState, useRef } from 'react';
+import storage, { BlockedPostsLog } from '@/common/storage';
 import { getTodayDateString } from '@/common/utils';
 import { sendMessage } from '@/common/background_contract/client';
 
 export default function FloatingStatusBar() {
   const [blockedToday, setBlockedToday] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const lastBlockedCount = useRef(0);
+  const isInitialized = useRef(false);
+
   useEffect(() => {
-    // Initial load
-    const loadBlockedCount = async () => {
-      const log = await storage.get(storage.key.blockedPostsLog);
+    const handleUpdate = (log: BlockedPostsLog | undefined) => {
       const today = getTodayDateString();
-      setBlockedToday(log?.[today] || 0);
+      const count = log?.[today] || 0;
+
+      if (!isInitialized.current) {
+        setBlockedToday(count);
+        lastBlockedCount.current = count;
+        isInitialized.current = true;
+        return;
+      }
+
+      if (count > lastBlockedCount.current) {
+        setIsVisible(true);
+      }
+
+      setBlockedToday(count);
+      lastBlockedCount.current = count;
     };
 
-    loadBlockedCount();
+    // Initial load
+    storage.get(storage.key.blockedPostsLog).then(handleUpdate);
 
     // Listen for changes
-    storage.onChange(storage.key.blockedPostsLog, (log) => {
-      const today = getTodayDateString();
-      setBlockedToday(log?.[today] || 0);
-    });
+    storage.onChange(storage.key.blockedPostsLog, handleUpdate);
   }, []);
+
+  // Auto-hide timer
+  useEffect(() => {
+    if (isVisible && !isHovered) {
+      const timer = setTimeout(() => {
+        setIsVisible(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, isHovered, blockedToday]);
 
   const handleClick = () => {
     if (isHovered) {
       sendMessage('OPEN_EXTENSION_POPUP');
     }
   };
+
+  if (!isVisible && !isHovered) return <></>;
 
   return (
     <div
