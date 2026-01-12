@@ -55,6 +55,11 @@ export type MessageContract = {
     req: GroupInfo[];
     res: void;
   };
+
+  OPEN_EXTENSION_POPUP: {
+    req: void;
+    res: void;
+  };
 };
 
 export type MessageType = keyof MessageContract;
@@ -71,6 +76,7 @@ export const MESSAGE_TYPES = [
   'SET_GROUPS_ENABLED',
   'START_COLLECTING_GROUP_LIST',
   'SAVE_GROUP_LIST',
+  'OPEN_EXTENSION_POPUP',
 ] as const satisfies MessageType[];
 
 void (0 as any as (typeof MESSAGE_TYPES)[number] satisfies keyof MessageContract);

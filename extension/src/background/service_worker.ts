@@ -145,4 +145,13 @@ onMessage('SAVE_GROUP_LIST', async (groupList, sender) => {
   }
 });
 
+onMessage('OPEN_EXTENSION_POPUP', async (_req, sender) => {
+  logger.debug('Received OPEN_EXTENSION_POPUP request from tab:', sender);
+  try {
+    await chrome.action.openPopup();
+  } catch (error) {
+    logger.error('Error opening extension popup:', error);
+  }
+});
+
 setupMessageListener();

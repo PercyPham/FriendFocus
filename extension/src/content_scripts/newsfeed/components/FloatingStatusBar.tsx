@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import storage from '@/common/storage';
 import { getTodayDateString } from '@/common/utils';
+import { sendMessage } from '@/common/background_contract/client';
 
 export default function FloatingStatusBar() {
   const [blockedToday, setBlockedToday] = useState(0);
@@ -22,6 +23,12 @@ export default function FloatingStatusBar() {
       setBlockedToday(log?.[today] || 0);
     });
   }, []);
+
+  const handleClick = () => {
+    if (isHovered) {
+      sendMessage('OPEN_EXTENSION_POPUP');
+    }
+  };
 
   return (
     <>
@@ -62,6 +69,7 @@ export default function FloatingStatusBar() {
       <div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleClick}
         style={{
           position: 'fixed',
           bottom: '20px',
@@ -75,7 +83,7 @@ export default function FloatingStatusBar() {
         {!isHovered ? (
           // Collapsed state: thin blue bar with light beam
           <div
-            className="light-beam-container"
+            className='light-beam-container'
             style={{
               width: '30px',
               height: '2px',
@@ -83,7 +91,7 @@ export default function FloatingStatusBar() {
               borderRadius: '1px',
             }}
           >
-            <div className="light-beam" />
+            <div className='light-beam' />
           </div>
         ) : (
           // Expanded state: logo + blocked count
@@ -99,43 +107,43 @@ export default function FloatingStatusBar() {
             }}
           >
             <svg
-              width="24"
-              height="24"
-              viewBox="0 0 200 200"
-              xmlns="http://www.w3.org/2000/svg"
+              width='24'
+              height='24'
+              viewBox='0 0 200 200'
+              xmlns='http://www.w3.org/2000/svg'
             >
-              <circle cx="100" cy="100" r="100" fill="#0866FF" />
+              <circle cx='100' cy='100' r='100' fill='#0866FF' />
               <line
-                x1="100"
-                y1="100"
-                x2="100"
-                y2="35"
-                stroke="#ffffff"
-                strokeWidth="10"
-                strokeLinecap="round"
+                x1='100'
+                y1='100'
+                x2='100'
+                y2='35'
+                stroke='#ffffff'
+                strokeWidth='10'
+                strokeLinecap='round'
               />
               <line
-                x1="100"
-                y1="100"
-                x2="156.29"
-                y2="132.5"
-                stroke="#ffffff"
-                strokeWidth="10"
-                strokeLinecap="round"
+                x1='100'
+                y1='100'
+                x2='156.29'
+                y2='132.5'
+                stroke='#ffffff'
+                strokeWidth='10'
+                strokeLinecap='round'
               />
               <line
-                x1="100"
-                y1="100"
-                x2="43.71"
-                y2="132.5"
-                stroke="#ffffff"
-                strokeWidth="10"
-                strokeLinecap="round"
+                x1='100'
+                y1='100'
+                x2='43.71'
+                y2='132.5'
+                stroke='#ffffff'
+                strokeWidth='10'
+                strokeLinecap='round'
               />
-              <circle cx="100" cy="100" r="32" fill="#ffffff" />
-              <circle cx="100" cy="35" r="20" fill="#ffffff" />
-              <circle cx="156.29" cy="132.5" r="20" fill="#ffffff" />
-              <circle cx="43.71" cy="132.5" r="20" fill="#ffffff" />
+              <circle cx='100' cy='100' r='32' fill='#ffffff' />
+              <circle cx='100' cy='35' r='20' fill='#ffffff' />
+              <circle cx='156.29' cy='132.5' r='20' fill='#ffffff' />
+              <circle cx='43.71' cy='132.5' r='20' fill='#ffffff' />
             </svg>
             <div
               style={{
