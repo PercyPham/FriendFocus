@@ -3,6 +3,7 @@ import { updateFriendFocus } from './newsfeed_service';
 import { findFeedsParent, findStoriesParent } from './newsfeed_utils';
 import { FB_CHANGED_EVENT } from '@/common/constants';
 import { logger } from '@/common/logger';
+import { showFloatingBar, hideFloatingBar } from './components/OverlayManager';
 
 logger.info('Loaded: newsfeed/index.ts');
 
@@ -181,10 +182,13 @@ async function orchestrateTasks() {
     );
     if (document.hidden) {
       stopTasks();
+      hideFloatingBar();
     } else if (isNewsfeedPage && isFriendFocus) {
       await startTask();
+      showFloatingBar();
     } else {
       stopTasks();
+      hideFloatingBar();
     }
   } catch (error) {
     logger.error('Error orchestrating tasks:', error);
