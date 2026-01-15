@@ -19,6 +19,8 @@ export const Key = {
   groupList: 'group_list',
   groupCount: 'group_count',
   groupListUpdatedAt: 'group_list_updated_at',
+
+  isStatusIndicatorVisible: 'is_status_indicator_visible',
 } as const;
 
 export type KeyType = (typeof Key)[keyof typeof Key];
@@ -40,6 +42,7 @@ export type ValueTypeMap = {
   [Key.groupList]: GroupInfo[];
   [Key.groupCount]: number;
   [Key.groupListUpdatedAt]: number | null;
+  [Key.isStatusIndicatorVisible]: boolean;
 };
 
 void (0 as any as ValueTypeMap satisfies Record<KeyType, unknown>);

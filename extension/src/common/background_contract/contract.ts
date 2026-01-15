@@ -60,6 +60,11 @@ export type MessageContract = {
     req: void;
     res: void;
   };
+
+  SET_STATUS_INDICATOR_VISIBLE: {
+    req: boolean;
+    res: void;
+  };
 };
 
 export type MessageType = keyof MessageContract;
@@ -77,6 +82,7 @@ export const MESSAGE_TYPES = [
   'START_COLLECTING_GROUP_LIST',
   'SAVE_GROUP_LIST',
   'OPEN_EXTENSION_POPUP',
+  'SET_STATUS_INDICATOR_VISIBLE',
 ] as const satisfies MessageType[];
 
 void (0 as any as (typeof MESSAGE_TYPES)[number] satisfies keyof MessageContract);

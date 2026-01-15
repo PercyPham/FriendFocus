@@ -7,9 +7,20 @@ export default function FloatingStatusBar() {
   const [blockedToday, setBlockedToday] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
 
   const lastBlockedCount = useRef(0);
   const isInitialized = useRef(false);
+
+  useEffect(() => {
+    const handleUpdate = (val: boolean | undefined) => {
+      setIsEnabled(val ?? true);
+    };
+    // Initial load
+    storage.get(storage.key.isStatusIndicatorVisible).then(handleUpdate);
+    // Listen for changes
+    storage.onChange(storage.key.isStatusIndicatorVisible, handleUpdate);
+  }, []);
 
   useEffect(() => {
     const handleUpdate = (log: BlockedPostsLog | undefined) => {
@@ -54,6 +65,7 @@ export default function FloatingStatusBar() {
     }
   };
 
+  if (!isEnabled) return <></>;
   if (!isVisible && !isHovered) return <></>;
 
   return (

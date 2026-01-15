@@ -12,7 +12,7 @@ export default function Popup() {
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-200 dark:bg-slate-950 font-sans'>
-      <div className='w-[360px] h-[580px] bg-white dark:bg-slate-900 shadow-2xl overflow-hidden flex flex-col relative ring-1 ring-black/5 transition-colors'>
+      <div className='w-[360px] h-[600px] bg-white dark:bg-slate-900 shadow-2xl overflow-hidden flex flex-col relative ring-1 ring-black/5 transition-colors'>
         {friendCount ? <DashboardView /> : <FirstTimeSetupView />}
       </div>
     </div>

@@ -29,6 +29,9 @@ interface PopupState {
   groupListUpdatedAt: number | null;
   buildGroupList: (options?: { enableWhenDone?: boolean }) => Promise<void>;
 
+  isStatusIndicatorVisible: boolean;
+  toggleStatusIndicatorVisibility: () => Promise<void>;
+
   blockedToday: number;
 }
 
@@ -64,6 +67,11 @@ export const usePopupStore = create<PopupState>((set, get) => {
         sync('isGroupsEnabled', storage.key.isGroupsEnabled),
         sync('groupCount', storage.key.groupCount),
         sync('groupListUpdatedAt', storage.key.groupListUpdatedAt),
+        sync(
+          'isStatusIndicatorVisible',
+          storage.key.isStatusIndicatorVisible,
+          (val) => val ?? true
+        ),
         sync('blockedToday', storage.key.blockedPostsLog, (val) => {
           const today = getTodayDateString();
           return val?.[today] || 0;
@@ -101,6 +109,12 @@ export const usePopupStore = create<PopupState>((set, get) => {
     buildGroupList: (options: { enableWhenDone?: boolean } = {}) =>
       sendMessage('START_COLLECTING_GROUP_LIST', options),
 
+    isStatusIndicatorVisible: true,
+    toggleStatusIndicatorVisibility: () =>
+      sendMessage(
+        'SET_STATUS_INDICATOR_VISIBLE',
+        !get().isStatusIndicatorVisible
+      ),
     blockedToday: 0,
   };
 });

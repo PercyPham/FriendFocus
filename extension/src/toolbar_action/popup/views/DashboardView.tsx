@@ -3,6 +3,8 @@ import {
   CheckCircle2,
   Coffee,
   Edit,
+  Eye,
+  EyeOff,
   Heart,
   RefreshCw,
   Shield,
@@ -12,13 +14,15 @@ import {
 } from 'lucide-react';
 import { usePopupStore } from '../store/usePopupStore';
 import { Header } from '../components/Header';
-import { LAST_FIXES, LINKS } from '@/common/constants';
+import { APP_VERSION, LAST_FIXES, LINKS } from '@/common/constants';
 
 export const DashboardView = () => {
   const {
     isFriendFocus,
     toggleFriendFocus,
     blockedToday,
+    isStatusIndicatorVisible,
+    toggleStatusIndicatorVisibility,
     friendCount,
     friendListUpdatedAt,
     buildFriendList,
@@ -49,30 +53,16 @@ export const DashboardView = () => {
 
   const formatCount = (count: number | null) => (count === null ? '-' : count);
 
-  const handleToggleFollowings = () => {
-    if (followingCount) {
-      toggleFollowings();
-    } else {
-      buildFollowingsList({ enableWhenDone: true });
-    }
-  };
-
-  const handleToggleGroups = () => {
-    if (groupCount) {
-      toggleGroups();
-    } else {
-      buildGroupList({ enableWhenDone: true });
-    }
-  };
-
   return (
     <div className='flex flex-col h-full bg-gray-50 dark:bg-slate-950 relative animate-in fade-in duration-300 transition-colors'>
       <Header />
-      <div className='flex-1 px-6 py-6 flex flex-col gap-6 overflow-y-auto'>
+
+      <div className='flex-1 px-6 py-6 flex flex-col gap-5 overflow-y-auto'>
+        {/* Compact Status Card */}
         <div className='flex flex-col items-center text-center'>
           <button
             onClick={toggleFriendFocus}
-            className={`relative w-28 h-14 rounded-full transition-all duration-300 mb-4 focus:outline-none focus:ring-4 focus:ring-offset-2 ${
+            className={`relative w-28 h-14 rounded-full transition-all duration-300 mb-4 focus:outline-none focus:ring-4 focus:ring-offset-2 cursor-pointer select-none ${
               isFriendFocus
                 ? 'bg-blue-500 shadow-[0_4px_20px_rgba(34,197,94,0.4)] focus:ring-blue-300'
                 : 'bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700'
@@ -110,37 +100,43 @@ export const DashboardView = () => {
           </div>
         </div>
 
-        <div
-          className={`bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden transition-all duration-300 opacity-100 translate-y-0`}
-        >
+        {/* Combined Settings Card */}
+        <div className='bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-800 overflow-hidden shrink-0'>
+          {/* Section: Sources */}
+          <div className='px-4 py-2 bg-gray-50/50 dark:bg-slate-800/30 border-b border-gray-100 dark:border-slate-800'>
+            <span className='text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest'>
+              Content Sources
+            </span>
+          </div>
+
           <div className='divide-y divide-gray-100 dark:divide-slate-800'>
-            {/* Friends row */}
-            <div className='p-4 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
+            {/* Friends Row */}
+            <div className='px-4 py-3 flex items-center justify-between group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
               <div className='flex items-center gap-3'>
-                <div className='flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-2 rounded-lg'>
-                  <Users className='w-5 h-5' />
+                <div className='flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 p-1.5 rounded-lg'>
+                  <Users className='w-4 h-4' />
                 </div>
                 <div>
                   <div className='flex items-center gap-2'>
-                    <span className='text-sm font-bold text-gray-800 dark:text-slate-200 leading-none'>
+                    <span className='text-xs font-bold text-gray-800 dark:text-slate-200 leading-none select-none'>
                       Friends
                     </span>
-                    <span className='text-[10px] text-gray-500 dark:text-slate-400 font-bold bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded leading-none'>
-                      {formatCount(friendCount ?? '-')}
+                    <span className='text-[10px] text-gray-500 dark:text-slate-400 font-bold bg-gray-100 dark:bg-slate-800 px-1.5 py-0.5 rounded leading-none select-none'>
+                      {formatCount(friendCount)}
                     </span>
                   </div>
                   <div className='flex items-center gap-1 mt-1'>
                     {needsFriendListUpdate() ? (
                       <>
-                        <AlertTriangle className='w-3 h-3 text-amber-500' />
-                        <span className='text-[10px] leading-none text-amber-600 dark:text-amber-500'>
+                        <AlertTriangle className='w-2.5 h-2.5 text-amber-500' />
+                        <span className='text-[9px] leading-none text-amber-600 dark:text-amber-500 font-medium select-none'>
                           {LAST_FIXES.FRIEND_LIST.message}
                         </span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle2 className='w-3 h-3 text-blue-500' />
-                        <span className='text-[10px] leading-none text-gray-400 dark:text-slate-500'>
+                        <CheckCircle2 className='w-2.5 h-2.5 text-blue-500' />
+                        <span className='text-[9px] leading-none text-gray-400 dark:text-slate-500'>
                           {getUpdateText(friendListUpdatedAt)}
                         </span>
                       </>
@@ -150,27 +146,30 @@ export const DashboardView = () => {
               </div>
               <button
                 onClick={buildFriendList}
-                className='flex items-center justify-center text-gray-400 hover:text-blue-600 hover:cursor-pointer dark:hover:text-blue-400 p-2 rounded-full transition-all'
+                className='text-gray-400 hover:text-blue-600 transition-colors p-1.5 cursor-pointer select-none'
               >
-                <RefreshCw className={`w-4 h-4 `} />
+                <RefreshCw className='w-3.5 h-3.5' />
               </button>
             </div>
 
-            {/* Followings row */}
-            <div className='p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
-              <div className='flex items-center gap-3'>
-                <div className='flex items-center justify-center w-5'>
+            {/* Followings Row */}
+            <div className='px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
+              <div
+                className='flex items-center gap-3 cursor-pointer select-none'
+                onClick={toggleFollowings}
+              >
+                <div className='w-4 flex justify-center'>
                   <input
                     type='checkbox'
                     checked={isFollowingsEnabled}
-                    onChange={handleToggleFollowings}
-                    className='w-4 h-4 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
+                    readOnly
+                    className='w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
                   />
                 </div>
                 <div>
                   <div className='flex items-center gap-2'>
                     <span
-                      className={`text-sm font-bold leading-none ${
+                      className={`text-xs font-bold leading-none ${
                         isFollowingsEnabled
                           ? 'text-gray-800 dark:text-slate-200'
                           : 'text-gray-400 dark:text-slate-600'
@@ -182,35 +181,38 @@ export const DashboardView = () => {
                       {formatCount(followingCount)}
                     </span>
                   </div>
-                  <span className='text-[10px] text-gray-400 dark:text-slate-500 block mt-1 leading-none'>
-                    Pages & People you follow
+                  <span className='text-[9px] text-gray-400 dark:text-slate-500 block mt-0.5 leading-none'>
+                    Pages & accounts you follow
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => buildFollowingsList()}
-                className={`flex items-center justify-center p-2 rounded-full transition-all text-gray-400 hover:text-blue-600 hover:cursor-pointer`}
+                className='text-gray-400 hover:text-blue-600 p-1.5 cursor-pointer select-none'
               >
-                <Edit className={`w-4 h-4`} />
+                <Edit className='w-3.5 h-3.5' />
               </button>
             </div>
 
-            {/* Groups row */}
-            <div className='p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
-              <div className='flex items-center gap-3'>
-                <div className='flex items-center justify-center w-5'>
+            {/* Groups Row */}
+            <div className='px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
+              <div
+                className='flex items-center gap-3 cursor-pointer select-none'
+                onClick={toggleGroups}
+              >
+                <div className='w-4 flex justify-center'>
                   <input
                     type='checkbox'
-                    checked={isGroupsEnabled && groupCount > 0}
-                    onChange={handleToggleGroups}
-                    className='w-4 h-4 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
+                    checked={isGroupsEnabled}
+                    readOnly
+                    className='w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
                   />
                 </div>
                 <div>
                   <div className='flex items-center gap-2'>
                     <span
-                      className={`text-sm font-bold leading-none ${
-                        isGroupsEnabled && groupCount > 0
+                      className={`text-xs font-bold leading-none ${
+                        isGroupsEnabled
                           ? 'text-gray-800 dark:text-slate-200'
                           : 'text-gray-400 dark:text-slate-600'
                       }`}
@@ -221,49 +223,93 @@ export const DashboardView = () => {
                       {formatCount(groupCount)}
                     </span>
                   </div>
-                  <span className='text-[10px] text-gray-400 dark:text-slate-500 block mt-1 leading-none'>
-                    Posts from your groups
+                  <span className='text-[9px] text-gray-400 dark:text-slate-500 block mt-0.5 leading-none'>
+                    Posts from your joined groups
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => buildGroupList()}
-                className={`flex items-center justify-center p-2 rounded-full transition-all text-gray-400 hover:text-blue-600 hover:cursor-pointer`}
+                className='text-gray-400 hover:text-blue-600 p-1.5 cursor-pointer select-none'
               >
-                <Edit className={`w-4 h-4`} />
+                <Edit className='w-3.5 h-3.5' />
               </button>
+            </div>
+          </div>
+
+          {/* Section: Interface */}
+          <div className='px-4 py-2 bg-gray-50/50 dark:bg-slate-800/30 border-y border-gray-100 dark:border-slate-800'>
+            <span className='text-[9px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest'>
+              Interface
+            </span>
+          </div>
+
+          <div className='px-4 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors'>
+            <div
+              className='flex items-center gap-3 cursor-pointer select-none'
+              onClick={toggleStatusIndicatorVisibility}
+            >
+              <div className='w-4 flex justify-center'>
+                <input
+                  type='checkbox'
+                  checked={isStatusIndicatorVisible}
+                  readOnly
+                  className='w-3.5 h-3.5 rounded text-blue-600 focus:ring-blue-500 dark:bg-slate-800 border-gray-300 dark:border-slate-700 cursor-pointer'
+                />
+              </div>
+              <div>
+                <span
+                  className={`text-xs font-bold leading-none block ${
+                    isStatusIndicatorVisible
+                      ? 'text-gray-800 dark:text-slate-200'
+                      : 'text-gray-400 dark:text-slate-600'
+                  }`}
+                >
+                  Status Indicator
+                </span>
+                <span className='text-[9px] text-gray-400 dark:text-slate-500 mt-0.5 block'>
+                  Show status indicator on feed
+                </span>
+              </div>
+            </div>
+            <div className='p-1.5 text-gray-400'>
+              {isStatusIndicatorVisible ? (
+                <Eye className='w-3.5 h-3.5' />
+              ) : (
+                <EyeOff className='w-3.5 h-3.5' />
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Persistent Support Footer */}
-      <div className='bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 py-4 px-6 transition-colors'>
-        <div className='flex items-center justify-center gap-1.5 text-[11px] text-gray-500 dark:text-slate-400 font-medium leading-none mb-3'>
-          <Heart className='w-3 h-3 text-red-500 fill-current' />
-          <span>Enjoying the silence?</span>
-        </div>
+      {/* Enhanced Support Footer */}
+      <div className='bg-white dark:bg-slate-900 border-t border-gray-100 dark:border-slate-800 py-4 px-6 transition-colors mt-auto shrink-0'>
+        <div className='flex items-center justify-between'>
+          <div className='flex items-center gap-2 text-[11px] text-gray-400 dark:text-slate-500 font-bold uppercase tracking-wider'>
+            <Heart className='w-3.5 h-3.5 text-red-500 fill-current' />
+            <span>v{APP_VERSION}</span>
+          </div>
 
-        <div className='flex items-center justify-center gap-3'>
-          {/* Review Button */}
-          <a
-            href={LINKS.GIVE_A_REVIEW}
-            target='_blank'
-            className='flex-1 max-w-[130px] flex items-center justify-center gap-2 py-2.5 rounded-full text-[11px] font-bold text-gray-600 dark:text-slate-400 bg-gray-50 dark:bg-white/5 hover:bg-[#0866FF] dark:hover:bg-blue-800 hover:text-white dark:hover:text-white hover:scale-105 hover:shadow-md transition-all leading-none border border-transparent dark:border-white/5 group/btn'
-          >
-            <Star className='w-3.5 h-3.5 text-gray-400 dark:text-slate-500 group-hover/btn:text-white group-hover/btn:fill-current transition-colors' />
-            <span>Give a Review</span>
-          </a>
-
-          {/* Donate Button */}
-          <a
-            href={LINKS.BUY_ME_A_COFFEE}
-            target='_blank'
-            className='flex-1 max-w-[130px] flex items-center justify-center gap-2 py-2.5 rounded-full text-[11px] font-bold text-gray-600 dark:text-slate-400 bg-gray-50 dark:bg-white/5 hover:bg-[#FFDD00] dark:hover:bg-yellow-800 hover:text-black dark:hover:text-white hover:scale-105 hover:shadow-md transition-all leading-none border border-transparent dark:border-white/5 group/btn'
-          >
-            <Coffee className='w-3.5 h-3.5 text-gray-400 dark:text-slate-500 group-hover/btn:text-black transition-colors' />
-            <span>Buy me a coffee</span>
-          </a>
+          <div className='flex items-center gap-4'>
+            <a
+              href={LINKS.GIVE_A_REVIEW}
+              target='_blank'
+              className='flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400 hover:text-[#0866FF] transition-all group'
+            >
+              <Star className='w-4 h-4 group-hover:fill-current' />
+              <span>Review</span>
+            </a>
+            <div className='w-px h-4 bg-gray-200 dark:bg-slate-800' />
+            <a
+              href={LINKS.BUY_ME_A_COFFEE}
+              target='_blank'
+              className='flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400 hover:text-[#FFDD00] transition-all group'
+            >
+              <Coffee className='w-4 h-4' />
+              <span>Donate</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>

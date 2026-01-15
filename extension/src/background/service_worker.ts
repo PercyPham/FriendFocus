@@ -154,4 +154,11 @@ onMessage('OPEN_EXTENSION_POPUP', async (_req, sender) => {
   }
 });
 
+onMessage('SET_STATUS_INDICATOR_VISIBLE', async (isVisible, sender) => {
+  logger.debug(
+    `Received SET_STATUS_INDICATOR_VISIBLE request from tab: ${sender.tab?.id} isVisible: ${isVisible}`
+  );
+  await storageWriter.set(storage.key.isStatusIndicatorVisible, isVisible);
+});
+
 setupMessageListener();
