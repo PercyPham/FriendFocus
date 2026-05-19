@@ -50,7 +50,7 @@ export default defineManifest({
   ],
   web_accessible_resources: [
     {
-      resources: ['src/content_scripts/newsfeed/page_hook.js', 'icon.svg'],
+      resources: ['src/content_scripts/newsfeed/page_hook.js', 'icon.svg', 'public/icon-16.png'],
       matches: ['https://www.facebook.com/*'],
     },
   ],
