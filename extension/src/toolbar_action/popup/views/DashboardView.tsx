@@ -41,7 +41,7 @@ export const DashboardView = () => {
     const daysAgo = Math.floor(
       (Date.now() - timestamp) / (1000 * 60 * 60 * 24)
     );
-    return daysAgo === 0 ? 'Updated recently' : `Updated ${daysAgo}d ago`;
+    return daysAgo === 0 ? 'Just updated' : `Updated ${daysAgo}d ago`;
   };
 
   const needsFriendListUpdate = () => {
@@ -64,7 +64,7 @@ export const DashboardView = () => {
             onClick={toggleFriendFocus}
             className={`relative w-28 h-14 rounded-full transition-all duration-300 mb-4 focus:outline-none focus:ring-4 focus:ring-offset-2 cursor-pointer select-none ${
               isFriendFocus
-                ? 'bg-blue-500 shadow-[0_4px_20px_rgba(34,197,94,0.4)] focus:ring-blue-300'
+                ? 'bg-blue-500 shadow-[0_4px_20px_rgba(59,130,246,0.4)] focus:ring-blue-300'
                 : 'bg-gray-200 dark:bg-slate-800 hover:bg-gray-300 dark:hover:bg-slate-700'
             }`}
           >
@@ -89,7 +89,7 @@ export const DashboardView = () => {
             className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all ${
               isFriendFocus
                 ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40'
-                : 'bg-gray-100 dark:bg-slate-900 text-gray-400 dark:text-slate-600 border border-transparent'
+                : 'bg-gray-100 dark:bg-slate-900 text-gray-400 dark:text-slate-400 border border-transparent'
             }`}
           >
             <Shield className='w-3.5 h-3.5 fill-current' />
@@ -129,14 +129,14 @@ export const DashboardView = () => {
                     {needsFriendListUpdate() ? (
                       <>
                         <AlertTriangle className='w-2.5 h-2.5 text-amber-500' />
-                        <span className='text-[9px] leading-none text-amber-600 dark:text-amber-500 font-medium select-none'>
+                        <span className='text-[10px] leading-none text-amber-600 dark:text-amber-500 font-medium select-none'>
                           {LAST_FIXES.FRIEND_LIST.message}
                         </span>
                       </>
                     ) : (
                       <>
                         <CheckCircle2 className='w-2.5 h-2.5 text-blue-500' />
-                        <span className='text-[9px] leading-none text-gray-400 dark:text-slate-500'>
+                        <span className='text-[10px] leading-none text-gray-400 dark:text-slate-400'>
                           {getUpdateText(friendListUpdatedAt)}
                         </span>
                       </>
@@ -172,7 +172,7 @@ export const DashboardView = () => {
                       className={`text-xs font-bold leading-none ${
                         isFollowingsEnabled
                           ? 'text-gray-800 dark:text-slate-200'
-                          : 'text-gray-400 dark:text-slate-600'
+                          : 'text-gray-400 dark:text-slate-400'
                       }`}
                     >
                       Followings
@@ -181,7 +181,7 @@ export const DashboardView = () => {
                       {formatCount(followingCount)}
                     </span>
                   </div>
-                  <span className='text-[9px] text-gray-400 dark:text-slate-500 block mt-0.5 leading-none'>
+                  <span className='text-[10px] text-gray-400 dark:text-slate-400 block mt-0.5 leading-none'>
                     Pages & accounts you follow
                   </span>
                 </div>
@@ -214,7 +214,7 @@ export const DashboardView = () => {
                       className={`text-xs font-bold leading-none ${
                         isGroupsEnabled
                           ? 'text-gray-800 dark:text-slate-200'
-                          : 'text-gray-400 dark:text-slate-600'
+                          : 'text-gray-400 dark:text-slate-400'
                       }`}
                     >
                       Groups
@@ -223,7 +223,7 @@ export const DashboardView = () => {
                       {formatCount(groupCount)}
                     </span>
                   </div>
-                  <span className='text-[9px] text-gray-400 dark:text-slate-500 block mt-0.5 leading-none'>
+                  <span className='text-[10px] text-gray-400 dark:text-slate-400 block mt-0.5 leading-none'>
                     Posts from your joined groups
                   </span>
                 </div>
@@ -262,13 +262,13 @@ export const DashboardView = () => {
                   className={`text-xs font-bold leading-none block ${
                     isStatusIndicatorVisible
                       ? 'text-gray-800 dark:text-slate-200'
-                      : 'text-gray-400 dark:text-slate-600'
+                      : 'text-gray-400 dark:text-slate-400'
                   }`}
                 >
                   Status Indicator
                 </span>
-                <span className='text-[9px] text-gray-400 dark:text-slate-500 mt-0.5 block'>
-                  Show status indicator on feed
+                <span className='text-[10px] text-gray-400 dark:text-slate-400 mt-0.5 block'>
+                  Show a status badge on your Facebook feed
                 </span>
               </div>
             </div>
