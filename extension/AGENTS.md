@@ -121,3 +121,4 @@ src/
 - **Communication Pattern:** RPC-style background contract for all cross-module communication
 - **Clean Code:** Write self-documenting code that explains itself through clear naming and structure; avoid redundant, lengthy, or unnecessary comments
 - **Styling Tokens:** All custom colors are defined as Tailwind v4 `@theme` tokens in `src/common/styles/tokens.css`; use named utility classes (e.g. `bg-fb-blue`, `text-fb-gray`) — never hardcode hex values with arbitrary syntax `[#hex]` in components
+- **Import/Export Consistency:** Whenever a new persistent data field is added to storage, update `ExportData` in `src/common/types.ts`, the `exportData()` reader in `src/toolbar_action/popup/utils/data-transfer.ts`, and the `IMPORT_DATA` handler in `src/background/service_worker.ts` to include that field

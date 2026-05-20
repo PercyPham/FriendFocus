@@ -1,5 +1,5 @@
 import { APP_VERSION, LINKS } from "@/common/constants";
-import { Bug, ExternalLink, ChevronRight, MessageSquare, Settings, HelpCircle, Download, Upload } from "lucide-react";
+import { Bug, ExternalLink, MessageSquare, Settings, HelpCircle, Download, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { exportData, importData } from "../utils/data-transfer";
 
