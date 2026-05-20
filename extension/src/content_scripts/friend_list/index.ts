@@ -14,6 +14,11 @@ const collectFriendListIfNeeded = async () => {
 
   const friendList = await getFriendList();
 
+  if (friendList === null) {
+    await sendMessage('CLOSE_TAB');
+    return;
+  }
+
   // Send friend list to background for storage
   await sendMessage('SAVE_FRIEND_LIST', friendList);
 };

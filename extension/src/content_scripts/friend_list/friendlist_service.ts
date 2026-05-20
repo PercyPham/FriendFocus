@@ -123,7 +123,7 @@ const scrollToLoadMore = async (): Promise<boolean> => {
   return newHeight > previousHeight || newCount > initialCount;
 };
 
-export const getFriendList = async (): Promise<FriendInfo[]> => {
+export const getFriendList = async (): Promise<FriendInfo[] | null> => {
   // Step 1: Navigate to friends page
   const currentUrl = window.location.href;
 
@@ -149,7 +149,8 @@ export const getFriendList = async (): Promise<FriendInfo[]> => {
   }
 
   // Step 2: Show popup and wait for user to click
-  await showUpdatePopup();
+  const didStart = await showUpdatePopup();
+  if (!didStart) return null;
 
   // Step 3-5: Start collecting friends with progress indicator
   const progressPopup = showProgressPopup();

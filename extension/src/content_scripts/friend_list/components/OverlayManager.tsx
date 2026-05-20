@@ -53,15 +53,23 @@ const cleanupShadowRoot = () => {
 };
 
 // Update Friend List Popup
-export const showUpdatePopup = (): Promise<void> => {
+export const showUpdatePopup = (): Promise<boolean> => {
   return new Promise((resolve) => {
     const context = ensureShadowRoot();
 
     const handleStart = () => {
-      resolve();
+      cleanupShadowRoot();
+      resolve(true);
     };
 
-    context.reactRoot.render(<UpdateFriendListPopup onStart={handleStart} />);
+    const handleCancel = () => {
+      cleanupShadowRoot();
+      resolve(false);
+    };
+
+    context.reactRoot.render(
+      <UpdateFriendListPopup onStart={handleStart} onCancel={handleCancel} />
+    );
   });
 };
 
