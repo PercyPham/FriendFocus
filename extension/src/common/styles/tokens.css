@@ -1,0 +1,19 @@
+@theme {
+  /* Facebook brand colors */
+  --color-fb-blue: #1877f2;
+  --color-fb-blue-hover: #166fe5;
+  --color-fb-blue-alt: #0866ff;
+  --color-fb-blue-light: #4599ff;
+  --color-fb-gray: #65676b;
+  --color-fb-gray-light: #b0b3b8;
+  --color-fb-gray-dark: #393a3b;
+  --color-fb-dark-bg: #242526;
+
+  /* Popup toggle colors */
+  --color-primary: oklch(62.3% 0.214 259.1);
+  --color-switch-bg: oklch(92.8% 0.006 264.5);
+  --color-muted: oklch(55.1% 0.023 264.4);
+
+  /* Buy Me a Coffee brand */
+  --color-bmc-yellow: #ffdd00;
+}

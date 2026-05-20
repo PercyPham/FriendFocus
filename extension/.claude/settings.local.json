@@ -3,7 +3,8 @@
     "allow": [
       "Bash(pnpm run *)",
       "Bash(grep -E \"\\\\.\\(js|json|css\\)$|config\")",
-      "Bash(xargs ls -la)"
+      "Bash(xargs ls -la)",
+      "Bash(grep *)"
     ]
   }
 }

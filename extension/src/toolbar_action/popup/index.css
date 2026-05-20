@@ -1,3 +1,4 @@
+@import '../../common/styles/tokens.css';
 @import 'tailwindcss';
 
 /* Force light mode when .dark class is not present, ignoring system preference */

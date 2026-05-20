@@ -11,7 +11,7 @@ FriendFocus is a Chrome extension that enhances the user's Facebook experience b
 - **Vite:** As the build tool and development server.
 - **@crxjs/vite-plugin:** For seamless Chrome extension development with Vite.
 - **Zustand:** For state management in the popup.
-- **Tailwind CSS:** For styling the popup.
+- **Tailwind CSS:** For styling the popup and content script overlays; design tokens defined in `src/common/styles/tokens.css`.
 
 **Architecture:**
 
@@ -71,6 +71,8 @@ src/
     ├── background_contract/ # RPC contract for inter-module communication
     │   ├── contract.ts      # Type-safe contract definitions
     │   └── client.ts        # Client for calling background methods
+    ├── styles/              # Shared CSS design tokens
+    │   └── tokens.css       # Tailwind @theme tokens (colors, brand palette)
     ├── constants.ts         # Shared constants
     └── storage.ts           # Storage utilities and types, only have functions for Read ONLY
 ```
@@ -118,3 +120,4 @@ src/
 - **State Management:** Zustand for popup state, chrome.storage for persistence
 - **Communication Pattern:** RPC-style background contract for all cross-module communication
 - **Clean Code:** Write self-documenting code that explains itself through clear naming and structure; avoid redundant, lengthy, or unnecessary comments
+- **Styling Tokens:** All custom colors are defined as Tailwind v4 `@theme` tokens in `src/common/styles/tokens.css`; use named utility classes (e.g. `bg-fb-blue`, `text-fb-gray`) — never hardcode hex values with arbitrary syntax `[#hex]` in components

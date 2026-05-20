@@ -1,3 +1,4 @@
+@import '../../../common/styles/tokens.css';
 @import 'tailwindcss';
 
 /* Base styles for overlay components */

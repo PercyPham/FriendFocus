@@ -77,22 +77,22 @@ export default function FloatingStatusBar() {
     >
       {!isHovered ? (
         // Collapsed state: thin blue bar with light beam back and forth
-        <div className='relative overflow-hidden w-[30px] h-[2px] bg-[#0866FF] rounded-[1px] shadow-sm'>
+        <div className='relative overflow-hidden w-[30px] h-[2px] bg-fb-blue-alt rounded-[1px] shadow-sm'>
           <div className='absolute top-0 bottom-0 w-1/2 animate-shimmer-beam' />
         </div>
       ) : (
         // Expanded state: logo + blocked count
-        <div className='flex items-center gap-3 px-4 py-2 bg-white dark:bg-[#242526] rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-transparent dark:border-[#393a3b] animate-in fade-in zoom-in duration-200'>
+        <div className='flex items-center gap-3 px-4 py-2 bg-white dark:bg-fb-dark-bg rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3)] border border-transparent dark:border-fb-gray-dark animate-in fade-in zoom-in duration-200'>
           <img
             src={chrome.runtime.getURL('icon.svg')}
             className='w-6 h-6'
             alt='FriendFocus Logo'
           />
           <div className='flex flex-col items-start'>
-            <span className='text-[10px] text-[#65676b] dark:text-[#b0b3b8] font-medium font-sans leading-tight'>
+            <span className='text-[10px] text-fb-gray dark:text-fb-gray-light font-medium font-sans leading-tight'>
               Blocked Today
             </span>
-            <span className='text-base text-[#0866FF] dark:text-[#4599ff] font-bold font-sans leading-tight'>
+            <span className='text-base text-fb-blue-alt dark:text-fb-blue-light font-bold font-sans leading-tight'>
               {blockedToday.toLocaleString()}
             </span>
           </div>

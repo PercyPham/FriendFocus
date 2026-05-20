@@ -295,7 +295,7 @@ export const DashboardView = () => {
             <a
               href={LINKS.GIVE_A_REVIEW}
               target='_blank'
-              className='flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400 hover:text-[#0866FF] transition-all group'
+              className='flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400 hover:text-fb-blue-alt transition-all group'
             >
               <Star className='w-4 h-4 group-hover:fill-current' />
               <span>Review</span>
@@ -304,7 +304,7 @@ export const DashboardView = () => {
             <a
               href={LINKS.BUY_ME_A_COFFEE}
               target='_blank'
-              className='flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400 hover:text-[#FFDD00] transition-all group'
+              className='flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-slate-400 hover:text-bmc-yellow transition-all group'
             >
               <Coffee className='w-4 h-4' />
               <span>Donate</span>

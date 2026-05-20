@@ -47,10 +47,10 @@ export default function ManualSelectionUI({
   };
 
   return (
-    <div className='fixed bottom-0 left-0 right-0 z-99999 bg-white border-t-2 border-[#1877f2] shadow-lg'>
+    <div className='fixed bottom-0 left-0 right-0 z-99999 bg-white border-t-2 border-fb-blue shadow-lg'>
       <div className='max-w-4xl mx-auto px-6 py-4 flex items-center justify-between'>
         <div className='flex items-center gap-3'>
-          <div className='bg-[#1877f2] text-white font-bold text-lg rounded-full w-10 h-10 flex items-center justify-center'>
+          <div className='bg-fb-blue text-white font-bold text-lg rounded-full w-10 h-10 flex items-center justify-center'>
             {selectedCount}
           </div>
           <div>
@@ -61,7 +61,7 @@ export default function ManualSelectionUI({
                     selectedCount === 1 ? 'following' : 'followings'
                   } selected`}
             </p>
-            <p className='text-xs text-[#65676b]'>
+            <p className='text-xs text-fb-gray'>
               Click the + button next to items to add them
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function ManualSelectionUI({
             className={`font-bold py-3 px-8 rounded-lg transition-all duration-200 ${
               selectedCount === 0
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-[#1877f2] hover:bg-[#166fe5] text-white shadow-md hover:shadow-lg'
+                : 'bg-fb-blue hover:bg-fb-blue-hover text-white shadow-md hover:shadow-lg'
             }`}
           >
             Save {selectedCount > 0 ? `${selectedCount} ` : ''}

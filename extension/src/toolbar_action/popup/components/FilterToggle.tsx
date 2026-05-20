@@ -6,12 +6,12 @@ interface Props {
 export function FriendFocusToggle({ enabled, onChange }: Props) {
   return (
     <div className='flex flex-col items-center justify-center px-5 py-8'>
-      <p className='text-[13px] text-muted-foreground mb-4'>Friend Focus</p>
+      <p className='text-[13px] text-muted dark:text-slate-400 mb-4'>Friend Focus</p>
 
       <button
         onClick={onChange}
-        className={`relative inline-flex h-14 w-28 items-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-          enabled ? 'bg-primary' : 'bg-switch-background'
+        className={`relative inline-flex h-14 w-28 items-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+          enabled ? 'bg-primary' : 'bg-switch-bg dark:bg-slate-700'
         }`}
         role='switch'
         aria-checked={enabled}
@@ -24,7 +24,7 @@ export function FriendFocusToggle({ enabled, onChange }: Props) {
       </button>
 
       <p className='text-[15px] mt-4'>{enabled ? 'On' : 'Off'}</p>
-      <p className='text-[12px] text-muted-foreground mt-1'>
+      <p className='text-[12px] text-muted dark:text-slate-400 mt-1'>
         {enabled ? "Showing only friends' posts" : 'All posts visible'}
       </p>
     </div>
