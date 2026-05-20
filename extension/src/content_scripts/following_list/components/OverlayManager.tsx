@@ -1,6 +1,5 @@
 import { createRoot, Root } from 'react-dom/client';
 import overlayStyles from '../../shared/styles/overlay.css?inline';
-import UpdateFollowingListPopup from './UpdateFollowingListPopup';
 import FollowingProgressPopup from './FollowingProgressPopup';
 import ModeSelectionPopup from './ModeSelectionPopup';
 import ManualSelectionUI from './ManualSelectionUI';
@@ -98,21 +97,6 @@ export const showManualSelectionUI = (
         getSelectedCount={getSelectedCount}
         clearAllSelections={clearAllSelections}
       />
-    );
-  });
-};
-
-// Update Following List Popup
-export const showUpdateFollowingPopup = (): Promise<void> => {
-  return new Promise((resolve) => {
-    const context = ensureShadowRoot();
-
-    const handleStart = () => {
-      resolve();
-    };
-
-    context.reactRoot.render(
-      <UpdateFollowingListPopup onStart={handleStart} />
     );
   });
 };

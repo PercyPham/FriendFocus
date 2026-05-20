@@ -194,8 +194,3 @@ export const getGroupListAutoCrawl = async (): Promise<GroupInfo[]> => {
 
   return allGroups;
 };
-
-// Manual mode: returns empty array (collection is handled by the manual UI)
-export const getGroupListManual = async (): Promise<GroupInfo[]> => {
-  return [];
-};

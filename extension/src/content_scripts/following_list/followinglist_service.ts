@@ -201,8 +201,3 @@ export const getFollowingListAutoCrawl = async (): Promise<FollowingInfo[]> => {
 
   return allFollowings;
 };
-
-// Manual mode: returns empty array (collection is handled by the manual UI)
-export const getFollowingListManual = async (): Promise<FollowingInfo[]> => {
-  return [];
-};
