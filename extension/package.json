@@ -1,6 +1,6 @@
 {
-  "name": "FriendFocus",
-  "description": "See only your friends on Facebook. No more distractions.",
+  "name": "Friend Focus",
+  "description": "A cleaner Facebook feed. You choose what you see — nothing else.",
   "type": "module",
   "version": "1.6.0",
   "private": true,
