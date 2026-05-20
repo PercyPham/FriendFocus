@@ -281,7 +281,7 @@ const collectFollowingListIfNeeded = async () => {
 
     // Show manual selection UI and wait for user to confirm
     // Pass functions that retrieve selected profiles, count, and clear from the global state
-    followingList = await showManualSelectionUI(
+    const result = await showManualSelectionUI(
       () => Array.from(selectedProfiles.values()),
       () => selectedProfiles.size,
       () => {
@@ -307,6 +307,14 @@ const collectFollowingListIfNeeded = async () => {
     document
       .querySelectorAll(`.${PROFILE_ADD_BUTTON_CLASS}`)
       .forEach((btn) => btn.remove());
+
+    if (result === null) {
+      selectedProfiles.clear();
+      await sendMessage('CLOSE_TAB', undefined);
+      return;
+    }
+
+    followingList = result;
   }
 
   // Step 3: Send following list to background for storage

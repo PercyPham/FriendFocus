@@ -276,7 +276,7 @@ const collectGroupListIfNeeded = async () => {
 
     // Show manual selection UI and wait for user to confirm
     // Pass functions that retrieve selected groups, count, and clear from the global state
-    groupList = await showManualGroupSelectionUI(
+    const result = await showManualGroupSelectionUI(
       () => Array.from(selectedGroups.values()),
       () => selectedGroups.size,
       () => {
@@ -302,6 +302,13 @@ const collectGroupListIfNeeded = async () => {
     document
       .querySelectorAll(`.${PROFILE_ADD_BUTTON_CLASS}`)
       .forEach((btn) => btn.remove());
+
+    if (result === null) {
+      await sendMessage('CLOSE_TAB');
+      return;
+    }
+
+    groupList = result;
   }
 
   // Step 3: Send group list to background for storage

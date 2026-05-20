@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 
 interface ManualSelectionUIProps {
   onConfirm: () => void;
+  onCancel: () => void;
   getSelectedCount: () => number;
   clearAllSelections: () => void;
 }
 
 export default function ManualSelectionUI({
   onConfirm,
+  onCancel,
   getSelectedCount,
   clearAllSelections,
 }: ManualSelectionUIProps) {
@@ -76,6 +78,12 @@ export default function ManualSelectionUI({
               Clear All
             </button>
           )}
+          <button
+            onClick={onCancel}
+            className='font-medium py-3 px-6 rounded-lg transition-all duration-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-800 border border-gray-300'
+          >
+            Cancel
+          </button>
           <button
             onClick={handleConfirm}
             disabled={selectedCount === 0}

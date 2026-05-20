@@ -76,7 +76,7 @@ export const showManualSelectionUI = (
   getSelectedProfiles: () => FollowingInfo[],
   getSelectedCount: () => number,
   clearAllSelections: () => void
-): Promise<FollowingInfo[]> => {
+): Promise<FollowingInfo[] | null> => {
   return new Promise((resolve) => {
     const context = ensureShadowRoot();
 
@@ -86,9 +86,15 @@ export const showManualSelectionUI = (
       resolve(selectedFollowings);
     };
 
+    const handleCancel = () => {
+      cleanupShadowRoot();
+      resolve(null);
+    };
+
     context.reactRoot.render(
       <ManualSelectionUI
         onConfirm={handleConfirm}
+        onCancel={handleCancel}
         getSelectedCount={getSelectedCount}
         clearAllSelections={clearAllSelections}
       />

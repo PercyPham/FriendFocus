@@ -85,7 +85,7 @@ export const showManualGroupSelectionUI = (
   getSelectedGroups: () => GroupInfo[],
   getSelectedCount: () => number,
   clearAllSelections: () => void
-): Promise<GroupInfo[]> => {
+): Promise<GroupInfo[] | null> => {
   return new Promise((resolve) => {
     const context = ensureShadowRoot();
 
@@ -95,9 +95,15 @@ export const showManualGroupSelectionUI = (
       resolve(selectedGroups);
     };
 
+    const handleCancel = () => {
+      cleanupShadowRoot();
+      resolve(null);
+    };
+
     context.reactRoot.render(
       <ManualSelectionUI
         onConfirm={handleConfirm}
+        onCancel={handleCancel}
         getSelectedCount={getSelectedCount}
         clearAllSelections={clearAllSelections}
       />
