@@ -1,8 +1,28 @@
-import { Users, AlertCircle, Lock } from "lucide-react";
+import { Users, AlertCircle, Lock, Download } from "lucide-react";
+import { useRef, useState } from "react";
 import { usePopupStore } from "../store/usePopupStore";
+import { importData } from "../utils/data-transfer";
 
 export const FirstTimeSetupView = () => {
   const { buildFriendList } = usePopupStore();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    setImportError(null);
+    try {
+      await importData(file);
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : "Import failed.");
+    }
+  };
 
   return (
     <div className="flex flex-col h-full p-6 bg-white dark:bg-slate-900 animate-in fade-in duration-300 transition-colors">
@@ -39,6 +59,19 @@ export const FirstTimeSetupView = () => {
         >
           Build My Friend List
         </button>
+
+        <div className="w-full mt-4">
+          <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleFileChange} />
+          <p className="text-xs text-gray-400 dark:text-slate-500 text-center mb-2">Already have a backup?</p>
+          <button
+            onClick={handleImportClick}
+            className="w-full flex items-center justify-center gap-2 border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 font-medium py-3 px-6 rounded-2xl transition-all active:scale-95 leading-none text-sm"
+          >
+            <Download className="w-4 h-4" />
+            Import Backup
+          </button>
+          {importError && <p className="mt-2 text-xs text-red-500 dark:text-red-400 text-center">{importError}</p>}
+        </div>
       </div>
 
       <div className="flex items-center justify-center text-xs text-center text-gray-500 dark:text-slate-400 bg-gray-50 dark:bg-slate-800 p-3 rounded-lg">

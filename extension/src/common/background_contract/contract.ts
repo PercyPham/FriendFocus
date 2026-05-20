@@ -1,4 +1,4 @@
-import type { FriendInfo, FollowingInfo, GroupInfo } from '@/common/types';
+import type { FriendInfo, FollowingInfo, GroupInfo, ExportData } from '@/common/types';
 
 export type MessageContract = {
   SET_FRIEND_FOCUS: {
@@ -65,6 +65,11 @@ export type MessageContract = {
     req: boolean;
     res: void;
   };
+
+  IMPORT_DATA: {
+    req: ExportData;
+    res: void;
+  };
 };
 
 export type MessageType = keyof MessageContract;
@@ -83,6 +88,7 @@ export const MESSAGE_TYPES = [
   'SAVE_GROUP_LIST',
   'OPEN_EXTENSION_POPUP',
   'SET_STATUS_INDICATOR_VISIBLE',
+  'IMPORT_DATA',
 ] as const satisfies MessageType[];
 
 void (0 as any as (typeof MESSAGE_TYPES)[number] satisfies keyof MessageContract);

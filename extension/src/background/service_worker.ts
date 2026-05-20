@@ -161,4 +161,26 @@ onMessage('SET_STATUS_INDICATOR_VISIBLE', async (isVisible, sender) => {
   await storageWriter.set(storage.key.isStatusIndicatorVisible, isVisible);
 });
 
+onMessage('IMPORT_DATA', async (data, sender) => {
+  logger.debug('Received IMPORT_DATA request from tab:', sender);
+  try {
+    await storageWriter.set(storage.key.isFriendFocus, data.isFriendFocus);
+    await storageWriter.set(storage.key.isStatusIndicatorVisible, data.isStatusIndicatorVisible);
+    await storageWriter.set(storage.key.friendList, data.friendList);
+    await storageWriter.set(storage.key.friendCount, data.friendList.length);
+    await storageWriter.set(storage.key.friendListUpdatedAt, data.friendListUpdatedAt);
+    await storageWriter.set(storage.key.followingList, data.followingList);
+    await storageWriter.set(storage.key.followingCount, data.followingList.length);
+    await storageWriter.set(storage.key.followingListUpdatedAt, data.followingListUpdatedAt);
+    await storageWriter.set(storage.key.isFollowingsEnabled, data.isFollowingsEnabled);
+    await storageWriter.set(storage.key.groupList, data.groupList);
+    await storageWriter.set(storage.key.groupCount, data.groupList.length);
+    await storageWriter.set(storage.key.groupListUpdatedAt, data.groupListUpdatedAt);
+    await storageWriter.set(storage.key.isGroupsEnabled, data.isGroupsEnabled);
+    logger.debug('Data imported successfully');
+  } catch (error) {
+    logger.error('Error importing data:', error);
+  }
+});
+
 setupMessageListener();
