@@ -1,8 +1,5 @@
 import type { FriendInfo } from '@/common/types';
-import {
-  showUpdatePopup,
-  showProgressPopup,
-} from './components/OverlayManager';
+import { showProgressPopup } from './components/OverlayManager';
 import { logger } from '@/common/logger';
 
 // Helper function to wait for a condition
@@ -54,7 +51,7 @@ const getFriendElements = (): Element[] => {
 };
 
 // Extract friend info from friend anchor element
-const extractFriendInfo = (anchorElement: Element): FriendInfo | null => {
+export const extractFriendInfo = (anchorElement: Element): FriendInfo | null => {
   try {
     const href = anchorElement.getAttribute('href');
     if (!href) return null;
@@ -123,15 +120,13 @@ const scrollToLoadMore = async (): Promise<boolean> => {
   return newHeight > previousHeight || newCount > initialCount;
 };
 
-export const getFriendList = async (): Promise<FriendInfo[] | null> => {
-  // Step 1: Navigate to friends page
+export const getFriendListAutoCrawl = async (): Promise<FriendInfo[]> => {
+  // Step 1: Navigate to friends page if needed
   const currentUrl = window.location.href;
 
-  // Check if we're not on a friends page
   if (!currentUrl.includes('/friends')) {
     window.location.href = 'https://www.facebook.com/me/friends';
 
-    // Wait for redirect to actual friends page (from /me/friends to /username/friends)
     await waitFor(
       () => {
         const url = window.location.href;
@@ -141,18 +136,11 @@ export const getFriendList = async (): Promise<FriendInfo[] | null> => {
       500
     );
 
-    // Wait for friend elements to appear on the page
     await waitFor(() => getFriendElementCount() > 0, 10000, 500);
-
-    // Additional wait for initial content to stabilize
     await sleep(1000);
   }
 
-  // Step 2: Show popup and wait for user to click
-  const didStart = await showUpdatePopup();
-  if (!didStart) return null;
-
-  // Step 3-5: Start collecting friends with progress indicator
+  // Step 2: Start collecting friends with progress indicator
   const progressPopup = showProgressPopup();
 
   let hasMoreFriends = true;

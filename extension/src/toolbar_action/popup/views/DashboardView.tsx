@@ -6,7 +6,6 @@ import {
   Eye,
   EyeOff,
   Heart,
-  RefreshCw,
   Shield,
   Star,
   Users,
@@ -148,7 +147,7 @@ export const DashboardView = () => {
                 onClick={buildFriendList}
                 className='text-gray-400 hover:text-blue-600 transition-colors p-1.5 cursor-pointer select-none'
               >
-                <RefreshCw className='w-3.5 h-3.5' />
+                <Edit className='w-3.5 h-3.5' />
               </button>
             </div>
 

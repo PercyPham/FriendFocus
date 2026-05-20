@@ -2,6 +2,9 @@ import { createRoot, Root } from 'react-dom/client';
 import overlayStyles from '../../shared/styles/overlay.css?inline';
 import UpdateFriendListPopup from './UpdateFriendListPopup';
 import ProgressPopup from './ProgressPopup';
+import ModeSelectionPopup from './ModeSelectionPopup';
+import ManualSelectionUI from './ManualSelectionUI';
+import type { FriendInfo } from '@/common/types';
 
 interface ShadowRootContext {
   shadowRoot: ShadowRoot;
@@ -50,6 +53,53 @@ const cleanupShadowRoot = () => {
     currentContext.container.remove();
     currentContext = null;
   }
+};
+
+// Mode Selection Popup
+export const showFriendModeSelectionPopup = (): Promise<'auto' | 'manual'> => {
+  return new Promise((resolve) => {
+    const context = ensureShadowRoot();
+
+    const handleSelectMode = (mode: 'auto' | 'manual') => {
+      cleanupShadowRoot();
+      resolve(mode);
+    };
+
+    context.reactRoot.render(
+      <ModeSelectionPopup onSelectMode={handleSelectMode} />
+    );
+  });
+};
+
+// Manual Selection UI
+export const showManualFriendSelectionUI = (
+  getSelectedFriends: () => FriendInfo[],
+  getSelectedCount: () => number,
+  clearAllSelections: () => void
+): Promise<FriendInfo[] | null> => {
+  return new Promise((resolve) => {
+    const context = ensureShadowRoot();
+
+    const handleConfirm = () => {
+      const selectedFriends = getSelectedFriends();
+      cleanupShadowRoot();
+      resolve(selectedFriends);
+    };
+
+    const handleCancel = () => {
+      cleanupShadowRoot();
+      resolve(null);
+    };
+
+    context.reactRoot.render(
+      <ManualSelectionUI
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        getSelectedCount={getSelectedCount}
+        clearAllSelections={clearAllSelections}
+      />
+    );
+  });
 };
 
 // Update Friend List Popup
