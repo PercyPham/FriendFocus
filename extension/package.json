@@ -2,12 +2,11 @@
   "name": "Friend Focus",
   "description": "A cleaner Facebook feed. You choose what you see — nothing else.",
   "type": "module",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "build": "tsc -b && vite build"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
