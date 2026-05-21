@@ -4,7 +4,8 @@
       "Bash(pnpm run *)",
       "Bash(grep -E \"\\\\.\\(js|json|css\\)$|config\")",
       "Bash(xargs ls -la)",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "Bash(pnpm install *)"
     ]
   }
 }

@@ -1,4 +1,4 @@
-# Friend Focuss GEMINI.md
+# Friend Focus
 
 ## Project Overview
 
