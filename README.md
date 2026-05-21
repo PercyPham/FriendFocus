@@ -1,88 +1,91 @@
 # Friend Focus
 
-This template helps you quickly start developing Chrome extensions with React, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
+**A cleaner Facebook feed — see only posts from your friends.**
 
-## Structure
+Friend Focus is a Chrome extension that cuts through Facebook's algorithmic noise by filtering your newsfeed to show only posts from people you actually follow as friends. No ads, no suggested posts, no pages you never subscribed to.
 
-<!-- TODO: fix -->
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Version](https://img.shields.io/github/package-json/v/PercyPham/friendfocus)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/bglgckkcceoffcjkkgckkeeddckepmjn?label=Chrome%20Web%20Store&logo=googlechrome&color=4285F4)](https://chromewebstore.google.com/detail/friend-focus/bglgckkcceoffcjkkgckkeeddckepmjn)
 
-```
-root/
-├── src/
-│   ├── manifest.json
-│   │
-│   ├── _shared/                # (The Shared Kernel)
-│   │   ├── types/              # Domain models (User, Settings)
-│   │   ├── utils/              # Pure utility functions
-│   │   └── constants.ts
-│   │
-│   ├── _infrastructure/        # (The Communication Layer)
-│   │   ├── messaging/
-│   │   │   ├── contract.ts     # <--- THE HOLY GRAIL (Type Definitions)
-│   │   │   ├── client.ts       # Wrapper for sending messages
-│   │   │   └── server.ts       # Wrapper for handling messages
-│   │   └── storage/            # Wrappers for chrome.storage
-│   │
-│   ├── background/             # (Service Worker Entry Point)
-│   │   ├── index.ts            # Entry file
-│   │   ├── domain/             # Business logic (State management)
-│   │   └── services/           # External API calls
-│   │
-│   ├── content/                # (Content Script Entry Point)
-│   │   ├── index.ts
-│   │   └── logic/              # DOM manipulation logic
-│   │
-│   └── popup/                  # (UI Entry Point)
-│       ├── index.tsx
-│       ├── components/
-│       └── hooks/              # Hooks that use the messaging client
-```
+---
+
+## What it does
+
+Facebook's newsfeed is designed to surface content from pages, ads, and algorithmic recommendations — not necessarily the people you care about. Friend Focus intercepts the feed and hides everything that isn't from your curated friend list.
+
+- Scans your Facebook friends, following list, and groups
+- Filters the newsfeed in real time to show only those sources
+- Lets you manage your list directly from the extension popup
 
 ## Features
 
-- React with TypeScript
-- TypeScript support
-- Vite build tool
-- CRXJS Vite plugin integration
-- Chrome extension manifest configuration
+- **Newsfeed filtering** — hides posts from non-friends as you scroll
+- **Friend list sync** — automatically collects your Facebook friends
+- **Following & group support** — optionally include accounts you follow or groups you're in
+- **Popup UI** — view and manage your friend list without leaving Facebook
+- **Import / export** — back up and restore your list as JSON
 
-## Quick Start
+## Installation
 
-1. Install dependencies:
+### From the Chrome Web Store
+
+Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/friend-focus/bglgckkcceoffcjkkgckkeeddckepmjn) and click **Add to Chrome**.
+
+### Load from source
+
+1. Clone the repo and build:
+
+   ```bash
+   git clone https://github.com/PercyPham/friendfocus.git
+   cd friendfocus
+   pnpm install
+   pnpm run build
+   ```
+
+2. Open Chrome → `chrome://extensions/` → enable **Developer mode**
+3. Click **Load unpacked** and select the `dist/` directory
+
+## Development
+
+**Prerequisites:** Node.js, [pnpm](https://pnpm.io/)
 
 ```bash
-pnpm install
+pnpm install       # install dependencies
+pnpm run dev       # start Vite dev server with HMR
+pnpm run build     # production build → dist/
 ```
 
-2. Start development server:
+Load the `dist/` directory as an unpacked extension in Chrome. The dev server supports hot reload for the popup UI; content scripts and the service worker require a manual extension reload after changes.
 
-```bash
-pnpm run dev
+## Project structure
+
+```
+src/
+├── background/          # Service worker — storage, RPC server
+├── toolbar_action/
+│   └── popup/           # React popup UI (Zustand state)
+├── content_scripts/
+│   ├── newsfeed/        # Newsfeed filtering logic
+│   ├── friend_list/     # Friend list collection
+│   ├── following_list/  # Following list collection
+│   └── group_list/      # Group list collection
+└── common/              # Shared types, contracts, storage utils
 ```
 
-3. Open Chrome and navigate to `chrome://extensions/`, enable "Developer mode", and load the unpacked extension from the `dist` directory.
+Modules communicate via a type-safe RPC contract defined in `src/common/background_contract/`. The background service worker acts as the server; popup and content scripts are clients.
 
-4. Build for production:
+## Tech stack
 
-```bash
-pnpm run build
-```
+- [React 19](https://react.dev/) + TypeScript
+- [Vite](https://vitejs.dev/) + [@crxjs/vite-plugin](https://crxjs.dev/vite-plugin)
+- [Tailwind CSS v4](https://tailwindcss.com/)
+- [Zustand](https://zustand-demo.pmnd.rs/)
 
-## Project Structure
+## Contributing
 
-- `src/popup/` - Extension popup UI
-- `src/content/` - Content scripts
-- `manifest.config.ts` - Chrome extension manifest configuration
+Issues and pull requests are welcome. Please open an issue first for significant changes so we can discuss the approach.
 
-## Documentation
+## License
 
-- [React Documentation](https://reactjs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [CRXJS Documentation](https://crxjs.dev/vite-plugin)
-
-## Chrome Extension Development Notes
-
-- Use `manifest.config.ts` to configure your extension
-- The CRXJS plugin automatically handles manifest generation
-- Content scripts should be placed in `src/content/`
-- Popup UI should be placed in `src/popup/`
+[MIT](./LICENSE) © 2026 Percy Pham

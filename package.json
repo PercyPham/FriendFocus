@@ -3,7 +3,7 @@
   "description": "A cleaner Facebook feed. You choose what you see — nothing else.",
   "type": "module",
   "version": "1.7.1",
-  "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build"
