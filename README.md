@@ -28,11 +28,13 @@ Facebook's newsfeed is designed to surface content from pages, ads, and algorith
 
 ## Installation
 
-### From the Chrome Web Store
+There are two ways to install Friend Focus:
+
+### Option 1 — Chrome Web Store (recommended)
 
 Install directly from the [Chrome Web Store](https://chromewebstore.google.com/detail/friend-focus/bglgckkcceoffcjkkgckkeeddckepmjn) and click **Add to Chrome**.
 
-### Load from source
+### Option 2 — Load from source
 
 1. Clone the repo and build:
 
@@ -40,7 +42,7 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
    git clone https://github.com/PercyPham/friendfocus.git
    cd friendfocus
    pnpm install
-   pnpm run build
+   pnpm build
    ```
 
 2. Open Chrome → `chrome://extensions/` → enable **Developer mode**
@@ -51,9 +53,8 @@ Install directly from the [Chrome Web Store](https://chromewebstore.google.com/d
 **Prerequisites:** Node.js, [pnpm](https://pnpm.io/)
 
 ```bash
-pnpm install       # install dependencies
-pnpm run dev       # start Vite dev server with HMR
-pnpm run build     # production build → dist/
+pnpm install   # install dependencies
+pnpm dev       # start Vite dev server with HMR
 ```
 
 Load the `dist/` directory as an unpacked extension in Chrome. The dev server supports hot reload for the popup UI; content scripts and the service worker require a manual extension reload after changes.

@@ -94,7 +94,7 @@ src/
 2.  **Start the development server:**
 
     ```bash
-    pnpm run dev
+    pnpm dev
     ```
 
 3.  **Load the extension in Chrome:**
@@ -107,7 +107,7 @@ src/
 1.  **Build the extension:**
 
     ```bash
-    pnpm run build
+    pnpm build
     ```
 
     This will create a production-ready build in the `dist` directory and a zip file in the `release` directory.
