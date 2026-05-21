@@ -1,8 +1,8 @@
-# FriendFocus GEMINI.md
+# Friend Focuss GEMINI.md
 
 ## Project Overview
 
-FriendFocus is a Chrome extension that enhances the user's Facebook experience by filtering their newsfeed to display posts only from their friends. It's built using modern web technologies, including React for the user interface, TypeScript for type safety, and Vite for a fast development and build process. The extension consists of a popup for user interaction, a background service worker for core logic, and content scripts for interacting with Facebook pages.
+Friend Focus is a Chrome extension that enhances the user's Facebook experience by filtering their newsfeed to display posts only from their friends. It's built using modern web technologies, including React for the user interface, TypeScript for type safety, and Vite for a fast development and build process. The extension consists of a popup for user interaction, a background service worker for core logic, and content scripts for interacting with Facebook pages.
 
 **Key Technologies:**
 

@@ -93,7 +93,7 @@ export const Header = () => {
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
           <div className="flex items-center justify-center bg-blue-600 p-1.5 rounded-lg">
-            <img src="/icon.svg" alt="FriendFocus icon" className="w-6 h-6" />
+            <img src="/icon.svg" alt="Friend Focus icon" className="w-6 h-6" />
           </div>
           <span className="text-base font-bold text-gray-800 dark:text-slate-100 tracking-tight leading-none">
             Friend Focus

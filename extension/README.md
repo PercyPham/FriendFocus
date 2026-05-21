@@ -1,4 +1,4 @@
-# FriendFocus
+# Friend Focus
 
 This template helps you quickly start developing Chrome extensions with React, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
 
