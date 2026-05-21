@@ -1,5 +1,5 @@
 import { APP_VERSION, LINKS } from "@/common/constants";
-import { Bug, ExternalLink, MessageSquare, Settings, HelpCircle, Download, Upload } from "lucide-react";
+import { Github, ExternalLink, Settings, HelpCircle, Download, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { exportData, importData } from "../utils/data-transfer";
 
@@ -117,8 +117,7 @@ export const Header = () => {
               <>
                 <MenuRow icon={HelpCircle} label="FAQ" isLink href={LINKS.FAQ} />
                 <div className="h-px bg-gray-100 dark:bg-slate-700 my-1" />
-                <MenuRow icon={MessageSquare} label="Send Feedback" isLink href={LINKS.SEND_FEEDBACK} />
-                <MenuRow icon={Bug} label="Report a Bug" isLink href={LINKS.REPORT_A_BUG} />
+                <MenuRow icon={Github} label="Feedback & Bug Report" isLink href={LINKS.GITHUB_ISSUES} />
                 <div className="h-px bg-gray-100 dark:bg-slate-700 my-1" />
                 <MenuRow icon={Download} label="Import Data" onClick={handleImportClick} />
                 <MenuRow icon={Upload} label="Export Data" onClick={handleExport} />

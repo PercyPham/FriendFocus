@@ -2,7 +2,7 @@
   "name": "Friend Focus",
   "description": "A cleaner Facebook feed. You choose what you see — nothing else.",
   "type": "module",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "license": "MIT",
   "scripts": {
     "dev": "vite",

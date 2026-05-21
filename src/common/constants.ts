@@ -16,8 +16,7 @@ export const LOG_LEVEL = import.meta.env.PROD ? 'error' : 'debug';
 
 export const LINKS = {
   FAQ: 'https://sites.google.com/view/friendfocus-faq/home',
-  REPORT_A_BUG: 'https://forms.gle/FvtSo6jhLtKAWt1s9',
-  SEND_FEEDBACK: 'https://forms.gle/3j1qDDzd61TXQEMq8',
+  GITHUB_ISSUES: 'https://github.com/PercyPham/FriendFocus/issues',
   GIVE_A_REVIEW:
     'https://chromewebstore.google.com/detail/friendfocus/bglgckkcceoffcjkkgckkeeddckepmjn/reviews',
   BUY_ME_A_COFFEE: 'https://buymeacoffee.com/percypham',
