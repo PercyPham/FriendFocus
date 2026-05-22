@@ -1,6 +1,10 @@
 # Friend Focus
 
-**A cleaner Facebook feed — see only posts from your friends.**
+<p align="center">
+  <img src="public/icon.svg" alt="Friend Focus" width="128">
+</p>
+
+<p align="center"><strong>A cleaner Facebook feed. You choose what you see — nothing else.</strong></p>
 
 Friend Focus is a Chrome extension that cuts through Facebook's algorithmic noise by filtering your newsfeed to show only posts from people you actually follow as friends. No ads, no suggested posts, no pages you never subscribed to.
 
